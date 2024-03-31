@@ -241,6 +241,7 @@ static void PssScrollRightEnd(u8);
 static void PssScrollLeft(u8);
 static void PssScrollLeftEnd(u8);
 static void TryDrawExperienceProgressBar(void);
+static void TryDrawFriendshipHearts(void);
 static void SwitchToMoveSelection(u8);
 static void Task_HandleInput_MoveSelect(u8);
 static bool8 HasMoreThanOneMove(void);
@@ -266,6 +267,7 @@ static void Task_ShowStatusWindow(u8);
 static void TilemapFiveMovesDisplay(u16 *, u16, bool8);
 static void DrawPokerusCuredSymbol(struct Pokemon *);
 static void DrawExperienceProgressBar(struct Pokemon *);
+static void DrawFriendshipHearts(struct Pokemon *);
 static void DrawContestMoveHearts(u16);
 static void LimitEggSummaryPageDisplay(void);
 static void ResetWindows(void);
@@ -300,6 +302,7 @@ static void Task_PrintSkillsPage(u8);
 static void PrintHeldItemName(void);
 static void PrintSkillsPageText(void);
 static void PrintRibbonCount(void);
+static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 n);
 static void BufferLeftColumnStats(void);
 static void PrintLeftColumnStats(void);
 static void BufferRightColumnStats(void);
@@ -347,7 +350,6 @@ static void SpriteCB_MoveSelector(struct Sprite *);
 static void DestroyMoveSelectorSprites(u8);
 static void SetMainMoveSelectorColor(u8);
 static void KeepMoveSelectorVisible(u8);
-static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 n);
 static void SummaryScreen_DestroyAnimDelayTask(void);
 
 // const rom data
@@ -1761,6 +1763,7 @@ static void Task_ChangeSummaryMon(u8 taskId)
             return;
         gSprites[sMonSummaryScreen->spriteIds[SPRITE_ARR_ID_MON]].data[2] = 1;
         TryDrawExperienceProgressBar();
+        TryDrawFriendshipHearts();
         data[1] = 0;
         break;
     case 9:
@@ -1916,6 +1919,7 @@ static void PssScrollRightEnd(u8 taskId) // display right
     PutPageWindowTilemaps(sMonSummaryScreen->currPageIndex);
     SetTypeIcons();
     TryDrawExperienceProgressBar();
+    TryDrawFriendshipHearts();
     SwitchTaskToFollowupFunc(taskId);
 }
 
@@ -1965,6 +1969,7 @@ static void PssScrollLeftEnd(u8 taskId) // display left
     PutPageWindowTilemaps(sMonSummaryScreen->currPageIndex);
     SetTypeIcons();
     TryDrawExperienceProgressBar();
+    TryDrawFriendshipHearts();
     SwitchTaskToFollowupFunc(taskId);
 }
 
@@ -1972,6 +1977,12 @@ static void TryDrawExperienceProgressBar(void)
 {
     if (sMonSummaryScreen->currPageIndex == PSS_PAGE_SKILLS)
         DrawExperienceProgressBar(&sMonSummaryScreen->currentMon);
+}
+
+static void TryDrawFriendshipHearts(void)
+{
+    if (sMonSummaryScreen->currPageIndex == PSS_PAGE_STATS)
+        DrawFriendshipHearts(&sMonSummaryScreen->currentMon);
 }
 
 static void SwitchToMoveSelection(u8 taskId)
@@ -2761,6 +2772,35 @@ static void DrawExperienceProgressBar(struct Pokemon *unused)
         ScheduleBgCopyTilemapToVram(2);
 }
 
+static void DrawFriendshipHearts(struct Pokemon *unused)
+{
+    s64 numFriendshipHeartTicks;
+    struct PokeSummary *summary = &sMonSummaryScreen->summary;
+    u16 *dst;
+    u8 i;
+
+    numFriendshipHeartTicks = summary->friendship * 64 / MAX_FRIENDSHIP;
+    if (numFriendshipHeartTicks == 0 && summary->friendship != 0)
+        numFriendshipHeartTicks = 1;
+
+    dst = &sMonSummaryScreen->bgTilemapBuffers[PSS_PAGE_STATS][1][0x255];
+    for (i = 0; i < 8; i++)
+    {
+        if (numFriendshipHeartTicks > 7)
+            dst[i] = 0x50A8;
+        else
+            dst[i] = 0x50A0 + (numFriendshipHeartTicks % 8);
+        numFriendshipHeartTicks -= 8;
+        if (numFriendshipHeartTicks < 0)
+            numFriendshipHeartTicks = 0;
+    }
+
+    if (GetBgTilemapBuffer(1) == sMonSummaryScreen->bgTilemapBuffers[PSS_PAGE_STATS][0])
+        ScheduleBgCopyTilemapToVram(1);
+    else
+        ScheduleBgCopyTilemapToVram(2);
+}
+
 static void DrawContestMoveHearts(u16 move)
 {
     u16 *tilemap = sMonSummaryScreen->bgTilemapBuffers[PSS_PAGE_CONTEST_MOVES][1];
@@ -3495,6 +3535,26 @@ static void PrintRibbonCount(void)
 
     x = GetStringCenterAlignXOffset(FONT_NORMAL, text, 70) + 6;
     PrintTextOnWindow(AddWindowFromTemplateList(sPageSkillsTemplate, PSS_DATA_WINDOW_SKILLS_RIBBON_COUNT), text, x, 1, 0, 0);
+}
+
+static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 n)
+{
+    // list of colors can be found in charmap.txt
+    static const u8 sTextNatureDown[]    = _("{COLOR}{08}");
+    static const u8 sTextNatureUp[]      = _("{COLOR}{05}");
+    static const u8 sTextNatureNeutral[] = _("{COLOR}{01}");
+    u8 *txtPtr;
+
+    if (natureMod == 0)
+        txtPtr = StringCopy(dst, sTextNatureNeutral);
+    else if (natureMod > 0)
+        txtPtr = StringCopy(dst, sTextNatureUp);
+    else
+        txtPtr = StringCopy(dst, sTextNatureDown);
+
+    // convert the stat into text
+    ConvertIntToDecimalStringN(txtPtr, stat, STR_CONV_MODE_RIGHT_ALIGN, n);
+    DynamicPlaceholderTextUtil_SetPlaceholderPtr(strId, dst);
 }
 
 static void BufferLeftColumnStats(void)
@@ -4471,24 +4531,4 @@ static void KeepMoveSelectorVisible(u8 firstSpriteId)
         gSprites[spriteIds[i]].data[1] = 0;
         gSprites[spriteIds[i]].invisible = FALSE;
     }
-}
-
-static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 n)
-{
-    // list of colors can be found in charmap.txt
-    static const u8 sTextNatureDown[]    = _("{COLOR}{08}");
-    static const u8 sTextNatureUp[]      = _("{COLOR}{05}");
-    static const u8 sTextNatureNeutral[] = _("{COLOR}{01}");
-    u8 *txtPtr;
-
-    if (natureMod == 0)
-        txtPtr = StringCopy(dst, sTextNatureNeutral);
-    else if (natureMod > 0)
-        txtPtr = StringCopy(dst, sTextNatureUp);
-    else
-        txtPtr = StringCopy(dst, sTextNatureDown);
-
-    // convert the stat into text
-    ConvertIntToDecimalStringN(txtPtr, stat, STR_CONV_MODE_RIGHT_ALIGN, n);
-    DynamicPlaceholderTextUtil_SetPlaceholderPtr(strId, dst);
 }
