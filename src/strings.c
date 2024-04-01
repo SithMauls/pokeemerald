@@ -678,6 +678,7 @@ const u8 gText_RedShard[] = _("RED SHARD");
 const u8 gText_YellowShard[] = _("YELLOW SHARD");
 const u8 gText_BlueShard[] = _("BLUE SHARD");
 const u8 gText_GreenShard[] = _("GREEN SHARD");
+const u8 gText_GrayShard[] = _("GRAY SHARD");
 const u8 gText_BattleFrontier[] = _("BATTLE FRONTIER");
 const u8 gText_Right[] = _("Right");
 const u8 gText_Left[] = _("Left");

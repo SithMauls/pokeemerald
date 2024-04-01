@@ -63,7 +63,7 @@
 #define ITEM_BLUE_SHARD 49
 #define ITEM_YELLOW_SHARD 50
 #define ITEM_GREEN_SHARD 51
-#define ITEM_034 52
+#define ITEM_GRAY_SHARD 52
 #define ITEM_035 53
 #define ITEM_036 54
 #define ITEM_037 55
@@ -110,7 +110,7 @@
 #define ITEM_THUNDER_STONE 96
 #define ITEM_WATER_STONE 97
 #define ITEM_LEAF_STONE 98
-#define ITEM_063 99
+#define ITEM_LINK_STONE 99
 #define ITEM_064 100
 #define ITEM_065 101
 #define ITEM_066 102

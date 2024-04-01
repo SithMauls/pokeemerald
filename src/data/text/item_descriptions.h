@@ -251,6 +251,11 @@ static const u8 sGreenShardDesc[] = _(
     "ancient item. Can\n"
     "be sold cheaply.");
 
+static const u8 sGrayShardDesc[] = _(
+    "A shard from an\n"
+    "ancient item. Can\n"
+    "be sold cheaply.");
+
 // Vitamins
 static const u8 sHPUpDesc[] = _(
     "Raises the base HP\n"
@@ -390,6 +395,11 @@ static const u8 sWaterStoneDesc[] = _(
     "evolve.");
 
 static const u8 sLeafStoneDesc[] = _(
+    "Makes certain\n"
+    "species of POKéMON\n"
+    "evolve.");
+
+static const u8 sLinkStoneDesc[] = _(
     "Makes certain\n"
     "species of POKéMON\n"
     "evolve.");

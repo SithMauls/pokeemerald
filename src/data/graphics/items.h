@@ -128,6 +128,7 @@ const u32 gItemIconPalette_RedShard[] = INCBIN_U32("graphics/items/icon_palettes
 const u32 gItemIconPalette_BlueShard[] = INCBIN_U32("graphics/items/icon_palettes/blue_shard.gbapal.lz");
 const u32 gItemIconPalette_YellowShard[] = INCBIN_U32("graphics/items/icon_palettes/yellow_shard.gbapal.lz");
 const u32 gItemIconPalette_GreenShard[] = INCBIN_U32("graphics/items/icon_palettes/green_shard.gbapal.lz");
+const u32 gItemIconPalette_GrayShard[] = INCBIN_U32("graphics/items/icon_palettes/gray_shard.gbapal.lz");
 
 // Vitamins
 
@@ -199,6 +200,9 @@ const u32 gItemIconPalette_WaterStone[] = INCBIN_U32("graphics/items/icon_palett
 
 const u32 gItemIcon_LeafStone[] = INCBIN_U32("graphics/items/icons/leaf_stone.4bpp.lz");
 const u32 gItemIconPalette_LeafStone[] = INCBIN_U32("graphics/items/icon_palettes/leaf_stone.gbapal.lz");
+
+const u32 gItemIcon_LinkStone[] = INCBIN_U32("graphics/items/icons/link_stone.4bpp.lz");
+const u32 gItemIconPalette_LinkStone[] = INCBIN_U32("graphics/items/icon_palettes/link_stone.gbapal.lz");
 
 // Valuables
 
