@@ -128,6 +128,7 @@ const u32 gItemIconPalette_RedShard[] = INCBIN_U32("graphics/items/icon_palettes
 const u32 gItemIconPalette_BlueShard[] = INCBIN_U32("graphics/items/icon_palettes/blue_shard.gbapal.lz");
 const u32 gItemIconPalette_YellowShard[] = INCBIN_U32("graphics/items/icon_palettes/yellow_shard.gbapal.lz");
 const u32 gItemIconPalette_GreenShard[] = INCBIN_U32("graphics/items/icon_palettes/green_shard.gbapal.lz");
+const u32 gItemIconPalette_GrayShard[] = INCBIN_U32("graphics/items/icon_palettes/gray_shard.gbapal.lz");
 
 // Vitamins
 
