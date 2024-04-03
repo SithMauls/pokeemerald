@@ -296,6 +296,11 @@ static const u8 sPPMaxDesc[] = _(
     "move to its maximum\n"
     "points.");
 
+static const u8 sBottleCapDesc[] = _(
+    "Raises one IV stat\n"
+    "of one POKéMON to\n"
+    "maximum value.");
+
 // Battle items
 static const u8 sGuardSpecDesc[] = _(
     "Prevents stat\n"
