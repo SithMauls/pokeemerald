@@ -3446,6 +3446,7 @@ extern const u32 gItemIconPalette_RedShard[];
 extern const u32 gItemIconPalette_BlueShard[];
 extern const u32 gItemIconPalette_YellowShard[];
 extern const u32 gItemIconPalette_GreenShard[];
+extern const u32 gItemIconPalette_GrayShard[];
 // Vitamins
 extern const u32 gItemIcon_HPUp[];
 extern const u32 gItemIconPalette_HPUp[];
@@ -3497,6 +3498,8 @@ extern const u32 gItemIcon_WaterStone[];
 extern const u32 gItemIconPalette_WaterStone[];
 extern const u32 gItemIcon_LeafStone[];
 extern const u32 gItemIconPalette_LeafStone[];
+extern const u32 gItemIcon_LinkStone[];
+extern const u32 gItemIconPalette_LinkStone[];
 // Valuables
 extern const u32 gItemIcon_TinyMushroom[];
 extern const u32 gItemIconPalette_Mushroom[];
@@ -4039,6 +4042,7 @@ extern const u32 gSummaryScreen_Pal[];
 extern const u32 gSummaryPage_Info_Tilemap[];
 extern const u32 gSummaryPage_InfoEgg_Tilemap[];
 extern const u32 gSummaryPage_Skills_Tilemap[];
+extern const u32 gSummaryPage_Stats_Tilemap[];
 extern const u32 gSummaryPage_BattleMoves_Tilemap[];
 extern const u32 gSummaryPage_ContestMoves_Tilemap[];
 extern const u16 gPPTextPalette[];
