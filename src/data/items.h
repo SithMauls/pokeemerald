@@ -909,7 +909,7 @@ const struct Item gItems[] =
         .description = sBottleCapDesc,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
+        .fieldUseFunc = ItemUseOutOfBattle_BottleCap,
     },
 
 // Battle items

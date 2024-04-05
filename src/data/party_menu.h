@@ -471,6 +471,17 @@ static const struct WindowTemplate sWhichMoveMsgWindowTemplate =
     .baseBlock = 0x299,
 };
 
+static const struct WindowTemplate sWhichStatMsgWindowTemplate =
+{
+    .bg = 2,
+    .tilemapLeft = 1,
+    .tilemapTop = 17,
+    .width = 19,
+    .height = 2,
+    .paletteNum = 15,
+    .baseBlock = 0x299,
+};
+
 static const struct WindowTemplate sAlreadyHoldingOneMsgWindowTemplate =
 {
     .bg = 2,
@@ -511,6 +522,17 @@ static const struct WindowTemplate sMoveSelectWindowTemplate =
     .tilemapTop = 11,
     .width = 10,
     .height = 8,
+    .paletteNum = 14,
+    .baseBlock = 0x2E9,
+};
+
+static const struct WindowTemplate sStatSelectWindowTemplate =
+{
+    .bg = 2,
+    .tilemapLeft = 22,
+    .tilemapTop = 7,
+    .width = 7,
+    .height = 12,
     .paletteNum = 14,
     .baseBlock = 0x2E9,
 };
@@ -621,6 +643,7 @@ static const u8 *const sActionStringTable[] =
     [PARTY_MSG_DO_WHAT_WITH_MON]       = gText_DoWhatWithPokemon,
     [PARTY_MSG_RESTORE_WHICH_MOVE]     = gText_RestoreWhichMove,
     [PARTY_MSG_BOOST_PP_WHICH_MOVE]    = gText_BoostPp,
+    [PARTY_MSG_CHANGE_IV_WHICH_STAT]   = gText_ChangeIv,
     [PARTY_MSG_DO_WHAT_WITH_ITEM]      = gText_DoWhatWithItem,
     [PARTY_MSG_DO_WHAT_WITH_MAIL]      = gText_DoWhatWithMail,
     [PARTY_MSG_ALREADY_HOLDING_ONE]    = gText_AlreadyHoldingOne,
