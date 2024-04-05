@@ -392,7 +392,9 @@ static u16 ItemEffectToMonEv(struct Pokemon *, u8);
 static void ItemEffectToStatString(u8, u8 *);
 static void ReturnToUseOnWhichMon(u8);
 static void SetSelectedMoveForPPItem(u8);
+static void SetSelectedStatForIVItem(u8);
 static void TryUsePPItem(u8);
+static void TryUseIVItem(u8);
 static void Task_LearnedMove(u8);
 static void Task_ReplaceMoveYesNo(u8);
 static void Task_DoLearnedMoveFanfareAfterText(u8);
@@ -2480,6 +2482,9 @@ void DisplayPartyMenuStdMessage(u32 stringId)
         case PARTY_MSG_BOOST_PP_WHICH_MOVE:
             *windowPtr = AddWindow(&sWhichMoveMsgWindowTemplate);
             break;
+        case PARTY_MSG_CHANGE_IV_WHICH_STAT:
+            *windowPtr = AddWindow(&sWhichStatMsgWindowTemplate);
+            break;
         case PARTY_MSG_ALREADY_HOLDING_ONE:
             *windowPtr = AddWindow(&sAlreadyHoldingOneMsgWindowTemplate);
             break;
@@ -2538,6 +2543,9 @@ static u8 DisplaySelectionWindow(u8 windowType)
         break;
     case SELECTWINDOW_MAIL:
         window = sMailReadTakeWindowTemplate;
+        break;
+    case SELECTWINDOW_STATS:
+        window = sStatSelectWindowTemplate;
         break;
     default: // SELECTWINDOW_MOVES
         window = sMoveSelectWindowTemplate;
@@ -4365,6 +4373,9 @@ static void GetMedicineItemEffectMessage(u16 item)
     case ITEM_EFFECT_HEAL_PP:
         StringExpandPlaceholders(gStringVar4, gText_PPWasRestored);
         break;
+    case ITEM_EFFECT_IV_MAX:
+        StringExpandPlaceholders(gStringVar4, gText_StatsIVIncreased);
+        break;
     default:
         StringExpandPlaceholders(gStringVar4, gText_WontHaveEffect);
         break;
@@ -4588,6 +4599,22 @@ static void ShowMoveSelectWindow(u8 slot)
     ScheduleBgCopyTilemapToVram(2);
 }
 
+static void ShowStatSelectWindow(u8 slot)
+{
+    u8 fontId = FONT_NORMAL;
+    u8 windowId = DisplaySelectionWindow(SELECTWINDOW_STATS);
+
+    AddTextPrinterParameterized(windowId, fontId, gText_HP4, 8, 1, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(windowId, fontId, gText_Attack3, 8, 17, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(windowId, fontId, gText_Defense3, 8, 33, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(windowId, fontId, gText_SpAtk4, 8, 49, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(windowId, fontId, gText_SpDef4, 8, 65, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(windowId, fontId, gText_Speed2, 8, 81, TEXT_SKIP_DRAW, NULL);
+
+    InitMenuInUpperLeftCornerNormal(windowId, 6, 0);
+    ScheduleBgCopyTilemapToVram(2);
+}
+
 static void Task_HandleWhichMoveInput(u8 taskId)
 {
     s8 input = Menu_ProcessInput();
@@ -4603,6 +4630,25 @@ static void Task_HandleWhichMoveInput(u8 taskId)
         {
             PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
             SetSelectedMoveForPPItem(taskId);
+        }
+    }
+}
+
+static void Task_HandleWhichStatInput(u8 taskId)
+{
+    s8 input = Menu_ProcessInput();
+
+    if (input != MENU_NOTHING_CHOSEN)
+    {
+        if (input == MENU_B_PRESSED)
+        {
+            PlaySE(SE_SELECT);
+            ReturnToUseOnWhichMon(taskId);
+        }
+        else
+        {
+            PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+            SetSelectedStatForIVItem(taskId);
         }
     }
 }
@@ -4636,6 +4682,22 @@ static void SetSelectedMoveForPPItem(u8 taskId)
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
     gPartyMenu.data1 = Menu_GetCursorPos();
     TryUsePPItem(taskId);
+}
+
+static void SetSelectedStatForIVItem(u8 taskId)
+{
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    gPartyMenu.data1 = Menu_GetCursorPos();
+
+    // Match cursor to the stat order in gStatNamesTable
+    if (gPartyMenu.data1 == 3)
+        gPartyMenu.data1 = 4;
+    else if (gPartyMenu.data1 == 4)
+        gPartyMenu.data1 = 5;
+    else if (gPartyMenu.data1 == 5)
+        gPartyMenu.data1 = 3;
+
+    TryUseIVItem(taskId);
 }
 
 static void ReturnToUseOnWhichMon(u8 taskId)
@@ -4677,12 +4739,49 @@ static void TryUsePPItem(u8 taskId)
     }
 }
 
+static void TryUseIVItem(u8 taskId)
+{
+    s16 *statSlot = &gPartyMenu.data1;
+    u16 item = gSpecialVar_ItemId;
+    struct PartyMenu *ptr = &gPartyMenu;
+    struct Pokemon *mon;
+
+    if (ExecuteTableBasedItemEffect_(ptr->slotId, item, *statSlot))
+    {
+        gPartyMenuUseExitCallback = FALSE;
+        PlaySE(SE_SELECT);
+        DisplayPartyMenuMessage(gText_WontHaveEffect, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+    }
+    else
+    {
+        gPartyMenuUseExitCallback = TRUE;
+        mon = &gPlayerParty[ptr->slotId];
+        PlaySE(SE_USE_ITEM);
+        RemoveBagItem(item, 1);
+        StringCopy(gStringVar1, gStatNamesTable[*statSlot]);
+        GetMedicineItemEffectMessage(item);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        ScheduleBgCopyTilemapToVram(2);
+        gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+    }
+}
+
 void ItemUseCB_PPUp(u8 taskId, TaskFunc task)
 {
     PlaySE(SE_SELECT);
     DisplayPartyMenuStdMessage(PARTY_MSG_BOOST_PP_WHICH_MOVE);
     ShowMoveSelectWindow(gPartyMenu.slotId);
     gTasks[taskId].func = Task_HandleWhichMoveInput;
+}
+
+void ItemUseCB_BottleCap(u8 taskId, TaskFunc task)
+{
+    PlaySE(SE_SELECT);
+    DisplayPartyMenuStdMessage(PARTY_MSG_CHANGE_IV_WHICH_STAT);
+    ShowStatSelectWindow(gPartyMenu.slotId);
+    gTasks[taskId].func = Task_HandleWhichStatInput;
 }
 
 u16 ItemIdToBattleMoveId(u16 item)
@@ -5309,6 +5408,9 @@ u8 GetItemEffectType(u16 item)
         return ITEM_EFFECT_PP_MAX;
     else if (itemEffect[4] & (ITEM4_HEAL_PP | ITEM4_HEAL_PP_ONE))
         return ITEM_EFFECT_HEAL_PP;
+
+    if (itemEffect[6] & ITEM6_IV_MAX)
+        return ITEM_EFFECT_IV_MAX;
     else
         return ITEM_EFFECT_NONE;
 }

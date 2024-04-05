@@ -66,7 +66,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_03B] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
     [ITEM_03C] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
     [ITEM_03D] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
-    [ITEM_03E] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
+    [ITEM_BOTTLE_CAP] = {gItemIcon_BottleCap, gItemIconPalette_BottleCap},
     // Vitamins
     [ITEM_HP_UP] = {gItemIcon_HPUp, gItemIconPalette_HPUp},
     [ITEM_PROTEIN] = {gItemIcon_Vitamin, gItemIconPalette_Protein},
@@ -77,7 +77,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_PP_UP] = {gItemIcon_PPUp, gItemIconPalette_PPUp},
     [ITEM_ZINC] = {gItemIcon_Vitamin, gItemIconPalette_Zinc},
     [ITEM_PP_MAX] = {gItemIcon_PPMax, gItemIconPalette_PPMax},
-    [ITEM_BOTTLE_CAP] = {gItemIcon_BottleCap, gItemIconPalette_BottleCap},
+    [ITEM_048] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
     // Battle items
     [ITEM_GUARD_SPEC] = {gItemIcon_BattleStatItem, gItemIconPalette_GuardSpec},
     [ITEM_DIRE_HIT] = {gItemIcon_BattleStatItem, gItemIconPalette_DireHit},

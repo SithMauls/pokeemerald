@@ -5034,15 +5034,15 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                         dataUnsigned = itemEffect[itemEffectParam++];
                         switch (dataUnsigned)
                         {
-                        case ITEM6_HEAL_HP_FULL:
+                        case ITEM7_HEAL_HP_FULL:
                             dataUnsigned = GetMonData(mon, MON_DATA_MAX_HP, NULL) - GetMonData(mon, MON_DATA_HP, NULL);
                             break;
-                        case ITEM6_HEAL_HP_HALF:
+                        case ITEM7_HEAL_HP_HALF:
                             dataUnsigned = GetMonData(mon, MON_DATA_MAX_HP, NULL) / 2;
                             if (dataUnsigned == 0)
                                 dataUnsigned = 1;
                             break;
-                        case ITEM6_HEAL_HP_LVL_UP:
+                        case ITEM7_HEAL_HP_LVL_UP:
                             dataUnsigned = gBattleScripting.levelUpHP;
                             break;
                         }
@@ -5266,6 +5266,54 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                 effectFlags >>= 1;
             }
             break;
+
+        // Handle ITEM6 effects (Bottle Caps)
+        case 6:
+            effectFlags = itemEffect[i];
+            temp1 = 0;
+
+            // Loop through and try each of the ITEM6 effects
+            while (effectFlags != 0)
+            {
+                if (effectFlags & 1)
+                {
+                    switch (temp1)
+                    {
+                    case 0: // ITEM6_IV_MIN
+                        dataUnsigned = GetMonData(mon, MON_DATA_HP_IV + moveIndex, NULL);
+                        if (dataUnsigned > 0)
+                        {
+                            dataUnsigned = 0;
+
+                            SetMonData(mon, MON_DATA_HP_IV + moveIndex, &dataUnsigned);
+                            CalculateMonStats(mon);
+                            retVal = FALSE;
+                        }
+                        break;
+                    case 1: // ITEM6_IV_MAX
+                        dataUnsigned = GetMonData(mon, MON_DATA_HP_IV + moveIndex, NULL);
+                        if (dataUnsigned < 31)
+                        {
+                            dataUnsigned = 31;
+
+                            SetMonData(mon, MON_DATA_HP_IV + moveIndex, &dataUnsigned);
+                            CalculateMonStats(mon);
+                            retVal = FALSE;
+                        }
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                    }
+                }
+                temp1++;
+                effectFlags >>= 1;
+            }
+
+            break;
         }
     }
     return retVal;
@@ -5388,6 +5436,36 @@ u8 GetItemEffectParamOffset(u16 itemId, u8 effectByte, u8 effectBit)
                     case 7: // ITEM5_FRIENDSHIP_HIGH
                         if (i == effectByte)
                             return 0;
+                        break;
+                    }
+                }
+                j++;
+                effectFlags >>= 1;
+                if (i == effectByte)
+                    effectBit >>= 1;
+            }
+            break;
+        case 6:
+            effectFlags = itemEffect[6];
+            j = 0;
+            while (effectFlags)
+            {
+                if (effectFlags & 1)
+                {
+                    switch (j)
+                    {
+                    case 0: // ITEM6_IV_MIN
+                    case 1: // ITEM6_IV_MAX
+                        if (i == effectByte && (effectFlags & effectBit))
+                            return offset;
+                        offset++;
+                        break;
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
                         break;
                     }
                 }
