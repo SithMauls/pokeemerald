@@ -73,7 +73,7 @@
 #define ITEM_03B 59
 #define ITEM_03C 60
 #define ITEM_03D 61
-#define ITEM_03E 62
+#define ITEM_BOTTLE_CAP 62
 #define ITEM_HP_UP 63
 #define ITEM_PROTEIN 64
 #define ITEM_IRON 65
@@ -83,7 +83,7 @@
 #define ITEM_PP_UP 69
 #define ITEM_ZINC 70
 #define ITEM_PP_MAX 71
-#define ITEM_BOTTLE_CAP 72
+#define ITEM_048 72
 #define ITEM_GUARD_SPEC 73
 #define ITEM_DIRE_HIT 74
 #define ITEM_X_ATTACK 75
