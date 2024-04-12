@@ -142,6 +142,13 @@ static void AlignFishingAnimationFrames(void);
 
 static u8 TrySpinPlayerForWarp(struct ObjectEvent *, s16 *);
 
+static void Task_WaitStopSurfing(u8 taskId);
+static void CreateStartSurfingTask(u8);
+static void Task_StartSurfingInit(u8 taskId);
+static void Task_WaitStartSurfing(u8 taskId);
+static bool8 CanStopSurfing(s16, s16, u8);
+static bool8 CanStartSurfing(s16, s16, u8);
+
 static bool8 (*const sForcedMovementTestFuncs[NUM_FORCED_MOVEMENTS])(u8) =
 {
     MetatileBehavior_IsTrickHouseSlipperyFloor,
@@ -674,6 +681,9 @@ u8 CheckForObjectEventCollision(struct ObjectEvent *objectEvent, s16 x, s16 y, u
     u8 collision = GetCollisionAtCoords(objectEvent, x, y, direction);
     if (collision == COLLISION_ELEVATION_MISMATCH && CanStopSurfing(x, y, direction))
         return COLLISION_STOP_SURFING;
+
+    if (collision == COLLISION_ELEVATION_MISMATCH && CanStartSurfing(x, y, direction))
+        return COLLISION_START_SURFING;
 
     if (ShouldJumpLedge(x, y, direction))
     {
@@ -2216,4 +2226,64 @@ static u8 TrySpinPlayerForWarp(struct ObjectEvent *object, s16 *delayTimer)
     ObjectEventForceSetHeldMovement(object, GetFaceDirectionMovementAction(sSpinDirections[object->facingDirection]));
     *delayTimer = 0;
     return sSpinDirections[object->facingDirection];
+}
+
+static bool8 CanStartSurfing(s16 x, s16 y, u8 direction)
+{
+    if ((gPlayerAvatar.flags & (PLAYER_AVATAR_FLAG_ON_FOOT | PLAYER_AVATAR_FLAG_ACRO_BIKE | PLAYER_AVATAR_FLAG_MACH_BIKE))
+     && IsPlayerFacingSurfableFishableWater()
+     && GetObjectEventIdByPosition(x, y, 1) == OBJECT_EVENTS_COUNT)
+    {
+        CreateStartSurfingTask(direction);
+        return TRUE;
+    }
+    else
+    {
+        return FALSE;
+    }
+}
+
+static void CreateStartSurfingTask(u8 direction)
+{
+    u8 taskId;
+
+    LockPlayerFieldControls();
+    Overworld_ClearSavedMusic();
+    Overworld_ChangeMusicTo(MUS_SURF);
+    gPlayerAvatar.flags ^= PLAYER_AVATAR_FLAG_ON_FOOT;
+    gPlayerAvatar.flags |= PLAYER_AVATAR_FLAG_SURFING;
+    gPlayerAvatar.preventStep = TRUE;
+    taskId = CreateTask(Task_StartSurfingInit, 0xFF);
+    gTasks[taskId].data[0] = direction;
+    Task_StartSurfingInit(taskId);
+}
+
+static void Task_StartSurfingInit(u8 taskId)
+{
+    struct ObjectEvent *playerObjEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
+
+    if (ObjectEventIsMovementOverridden(playerObjEvent))
+    {
+        if (!ObjectEventClearHeldMovementIfFinished(playerObjEvent))
+            return;
+    }
+    SetPlayerAvatarStateMask(8);
+    ObjectEventSetGraphicsId(playerObjEvent, GetPlayerAvatarGraphicsIdByStateId(3));
+    ObjectEventClearHeldMovementIfFinished(playerObjEvent);
+    ObjectEventSetHeldMovement(playerObjEvent, GetJumpSpecialMovementAction((u8)gTasks[taskId].data[0]));
+    gTasks[taskId].func = Task_WaitStartSurfing;
+}
+
+static void Task_WaitStartSurfing(u8 taskId)
+{
+    struct ObjectEvent *playerObjEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
+
+    if (ObjectEventClearHeldMovementIfFinished(playerObjEvent))
+    {
+        ObjectEventSetHeldMovement(playerObjEvent, GetFaceDirectionMovementAction(playerObjEvent->facingDirection));
+        PlayerAvatarTransition_Surfing(playerObjEvent);
+        gPlayerAvatar.preventStep = FALSE;
+        UnlockPlayerFieldControls();
+        DestroyTask(taskId);
+    }
 }
