@@ -2233,6 +2233,11 @@ static u8 TrySpinPlayerForWarp(struct ObjectEvent *object, s16 *delayTimer)
 
 static bool8 CanStartSurfing(s16 x, s16 y, u8 direction)
 {
+    if (!(FlagGet(FLAG_BADGE05_GET) == TRUE && PartyHasMonWithSurf() == TRUE))
+    {
+        return FALSE;
+    }
+
     if ((gPlayerAvatar.flags & (PLAYER_AVATAR_FLAG_ON_FOOT | PLAYER_AVATAR_FLAG_ACRO_BIKE | PLAYER_AVATAR_FLAG_MACH_BIKE))
      && IsPlayerFacingSurfableFishableWater()
      && GetObjectEventIdByPosition(x, y, 1) == OBJECT_EVENTS_COUNT)
