@@ -254,14 +254,23 @@ BattleFrontier_ExchangeServiceCorner_EventScript_ChooseVitamin::
 	waitstate
 	special CloseFrontierExchangeCornerItemIconWindow
 	switch VAR_RESULT
-	case 0, BattleFrontier_ExchangeServiceCorner_EventScript_Protein
-	case 1, BattleFrontier_ExchangeServiceCorner_EventScript_Calcium
-	case 2, BattleFrontier_ExchangeServiceCorner_EventScript_Iron
-	case 3, BattleFrontier_ExchangeServiceCorner_EventScript_Zinc
-	case 4, BattleFrontier_ExchangeServiceCorner_EventScript_Carbos
-	case 5, BattleFrontier_ExchangeServiceCorner_EventScript_HPUp
-	case 6, BattleFrontier_ExchangeServiceCorner_EventScript_ClerkGoodbye
+	case 0, BattleFrontier_ExchangeServiceCorner_EventScript_BottleCap
+	case 1, BattleFrontier_ExchangeServiceCorner_EventScript_Protein
+	case 2, BattleFrontier_ExchangeServiceCorner_EventScript_Calcium
+	case 3, BattleFrontier_ExchangeServiceCorner_EventScript_Iron
+	case 4, BattleFrontier_ExchangeServiceCorner_EventScript_Zinc
+	case 5, BattleFrontier_ExchangeServiceCorner_EventScript_Carbos
+	case 6, BattleFrontier_ExchangeServiceCorner_EventScript_HPUp
+	case 7, BattleFrontier_ExchangeServiceCorner_EventScript_ClerkGoodbye
 	case MULTI_B_PRESSED, BattleFrontier_ExchangeServiceCorner_EventScript_ClerkGoodbye
+	end
+
+BattleFrontier_ExchangeServiceCorner_EventScript_BottleCap::
+	msgbox BattleFrontier_ExchangeServiceCorner_Text_ConfirmBottleCap, MSGBOX_YESNO
+	goto_if_eq VAR_RESULT, NO, BattleFrontier_ExchangeServiceCorner_EventScript_ChooseVitamin
+	setvar VAR_0x8008, 1
+	setvar VAR_0x8009, ITEM_BOTTLE_CAP
+	goto BattleFrontier_ExchangeServiceCorner_EventScript_TryPurchasePrize
 	end
 
 BattleFrontier_ExchangeServiceCorner_EventScript_Protein::
@@ -505,6 +514,10 @@ BattleFrontier_ExchangeServiceCorner_Text_ConfirmBlastoiseDoll:
 	.string "You've chosen the BLASTOISE DOLL.\n"
 	.string "Is that correct?$"
 
+BattleFrontier_ExchangeServiceCorner_Text_ConfirmBottleCap:
+	.string "You've chosen the BOTTLE CAP.\n"
+	.string "Is that correct?$"
+
 BattleFrontier_ExchangeServiceCorner_Text_ConfirmProtein:
 	.string "You've chosen the PROTEIN.\n"
 	.string "Is that correct?$"
@@ -664,6 +677,10 @@ BattleFrontier_ExchangeServiceCorner_Text_TotodileDollDesc::
 BattleFrontier_ExchangeServiceCorner_Text_LargeDollDesc::
 	.string "A large DOLL.\n"
 	.string "Place it on a mat or a desk.$"
+
+BattleFrontier_ExchangeServiceCorner_Text_BottleCapDesc::
+	.string "Raises one IV stat of one POKéMON to\n"
+	.string "maximum value.$"
 
 BattleFrontier_ExchangeServiceCorner_Text_ProteinDesc::
 	.string "Raises the stat ATTACK of one\n"

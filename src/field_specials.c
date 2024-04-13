@@ -2444,6 +2444,7 @@ static const u8 *const sScrollableMultichoiceOptions[][MAX_SCROLL_MULTI_LENGTH] 
     },
     [SCROLL_MULTI_BF_EXCHANGE_CORNER_VITAMIN_VENDOR] =
     {
+        gText_BottleCap1BP,
         gText_Protein1BP,
         gText_Calcium1BP,
         gText_Iron1BP,
