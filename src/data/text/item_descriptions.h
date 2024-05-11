@@ -301,6 +301,11 @@ static const u8 sBottleCapDesc[] = _(
     "of one POKéMON to\n"
     "maximum value.");
 
+static const u8 sRustedCapDesc[] = _(
+    "Lowers one IV stat\n"
+    "of one POKéMON to\n"
+    "minimum value.");
+
 // Battle items
 static const u8 sGuardSpecDesc[] = _(
     "Prevents stat\n"

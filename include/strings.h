@@ -686,6 +686,7 @@ extern const u8 gText_CharizardDoll256BP[];
 extern const u8 gText_BlastoiseDoll256BP[];
 
 extern const u8 gText_BottleCap1BP[];
+extern const u8 gText_RustedCap1BP[];
 extern const u8 gText_Protein1BP[];
 extern const u8 gText_Calcium1BP[];
 extern const u8 gText_Iron1BP[];
@@ -854,6 +855,7 @@ extern const u8 BattleFrontier_ExchangeServiceCorner_Text_ChikoritaDollDesc[];
 extern const u8 BattleFrontier_ExchangeServiceCorner_Text_TotodileDollDesc[];
 extern const u8 BattleFrontier_ExchangeServiceCorner_Text_LargeDollDesc[];
 extern const u8 BattleFrontier_ExchangeServiceCorner_Text_BottleCapDesc[];
+extern const u8 BattleFrontier_ExchangeServiceCorner_Text_RustedCapDesc[];
 extern const u8 BattleFrontier_ExchangeServiceCorner_Text_ProteinDesc[];
 extern const u8 BattleFrontier_ExchangeServiceCorner_Text_CalciumDesc[];
 extern const u8 BattleFrontier_ExchangeServiceCorner_Text_IronDesc[];

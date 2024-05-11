@@ -1154,6 +1154,7 @@ const u8 gText_VenusaurDoll256BP[] = _("VENUSAUR DOLL{CLEAR_TO 0x58}256BP");
 const u8 gText_CharizardDoll256BP[] = _("CHARIZARD DOLL{CLEAR_TO 0x58}256BP");
 const u8 gText_BlastoiseDoll256BP[] = _("BLASTOISE DOLL{CLEAR_TO 0x58}256BP");
 const u8 gText_BottleCap1BP[] = _("BOTTLE CAP{CLEAR_TO 0x64}1BP");
+const u8 gText_RustedCap1BP[] = _("RUSTED CAP{CLEAR_TO 0x64}1BP");
 const u8 gText_Protein1BP[] = _("PROTEIN{CLEAR_TO 0x64}1BP");
 const u8 gText_Calcium1BP[] = _("CALCIUM{CLEAR_TO 0x64}1BP");
 const u8 gText_Iron1BP[] = _("IRON{CLEAR_TO 0x64}1BP");
