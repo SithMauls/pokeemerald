@@ -93,6 +93,12 @@ enum {
     MENU_TRADE1,
     MENU_TRADE2,
     MENU_TOSS,
+    MENU_HP,
+    MENU_ATTACK,
+    MENU_DEFENSE,
+    MENU_SPATK,
+    MENU_SPDEF,
+    MENU_SPEED,
     MENU_FIELD_MOVES
 };
 
@@ -112,6 +118,7 @@ enum {
     ACTIONS_TRADE,
     ACTIONS_SPIN_TRADE,
     ACTIONS_TAKEITEM_TOSS,
+    ACTIONS_STATS,
 };
 
 // In CursorCb_FieldMove, field moves <= FIELD_MOVE_WATERFALL are assumed to line up with the badge flags.
@@ -455,6 +462,7 @@ static void CB2_ChooseContestMon(void);
 static void Task_ChoosePartyMon(u8 taskId);
 static void Task_ChooseMonForMoveRelearner(u8);
 static void CB2_ChooseMonForMoveRelearner(void);
+static void Task_ChooseMonForHyperTraining(u8);
 static void Task_BattlePyramidChooseMonHeldItems(u8);
 static void ShiftMoveSlot(struct Pokemon *, u8, u8);
 static void BlitBitmapToPartyWindow_LeftColumn(u8, u8, u8, u8, u8, bool8);
@@ -477,11 +485,27 @@ static void CursorCb_Register(u8);
 static void CursorCb_Trade1(u8);
 static void CursorCb_Trade2(u8);
 static void CursorCb_Toss(u8);
+static void CursorCb_Hp(u8);
+static void CursorCb_Atk(u8);
+static void CursorCb_Def(u8);
+static void CursorCb_SpDef(u8);
+static void CursorCb_SpAtk(u8);
+static void CursorCb_Speed(u8);
+static void CursorCb_IVChange(u8, u8);
 static void CursorCb_FieldMove(u8);
 static bool8 SetUpFieldMove_Surf(void);
 static bool8 SetUpFieldMove_Fly(void);
 static bool8 SetUpFieldMove_Waterfall(void);
 static bool8 SetUpFieldMove_Dive(void);
+
+const u8 * const statTexts[NUM_STATS] = {
+    [STAT_HP] = gText_HP3,
+    [STAT_ATK] = gText_Attack3,
+    [STAT_DEF] = gText_Defense3,
+    [STAT_SPATK] = gText_SpAtk4,
+    [STAT_SPDEF] = gText_SpDef4,
+    [STAT_SPEED] = gText_Speed2,
+};
 
 // static const data
 #include "data/pokemon/tutor_learnsets.h"
@@ -2482,8 +2506,8 @@ void DisplayPartyMenuStdMessage(u32 stringId)
         case PARTY_MSG_BOOST_PP_WHICH_MOVE:
             *windowPtr = AddWindow(&sWhichMoveMsgWindowTemplate);
             break;
-        case PARTY_MSG_CHANGE_IV_WHICH_STAT:
-            *windowPtr = AddWindow(&sWhichStatMsgWindowTemplate);
+        case PARTY_MSG_HYPER_TRAIN_WHICH_STAT:
+            *windowPtr = AddWindow(&sHyperTrainWhichStatMsgWindowTemplate);
             break;
         case PARTY_MSG_ALREADY_HOLDING_ONE:
             *windowPtr = AddWindow(&sAlreadyHoldingOneMsgWindowTemplate);
@@ -2688,6 +2712,9 @@ static u8 GetPartyMenuActionsType(struct Pokemon *mon)
     case PARTY_MENU_TYPE_STORE_PYRAMID_HELD_ITEMS:
         actionType = ACTIONS_TAKEITEM_TOSS;
         break;
+    case PARTY_MENU_TYPE_HYPER_TRAINING:
+        actionType = (GetMonData(mon, MON_DATA_IS_EGG)) ? ACTIONS_SUMMARY_ONLY : ACTIONS_STATS;
+        break;
     // The following have no selection actions (i.e. they exit immediately upon selection)
     // PARTY_MENU_TYPE_CONTEST
     // PARTY_MENU_TYPE_CHOOSE_MON
@@ -2705,14 +2732,23 @@ static bool8 CreateSelectionWindow(u8 taskId)
 {
     struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
     u16 item;
+    u32 menuType = gPartyMenu.menuType;
 
     GetMonNickname(mon, gStringVar1);
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
-    if (gPartyMenu.menuType != PARTY_MENU_TYPE_STORE_PYRAMID_HELD_ITEMS)
+    if (menuType != PARTY_MENU_TYPE_STORE_PYRAMID_HELD_ITEMS)
     {
         SetPartyMonSelectionActions(gPlayerParty, gPartyMenu.slotId, GetPartyMenuActionsType(mon));
-        DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
-        DisplayPartyMenuStdMessage(PARTY_MSG_DO_WHAT_WITH_MON);
+        if (menuType == PARTY_MENU_TYPE_HYPER_TRAINING)
+        {
+            DisplaySelectionWindow(SELECTWINDOW_STATS);
+            DisplayPartyMenuStdMessage(PARTY_MSG_HYPER_TRAIN_WHICH_STAT);
+        }
+        else
+        {
+            DisplaySelectionWindow(SELECTWINDOW_ACTIONS);
+            DisplayPartyMenuStdMessage(PARTY_MSG_DO_WHAT_WITH_MON);
+        }
     }
     else
     {
@@ -3705,6 +3741,53 @@ static void Task_HandleSpinTradeYesNoInput(u8 taskId)
         Task_ReturnToChooseMonAfterText(taskId);
         break;
     }
+}
+
+static void CursorCb_Hp(u8 taskId) { CursorCb_IVChange(taskId, STAT_HP); }
+static void CursorCb_Atk(u8 taskId) { CursorCb_IVChange(taskId, STAT_ATK); }
+static void CursorCb_Def(u8 taskId) { CursorCb_IVChange(taskId, STAT_DEF); }
+static void CursorCb_SpAtk(u8 taskId) { CursorCb_IVChange(taskId, STAT_SPATK); }
+static void CursorCb_SpDef(u8 taskId) { CursorCb_IVChange(taskId, STAT_SPDEF); }
+static void CursorCb_Speed(u8 taskId) { CursorCb_IVChange(taskId, STAT_SPEED); }
+
+static void CursorCb_IVChange(u8 taskId, u8 statType)
+{
+    struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+    u32 stat = MON_DATA_HP_IV + statType;
+    u32 iv = GetMonData(mon, stat);
+    u32 newIv = 0;
+    const char *text;
+
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
+    PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+
+    if (gSpecialVar_0x8004 == ITEM_BOTTLE_CAP && iv < MAX_PER_STAT_IVS)
+    {
+        newIv = MAX_PER_STAT_IVS;
+        text = gText_StatsIVIncreased;
+    }
+    else if (gSpecialVar_0x8004 == ITEM_RUSTED_CAP && iv > MIN_PER_STAT_IVS)
+    {
+        newIv = MIN_PER_STAT_IVS;
+        text = gText_StatsIVDecreased;
+    }
+    else
+    {
+        PlaySE(SE_FAILURE);
+        StringExpandPlaceholders(gStringVar4, gText_WontHaveEffect);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+        return;
+    }
+
+    PlaySE(SE_USE_ITEM);
+    RemoveBagItem(gSpecialVar_0x8004, 1);
+    SetMonData(mon, stat, &newIv);
+    CalculateMonStats(mon);
+    StringCopy(gStringVar2, statTexts[statType]);
+    StringExpandPlaceholders(gStringVar4, text);
+    DisplayPartyMenuMessage(gStringVar4, TRUE);
+    gTasks[taskId].func = Task_ClosePartyMenuAfterText;
 }
 
 static void CursorCb_FieldMove(u8 taskId)
@@ -6402,6 +6485,35 @@ static void CB2_ChooseMonForMoveRelearner(void)
         gSpecialVar_0x8005 = GetNumberOfRelearnableMoves(&gPlayerParty[gSpecialVar_0x8004]);
     gFieldCallback2 = CB2_FadeFromPartyMenu;
     SetMainCallback2(CB2_ReturnToField);
+}
+
+void ChooseMonForHyperTraining(u16 item)
+{
+    LockPlayerFieldControls();
+    FadeScreen(FADE_TO_BLACK, 0);
+    CreateTask(Task_ChooseMonForHyperTraining, 10);
+}
+
+static void Task_ChooseMonForHyperTraining(u8 taskId)
+{
+
+    if (!gPaletteFade.active)
+    {
+        CleanupOverworldWindowsAndTilemaps();
+        switch(gSpecialVar_0x8004){
+            case ITEM_BOTTLE_CAP:
+                InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
+                break;
+            
+            case ITEM_RUSTED_CAP:
+                InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
+                break;
+
+            default:
+                break;
+        }
+        DestroyTask(taskId);
+    }
 }
 
 void DoBattlePyramidMonsHaveHeldItem(void)

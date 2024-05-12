@@ -72,7 +72,7 @@
 #define ITEM_03A 58
 #define ITEM_03B 59
 #define ITEM_03C 60
-#define ITEM_03D 61
+#define ITEM_RUSTED_CAP 61
 #define ITEM_BOTTLE_CAP 62
 #define ITEM_HP_UP 63
 #define ITEM_PROTEIN 64

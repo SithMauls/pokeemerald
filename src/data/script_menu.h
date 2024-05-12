@@ -899,6 +899,66 @@ static const struct MenuAction MultichoiceList_TagMatchType[] =
     {gText_Exit},
 };
 
+static const struct MenuAction MultichoiceList_CapsNone[] =
+{
+    {gText_Explain},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_CapsB[] =
+{
+    {gText_Explain},
+    {gText_BottleCap},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_CapsG[] =
+{
+    {gText_Explain},
+    {gText_GoldCap},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_CapsBG[] =
+{
+    {gText_Explain},
+    {gText_BottleCap},
+    {gText_GoldCap},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_CapsR[] =
+{
+    {gText_Explain},
+    {gText_RustedCap},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_CapsBR[] =
+{
+    {gText_Explain},
+    {gText_BottleCap},
+    {gText_RustedCap},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_CapsGR[] =
+{
+    {gText_Explain},
+    {gText_GoldCap},
+    {gText_RustedCap},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_CapsBGR[] =
+{
+    {gText_Explain},
+    {gText_BottleCap},
+    {gText_GoldCap},
+    {gText_RustedCap},
+    {gText_Exit},
+};
+
 static const struct MenuAction MultichoiceList_Exit[] =
 {
     {gText_Exit},
@@ -1042,6 +1102,14 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_SLATEPORT_TENT_RULES]       = MULTICHOICE(MultichoiceList_SlateportTentRules),
     [MULTI_FALLARBOR_TENT_RULES]       = MULTICHOICE(MultichoiceList_FallarborTentRules),
     [MULTI_TAG_MATCH_TYPE]             = MULTICHOICE(MultichoiceList_TagMatchType),
+    [MULTI_CAPS_NONE]                  = MULTICHOICE(MultichoiceList_CapsNone),
+    [MULTI_CAPS_B]                     = MULTICHOICE(MultichoiceList_CapsB),
+    [MULTI_CAPS_G]                     = MULTICHOICE(MultichoiceList_CapsG),
+    [MULTI_CAPS_BG]                    = MULTICHOICE(MultichoiceList_CapsBG),
+    [MULTI_CAPS_R]                     = MULTICHOICE(MultichoiceList_CapsR),
+    [MULTI_CAPS_BR]                    = MULTICHOICE(MultichoiceList_CapsBR),
+    [MULTI_CAPS_GR]                    = MULTICHOICE(MultichoiceList_CapsGR),
+    [MULTI_CAPS_BGR]                   = MULTICHOICE(MultichoiceList_CapsBGR),
 };
 
 const u8 *const gStdStrings[] =
