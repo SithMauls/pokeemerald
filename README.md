@@ -1,11 +1,38 @@
 # Pokémon Emerald
 
-This is a decompilation of Pokémon Emerald.
+## Change Log
 
-It builds the following ROM:
+### Hyper Training
 
-* [**pokeemerald.gba**](https://datomatic.no-intro.org/index.php?page=show_record&s=23&n=1961) `sha1: f3ae088181bf583e55daf962a92bb46f4f1d07b7`
+- Added items - **Bottle Cap** and **Rusted Cap**
+  - Bottle Caps and Rusted Caps can be purchased from the Battle Frontier Vitamin Vendor for 1BP each
 
-To set up the repository, see [INSTALL.md](INSTALL.md).
+- Added NPC - **Mr. Hyper**
+  - Mr. Hyper can be found in Slateport City Battle Tent
+  - Mr. Hyper offers to Hyper Train Pokémon in the player's party in return for a Bottle Cap or Rusted Cap
+  - Hyper Training can increase or reduce a Pokémon's IVs depending on the item exchanged
+    - Exchanging a Bottle Cap allows the player to maximise the IVs of one stat of a Pokémon to 31
+    - Exchanging a Rusted Cap allows the player to minimise the IVs of one stat of a Pokémon to 0
 
-For contacts and other pret projects, see [pret.github.io](https://pret.github.io/).
+### Evolution
+
+- Added items - **Gray Shard** and **Link Stone**
+  - Wild Wailmer have a 5% chance to be encountered holding a Gray Shard
+  - Link Stones can be received from the Diving Treasure Hunter on Route 124 in exchange for a Gray Shard
+  - The Link Stone can be used to evolve Pokémon which would typically only evolve via trading
+    - If the Pokémon would typically require an additional held item in order to evolve via trading (e.g. Scyther with Metal Coat), that item must also be held when using a Link Stone for the evolution to proceed
+    - All Pokémon can still be evolved via their typical methods in addition to using the Link Stone
+
+### Pokémon Summary Screen
+
+- Added a new page: **Pokémon Stats**
+  - The Pokémon Stats page displays the Pokémon's base stats, IVs, and EVs, as well as the sum total of each
+  - Additionally, a gauge of hearts indicates the Pokémon's Friendship level with the player
+ 
+- Added Nature-based stat colours
+  - In the Pokémon Skills page, the stat boosted by the Pokémon's nature will be displayed in red, whilst the stat reduced by the Pokémon's nature will be displayed in blue
+
+### Miscellaneous
+
+- The player can now run indoors
+- When the criteria for surfing is fulfilled, walking into a surfable tile will trigger overworld surfing
