@@ -49,24 +49,20 @@
 
 #define ITEM5_FRIENDSHIP_ALL    (ITEM5_FRIENDSHIP_LOW | ITEM5_FRIENDSHIP_MID | ITEM5_FRIENDSHIP_HIGH)
 
-// field 6 masks
-#define ITEM6_IV_MIN            0x1
-#define ITEM6_IV_MAX            0x2
-
-// fields 7 and onwards are item-specific arguments
-#define ITEM_EFFECT_ARG_START 7
+// fields 6 and onwards are item-specific arguments
+#define ITEM_EFFECT_ARG_START 6
 
 // Special HP recovery amounts for ITEM4_HEAL_HP
-#define ITEM7_HEAL_HP_FULL   ((u8) -1)
-#define ITEM7_HEAL_HP_HALF   ((u8) -2)
-#define ITEM7_HEAL_HP_LVL_UP ((u8) -3)
+#define ITEM6_HEAL_HP_FULL   ((u8) -1)
+#define ITEM6_HEAL_HP_HALF   ((u8) -2)
+#define ITEM6_HEAL_HP_LVL_UP ((u8) -3)
 
 // Special PP recovery amounts for ITEM4_HEAL_PP
-#define ITEM7_HEAL_PP_FULL   0x7F
+#define ITEM6_HEAL_PP_FULL   0x7F
 
 // Amount of EV modified by ITEM4_EV_HP, ITEM4_EV_ATK, ITEM5_EV_DEF, ITEM5_EV_SPEED, ITEM5_EV_SPDEF and ITEM5_EV_SPATK
-#define ITEM7_ADD_EV       10
-#define ITEM7_SUBTRACT_EV -10
+#define ITEM6_ADD_EV       10
+#define ITEM6_SUBTRACT_EV -10
 
 // Used for GetItemEffectType.
 #define ITEM_EFFECT_X_ITEM 0
@@ -91,7 +87,6 @@
 #define ITEM_EFFECT_PP_UP 19
 #define ITEM_EFFECT_PP_MAX 20
 #define ITEM_EFFECT_HEAL_PP 21
-#define ITEM_EFFECT_IV_MAX 22
-#define ITEM_EFFECT_NONE 23
+#define ITEM_EFFECT_NONE 22
 
 #endif // GUARD_CONSTANTS_ITEM_EFFECTS_H
