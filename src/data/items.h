@@ -797,7 +797,7 @@ const struct Item gItems[] =
         .description = sBottleCapDesc,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_PARTY_MENU,
-        .fieldUseFunc = ItemUseOutOfBattle_BottleCap,
+        .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
 
 // Vitamins

@@ -122,6 +122,14 @@
 #define MULTI_SLATEPORT_TENT_RULES         111
 #define MULTI_FALLARBOR_TENT_RULES         112
 #define MULTI_TAG_MATCH_TYPE               113
+#define MULTI_CAPS_NONE                    114
+#define MULTI_CAPS_B                       115
+#define MULTI_CAPS_G                       116
+#define MULTI_CAPS_BG                      117
+#define MULTI_CAPS_R                       118
+#define MULTI_CAPS_BR                      119
+#define MULTI_CAPS_GR                      120
+#define MULTI_CAPS_BGR                     121
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0

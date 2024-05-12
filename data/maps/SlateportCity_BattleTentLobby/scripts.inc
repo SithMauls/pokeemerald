@@ -225,10 +225,6 @@ SlateportCity_BattleTentLobby_EventScript_Woman::
 	msgbox SlateportCity_BattleTentLobby_Text_NiceIfMoreSelection, MSGBOX_NPC
 	end
 
-SlateportCity_BattleTentLobby_EventScript_MrHyper::
-	msgbox SlateportCity_BattleTentLobby_Text_MrHyperIntro, MSGBOX_NPC
-	end
-
 SlateportCity_BattleTentLobby_EventScript_RulesBoard::
 	lockall
 	msgbox BattleFrontier_BattleFactoryLobby_Text_RulesAreListed, MSGBOX_DEFAULT
@@ -310,18 +306,3 @@ SlateportCity_BattleTentLobby_Text_BattleEvenWithoutToughMons:
 SlateportCity_BattleTentLobby_Text_NiceIfMoreSelection:
 	.string "Wouldn't it be nice if they had more of\n"
 	.string "a selection?$"
-
-SlateportCity_BattleTentLobby_Text_MrHyperIntro:
-	.string "Allow me to introduce myself - the\n"
-	.string "name's MR. HYPER!\p"
-	.string "Why do people call me that?\p"
-	.string "Because I help POKéMON to hyper train!\p"
-	.string "What is hyper training?\p"
-	.string "It's a way of helping POKéMON improve\n"
-	.string "the inherent stats they were born with!\p"
-	.string "Why do I do this?\p"
-	.string "For BOTTLE CAPs! My collection is\n"
-	.string "always in need of more!\p"
-	.string "Bring me a BOTTLE CAP and I'll toughen\n"
-	.string "up one of your POKéMON for free!$"
-
