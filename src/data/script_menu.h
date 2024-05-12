@@ -431,6 +431,134 @@ static const struct MenuAction MultichoiceList_ShardsRYBG[] =
     {gText_Exit},
 };
 
+static const struct MenuAction MultichoiceList_ShardsX[] =
+{
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsRX[] =
+{
+    {gText_RedShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsYX[] =
+{
+    {gText_YellowShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsRYX[] =
+{
+    {gText_RedShard},
+    {gText_YellowShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsBX[] =
+{
+    {gText_BlueShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsRBX[] =
+{
+    {gText_RedShard},
+    {gText_BlueShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsYBX[] =
+{
+    {gText_YellowShard},
+    {gText_BlueShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsRYBX[] =
+{
+    {gText_RedShard},
+    {gText_YellowShard},
+    {gText_BlueShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsGX[] =
+{
+    {gText_GreenShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsRGX[] =
+{
+    {gText_RedShard},
+    {gText_GreenShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsYGX[] =
+{
+    {gText_YellowShard},
+    {gText_GreenShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsRYGX[] =
+{
+    {gText_RedShard},
+    {gText_YellowShard},
+    {gText_GreenShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsBGX[] =
+{
+    {gText_BlueShard},
+    {gText_GreenShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsRBGX[] =
+{
+    {gText_RedShard},
+    {gText_BlueShard},
+    {gText_GreenShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsYBGX[] =
+{
+    {gText_YellowShard},
+    {gText_BlueShard},
+    {gText_GreenShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
+static const struct MenuAction MultichoiceList_ShardsRYBGX[] =
+{
+    {gText_RedShard},
+    {gText_YellowShard},
+    {gText_BlueShard},
+    {gText_GreenShard},
+    {gText_GrayShard},
+    {gText_Exit},
+};
+
 static const struct MenuAction MultichoiceList_TourneyWithRecord[] =
 {
     {gText_Opponent},
@@ -917,6 +1045,22 @@ static const struct MultichoiceListStruct sMultichoiceLists[] =
     [MULTI_SHARDS_RBG]                 = MULTICHOICE(MultichoiceList_ShardsRBG),
     [MULTI_SHARDS_YBG]                 = MULTICHOICE(MultichoiceList_ShardsYBG),
     [MULTI_SHARDS_RYBG]                = MULTICHOICE(MultichoiceList_ShardsRYBG),
+    [MULTI_SHARDS_X]                   = MULTICHOICE(MultichoiceList_ShardsX),
+    [MULTI_SHARDS_RX]                  = MULTICHOICE(MultichoiceList_ShardsRX),
+    [MULTI_SHARDS_YX]                  = MULTICHOICE(MultichoiceList_ShardsYX),
+    [MULTI_SHARDS_RYX]                 = MULTICHOICE(MultichoiceList_ShardsRYX),
+    [MULTI_SHARDS_BX]                  = MULTICHOICE(MultichoiceList_ShardsBX),
+    [MULTI_SHARDS_RBX]                 = MULTICHOICE(MultichoiceList_ShardsRBX),
+    [MULTI_SHARDS_YBX]                 = MULTICHOICE(MultichoiceList_ShardsYBX),
+    [MULTI_SHARDS_RYBX]                = MULTICHOICE(MultichoiceList_ShardsRYBX),
+    [MULTI_SHARDS_GX]                  = MULTICHOICE(MultichoiceList_ShardsGX),
+    [MULTI_SHARDS_RGX]                 = MULTICHOICE(MultichoiceList_ShardsRGX),
+    [MULTI_SHARDS_YGX]                 = MULTICHOICE(MultichoiceList_ShardsYGX),
+    [MULTI_SHARDS_RYGX]                = MULTICHOICE(MultichoiceList_ShardsRYGX),
+    [MULTI_SHARDS_BGX]                 = MULTICHOICE(MultichoiceList_ShardsBGX),
+    [MULTI_SHARDS_RBGX]                = MULTICHOICE(MultichoiceList_ShardsRBGX),
+    [MULTI_SHARDS_YBGX]                = MULTICHOICE(MultichoiceList_ShardsYBGX),
+    [MULTI_SHARDS_RYBGX]               = MULTICHOICE(MultichoiceList_ShardsRYBGX),
     [MULTI_TOURNEY_WITH_RECORD]        = MULTICHOICE(MultichoiceList_TourneyWithRecord),
     [MULTI_CABLE_CLUB_NO_RECORD_MIX]   = MULTICHOICE(MultichoiceList_LinkServicesNoRecordBerry),
     [MULTI_WIRELESS_NO_RECORD_BERRY]   = MULTICHOICE(MultichoiceList_LinkServicesNoRecordBerry),

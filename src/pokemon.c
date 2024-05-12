@@ -5650,13 +5650,33 @@ u16 GetEvolutionTargetSpecies(struct Pokemon *mon, u8 mode, u16 evolutionItem)
         }
         break;
     case EVO_MODE_ITEM_USE:
+        for (i = 0; i < EVOS_PER_MON; i++)
+        {
+            if(gEvolutionTable[species][i].method == EVO_ITEM_ITEM
+             && ITEM_LINK_STONE == evolutionItem
+             && gEvolutionTable[species][i].param == heldItem)
+            {
+                heldItem = ITEM_NONE;
+                SetMonData(mon, MON_DATA_HELD_ITEM, &heldItem);                    
+                targetSpecies = gEvolutionTable[species][i].targetSpecies;
+                break;
+            }
+        } 
     case EVO_MODE_ITEM_CHECK:
         for (i = 0; i < EVOS_PER_MON; i++)
         {
-            if (gEvolutionTable[species][i].method == EVO_ITEM
-             && gEvolutionTable[species][i].param == evolutionItem)
+            switch (gEvolutionTable[species][i].method)
             {
-                targetSpecies = gEvolutionTable[species][i].targetSpecies;
+            case EVO_ITEM:
+                if (gEvolutionTable[species][i].param == evolutionItem)
+                    targetSpecies = gEvolutionTable[species][i].targetSpecies;
+                break;
+            case EVO_ITEM_ITEM:
+                if (ITEM_LINK_STONE == evolutionItem
+                    && gEvolutionTable[species][i].param == heldItem)
+                {
+                    targetSpecies = gEvolutionTable[species][i].targetSpecies;
+                }
                 break;
             }
         }

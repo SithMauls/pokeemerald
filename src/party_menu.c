@@ -4859,6 +4859,14 @@ void ItemUseCB_PPUp(u8 taskId, TaskFunc task)
     gTasks[taskId].func = Task_HandleWhichMoveInput;
 }
 
+void ItemUseCB_BottleCap(u8 taskId, TaskFunc task)
+{
+    PlaySE(SE_SELECT);
+    DisplayPartyMenuStdMessage(PARTY_MSG_CHANGE_IV_WHICH_STAT);
+    ShowStatSelectWindow(gPartyMenu.slotId);
+    gTasks[taskId].func = Task_HandleWhichStatInput;
+}
+
 u16 ItemIdToBattleMoveId(u16 item)
 {
     u16 tmNumber = item - ITEM_TM01;
