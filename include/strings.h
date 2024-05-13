@@ -1062,7 +1062,6 @@ extern const u8 gText_Petalburg[];
 extern const u8 gText_Slateport[];
 extern const u8 gText_Enter2[];
 extern const u8 gText_Info2[];
-extern const u8 gText_Explain[];
 extern const u8 gText_WhatsAContest[];
 extern const u8 gText_TypesOfContests[];
 extern const u8 gText_Ranks[];

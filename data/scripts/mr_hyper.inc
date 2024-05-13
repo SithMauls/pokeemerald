@@ -56,7 +56,7 @@ EventScript_ShowOptions::
 EventScript_CapOptionsNone::
 	multichoice 0, 0, MULTI_CAPS_NONE, FALSE
 	switch VAR_RESULT
-	case 0, EventScript_MrHyperExplain
+	case 0, EventScript_MrHyperInfo
 	case 1, EventScript_MrHyperExit
 	goto EventScript_MrHyperExit
     end
@@ -64,7 +64,7 @@ EventScript_CapOptionsNone::
 EventScript_CapOptionsB::
 	multichoice 0, 0, MULTI_CAPS_B, FALSE
 	switch VAR_RESULT
-	case 0, EventScript_MrHyperExplain
+	case 0, EventScript_MrHyperInfo
     case 1, EventScript_TradeBottleCap
 	case 2, EventScript_MrHyperExit
 	goto EventScript_MrHyperExit
@@ -73,7 +73,7 @@ EventScript_CapOptionsB::
 EventScript_CapOptionsR::
 	multichoice 0, 0, MULTI_CAPS_R, FALSE
 	switch VAR_RESULT
-	case 0, EventScript_MrHyperExplain
+	case 0, EventScript_MrHyperInfo
     case 1, EventScript_TradeRustedCap
 	case 2, EventScript_MrHyperExit
 	goto EventScript_MrHyperExit
@@ -82,7 +82,7 @@ EventScript_CapOptionsR::
 EventScript_CapOptionsBR::
 	multichoice 0, 0, MULTI_CAPS_BR, FALSE
 	switch VAR_RESULT
-	case 0, EventScript_MrHyperExplain
+	case 0, EventScript_MrHyperInfo
     case 1, EventScript_TradeBottleCap
     case 2, EventScript_TradeRustedCap
 	case 3, EventScript_MrHyperExit
@@ -92,7 +92,7 @@ EventScript_CapOptionsBR::
 EventScript_CapOptionsG::
 	multichoice 0, 0, MULTI_CAPS_G, FALSE
 	switch VAR_RESULT
-	case 0, EventScript_MrHyperExplain
+	case 0, EventScript_MrHyperInfo
     case 1, EventScript_TradeGoldCap
 	case 2, EventScript_MrHyperExit
 	goto EventScript_MrHyperExit
@@ -101,7 +101,7 @@ EventScript_CapOptionsG::
 EventScript_CapOptionsBG::
 	multichoice 0, 0, MULTI_CAPS_BG, FALSE
 	switch VAR_RESULT
-	case 0, EventScript_MrHyperExplain
+	case 0, EventScript_MrHyperInfo
     case 1, EventScript_TradeBottleCap
     case 2, EventScript_TradeGoldCap
 	case 3, EventScript_MrHyperExit
@@ -111,7 +111,7 @@ EventScript_CapOptionsBG::
 EventScript_CapOptionsRG::
 	multichoice 0, 0, MULTI_CAPS_RG, FALSE
 	switch VAR_RESULT
-	case 0, EventScript_MrHyperExplain
+	case 0, EventScript_MrHyperInfo
 	case 1, EventScript_TradeRustedCap
     case 2, EventScript_TradeGoldCap
 	case 3, EventScript_MrHyperExit
@@ -121,7 +121,7 @@ EventScript_CapOptionsRG::
 EventScript_CapOptionsBRG::
 	multichoice 0, 0, MULTI_CAPS_BRG, FALSE
 	switch VAR_RESULT
-	case 0, EventScript_MrHyperExplain
+	case 0, EventScript_MrHyperInfo
     case 1, EventScript_TradeBottleCap
     case 2, EventScript_TradeRustedCap
     case 3, EventScript_TradeGoldCap
@@ -153,8 +153,8 @@ EventScript_TradeRustedCap::
     release
     end
 
-EventScript_MrHyperExplain::
-    msgbox gText_MrHyper_Explain, MSGBOX_DEFAULT
+EventScript_MrHyperInfo::
+    msgbox gText_MrHyper_Info, MSGBOX_DEFAULT
 	goto EventScript_MrHyperGreeting
 	end    
 

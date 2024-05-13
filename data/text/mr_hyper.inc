@@ -16,7 +16,7 @@ gText_MrHyper_Greeting::
 	.string "Do you have a BOTTLE CAP to exchange\n"
 	.string "for my hyper training services?$"
 
-gText_MrHyper_Explain::
+gText_MrHyper_Info::
     .string "All POKéMON have unique stats known as\n"
 	.string "Individual Values, or IVs for short.\p"
 	.string "IVs influence a POKéMON's total stats,\n"
