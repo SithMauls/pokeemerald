@@ -27,6 +27,7 @@ static const u16 sFrontierExchangeCorner_Vitamins[] =
 {
     ITEM_BOTTLE_CAP,
     ITEM_RUSTED_CAP,
+    ITEM_GOLD_CAP,
     ITEM_PROTEIN,
     ITEM_CALCIUM,
     ITEM_IRON,
@@ -79,6 +80,7 @@ static const u8 *const sFrontierExchangeCorner_VitaminsDescriptions[] =
 {
     BattleFrontier_ExchangeServiceCorner_Text_BottleCapDesc,
     BattleFrontier_ExchangeServiceCorner_Text_RustedCapDesc,
+    BattleFrontier_ExchangeServiceCorner_Text_GoldCapDesc,
     BattleFrontier_ExchangeServiceCorner_Text_ProteinDesc,
     BattleFrontier_ExchangeServiceCorner_Text_CalciumDesc,
     BattleFrontier_ExchangeServiceCorner_Text_IronDesc,

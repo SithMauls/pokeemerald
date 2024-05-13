@@ -64,7 +64,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_039] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
     [ITEM_03A] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
     [ITEM_03B] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
-    [ITEM_03C] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
+    [ITEM_GOLD_CAP] = {gItemIcon_BottleCap, gItemIconPalette_GoldCap},
     [ITEM_RUSTED_CAP] = {gItemIcon_BottleCap, gItemIconPalette_RustedCap},
     [ITEM_BOTTLE_CAP] = {gItemIcon_BottleCap, gItemIconPalette_BottleCap},
     // Vitamins

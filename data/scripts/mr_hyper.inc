@@ -23,7 +23,7 @@ EventScript_GetPlayersCaps::
 	setvar VAR_TEMP_1, 0
 	checkitem ITEM_BOTTLE_CAP
 	call_if_eq VAR_RESULT, TRUE, EventScript_HasBottleCap
-	checkitem ITEM_SACRED_ASH
+	checkitem ITEM_GOLD_CAP
 	call_if_eq VAR_RESULT, TRUE, EventScript_HasGoldCap
 	checkitem ITEM_RUSTED_CAP
 	call_if_eq VAR_RESULT, TRUE, EventScript_HasRustedCap
@@ -138,6 +138,10 @@ EventScript_TradeBottleCap::
     end
 
 EventScript_TradeGoldCap::
+	msgbox gText_MrHyper_TradeGoldCap, MSGBOX_DEFAULT
+	setvar VAR_0x8004, ITEM_GOLD_CAP
+	special ChooseMonForHyperTraining
+	waitstate
     release
     end
 

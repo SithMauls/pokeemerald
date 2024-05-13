@@ -29,8 +29,8 @@ gText_MrHyper_Explain::
 	.string "train one of your POKéMON for free!$"
 
 gText_MrHyper_Exit::
-    .string "Oh... I thought you had a BOTTLE CAP for\n"
-    .string "my collection...$"
+    .string "Oh… I thought you had a BOTTLE CAP for\n"
+    .string "my collection…$"
 
 gText_MrHyper_TradeBottleCap::
 	.string "A new BOTTLE CAP for my collection?\n"
@@ -38,11 +38,11 @@ gText_MrHyper_TradeBottleCap::
 
 gText_MrHyper_TradeGoldCap::
 	.string "Oh my goodness!! Is that a GOLD CAP!?\p"
-	.string "For this, I can hyper train one of your\n"
+	.string "For this, I will hyper train one of your\n"
 	.string "POKéMON to max out all of their IVs!$"
 
 gText_MrHyper_TradeRustedCap::
 	.string "A RUSTED CAP? I'm sorry, I can't offer\n"
-	.string "my regular services for this...\p"
+	.string "my regular services for this…\p"
 	.string "However, if you like, I could minimize\n"
-	.string "your POKéMON's IVs instead?$"
+	.string "a POKéMON's IV instead…$"
