@@ -23,21 +23,21 @@ EventScript_GetPlayersCaps::
 	setvar VAR_TEMP_1, 0
 	checkitem ITEM_BOTTLE_CAP
 	call_if_eq VAR_RESULT, TRUE, EventScript_HasBottleCap
-	checkitem ITEM_GOLD_CAP
-	call_if_eq VAR_RESULT, TRUE, EventScript_HasGoldCap
 	checkitem ITEM_RUSTED_CAP
 	call_if_eq VAR_RESULT, TRUE, EventScript_HasRustedCap
+	checkitem ITEM_GOLD_CAP
+	call_if_eq VAR_RESULT, TRUE, EventScript_HasGoldCap
 	return
 
 EventScript_HasBottleCap::
 	addvar VAR_TEMP_1, 1
 	return
 
-EventScript_HasGoldCap::
+EventScript_HasRustedCap::
 	addvar VAR_TEMP_1, 2
 	return
 
-EventScript_HasRustedCap::
+EventScript_HasGoldCap::
 	addvar VAR_TEMP_1, 4
 	return
 
@@ -45,12 +45,12 @@ EventScript_ShowOptions::
 	switch VAR_TEMP_1
     case 0, EventScript_CapOptionsNone
 	case 1, EventScript_CapOptionsB
-	case 2, EventScript_CapOptionsG
-	case 3, EventScript_CapOptionsBG
-	case 4, EventScript_CapOptionsR
-	case 5, EventScript_CapOptionsBR
-	case 6, EventScript_CapOptionsGR
-	case 7, EventScript_CapOptionsBGR
+	case 2, EventScript_CapOptionsR
+	case 3, EventScript_CapOptionsBR
+	case 4, EventScript_CapOptionsG
+	case 5, EventScript_CapOptionsBG
+	case 6, EventScript_CapOptionsRG
+	case 7, EventScript_CapOptionsBRG
 	end
 
 EventScript_CapOptionsNone::
@@ -67,25 +67,6 @@ EventScript_CapOptionsB::
 	case 0, EventScript_MrHyperExplain
     case 1, EventScript_TradeBottleCap
 	case 2, EventScript_MrHyperExit
-	goto EventScript_MrHyperExit
-	end
-
-EventScript_CapOptionsG::
-	multichoice 0, 0, MULTI_CAPS_G, FALSE
-	switch VAR_RESULT
-	case 0, EventScript_MrHyperExplain
-    case 1, EventScript_TradeGoldCap
-	case 2, EventScript_MrHyperExit
-	goto EventScript_MrHyperExit
-	end
-
-EventScript_CapOptionsBG::
-	multichoice 0, 0, MULTI_CAPS_BG, FALSE
-	switch VAR_RESULT
-	case 0, EventScript_MrHyperExplain
-    case 1, EventScript_TradeBottleCap
-    case 2, EventScript_TradeGoldCap
-	case 3, EventScript_MrHyperExit
 	goto EventScript_MrHyperExit
 	end
 
@@ -108,23 +89,42 @@ EventScript_CapOptionsBR::
 	goto EventScript_MrHyperExit
 	end
 
-EventScript_CapOptionsGR::
-	multichoice 0, 0, MULTI_CAPS_GR, FALSE
+EventScript_CapOptionsG::
+	multichoice 0, 0, MULTI_CAPS_G, FALSE
 	switch VAR_RESULT
 	case 0, EventScript_MrHyperExplain
     case 1, EventScript_TradeGoldCap
-    case 2, EventScript_TradeRustedCap
-	case 3, EventScript_MrHyperExit
+	case 2, EventScript_MrHyperExit
 	goto EventScript_MrHyperExit
 	end
 
-EventScript_CapOptionsBGR::
-	multichoice 0, 0, MULTI_CAPS_BGR, FALSE
+EventScript_CapOptionsBG::
+	multichoice 0, 0, MULTI_CAPS_BG, FALSE
 	switch VAR_RESULT
 	case 0, EventScript_MrHyperExplain
     case 1, EventScript_TradeBottleCap
     case 2, EventScript_TradeGoldCap
-    case 3, EventScript_TradeRustedCap
+	case 3, EventScript_MrHyperExit
+	goto EventScript_MrHyperExit
+	end
+
+EventScript_CapOptionsRG::
+	multichoice 0, 0, MULTI_CAPS_RG, FALSE
+	switch VAR_RESULT
+	case 0, EventScript_MrHyperExplain
+	case 1, EventScript_TradeRustedCap
+    case 2, EventScript_TradeGoldCap
+	case 3, EventScript_MrHyperExit
+	goto EventScript_MrHyperExit
+	end
+
+EventScript_CapOptionsBRG::
+	multichoice 0, 0, MULTI_CAPS_BRG, FALSE
+	switch VAR_RESULT
+	case 0, EventScript_MrHyperExplain
+    case 1, EventScript_TradeBottleCap
+    case 2, EventScript_TradeRustedCap
+    case 3, EventScript_TradeGoldCap
 	case 4, EventScript_MrHyperExit
 	goto EventScript_MrHyperExit
 	end
