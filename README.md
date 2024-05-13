@@ -36,3 +36,5 @@
 
 - The player can now run indoors
 - When the criteria for surfing is fulfilled, walking into a surfable tile will trigger overworld surfing
+- EVs for a single stat are now capped at 252 (down from 255)
+- Vitamins can now be used to increase a stat to the maximum of 252 EVs (up from 100)
