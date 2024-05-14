@@ -461,6 +461,7 @@ static void Task_ChoosePartyMon(u8 taskId);
 static void Task_ChooseMonForMoveRelearner(u8);
 static void CB2_ChooseMonForMoveRelearner(void);
 static void Task_ChooseMonForHyperTraining(u8);
+static void GoldCapHyperTrainSelectedMon(u8);
 static void Task_BattlePyramidChooseMonHeldItems(u8);
 static void ShiftMoveSlot(struct Pokemon *, u8, u8);
 static void BlitBitmapToPartyWindow_LeftColumn(u8, u8, u8, u8, u8, bool8);
@@ -1377,6 +1378,13 @@ static void HandleChooseMonSelection(u8 taskId, s8 *slotPtr)
             if (IsSelectedMonNotEgg((u8 *)slotPtr))
             {
                 TryEnterMonForMinigame(taskId, (u8)*slotPtr);
+            }
+            break;
+        case PARTY_ACTION_GOLD_CAP:
+            if (IsSelectedMonNotEgg((u8 *)slotPtr))
+            {
+                PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+                GoldCapHyperTrainSelectedMon(taskId);
             }
             break;
         default:
@@ -3778,7 +3786,7 @@ static void CursorCb_IVChange(u8 taskId, u8 statType)
         return;
     }
 
-    PlaySE(SE_USE_ITEM);
+    PlayCry_NormalNoDucking(GetMonData(mon, MON_DATA_SPECIES), 0, CRY_VOLUME_RS, CRY_PRIORITY_NORMAL);
     RemoveBagItem(gSpecialVar_0x8004, 1);
     SetMonData(mon, stat, &newIv);
     CalculateMonStats(mon);
@@ -6400,23 +6408,51 @@ void ChooseMonForHyperTraining(u16 item)
 
 static void Task_ChooseMonForHyperTraining(u8 taskId)
 {
-
     if (!gPaletteFade.active)
     {
         CleanupOverworldWindowsAndTilemaps();
-        switch(gSpecialVar_0x8004){
-            case ITEM_BOTTLE_CAP:
-                InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
-                break;
-            
-            case ITEM_RUSTED_CAP:
-                InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
-                break;
-
-            default:
-                break;
-        }
+        if(gSpecialVar_0x8004 == ITEM_GOLD_CAP)
+            InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_GOLD_CAP, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
+        else
+            InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
         DestroyTask(taskId);
+    }
+}
+
+static void GoldCapHyperTrainSelectedMon(u8 taskId)
+{
+    struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+    u32 ivStorage[NUM_STATS];
+    u32 totalIvs = 0;
+    u32 maxIv = MAX_PER_STAT_IVS;
+    u32 i;
+
+    for (i = 0; i < NUM_STATS; i++)
+    {
+        ivStorage[i] = GetMonData(mon, MON_DATA_HP_IV + i);
+        totalIvs += ivStorage[i];
+    }
+
+    if (totalIvs >= 186)
+    {
+        PlaySE(SE_FAILURE);
+        StringExpandPlaceholders(gStringVar4, gText_WontHaveEffect);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+        return;
+    }
+    else
+    {
+        for (i = 0; i < NUM_STATS; i++)
+            SetMonData(mon, MON_DATA_HP_IV + i, &maxIv);
+
+        PlayCry_NormalNoDucking(GetMonData(mon, MON_DATA_SPECIES), 0, CRY_VOLUME_RS, CRY_PRIORITY_NORMAL);
+        RemoveBagItem(gSpecialVar_0x8004, 1);
+        CalculateMonStats(mon);
+        GetMonNickname(mon, gStringVar1);
+        StringExpandPlaceholders(gStringVar4, gText_AllIVsMaxedOut);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        gTasks[taskId].func = Task_ClosePartyMenuAfterText;
     }
 }
 

@@ -485,6 +485,7 @@ extern const u8 gText_PkmnBaseVar2StatIncreased[];
 extern const u8 gText_MovesPPIncreased[];
 extern const u8 gText_StatsIVIncreased[];
 extern const u8 gText_StatsIVDecreased[];
+extern const u8 gText_AllIVsMaxedOut[];
 extern const u8 gText_PPWasRestored[];
 extern const u8 gText_WontHaveEffect[];
 extern const u8 gText_PkmnSnappedOutOfConfusion[];
