@@ -37,7 +37,7 @@ gText_MrHyper_TradeBottleCap::
 	.string "Then let's get hyper training!$"
 
 gText_MrHyper_TradeGoldCap::
-	.string "Oh my goodness!! Is that a GOLD CAP!?\p"
+	.string "Oh my goodness! Is that a GOLD CAP!?\p"
 	.string "For this, I will hyper train one of your\n"
 	.string "POKéMON to max out all of their IVs!$"
 
