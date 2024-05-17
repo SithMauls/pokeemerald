@@ -779,55 +779,55 @@ static const struct MenuAction MultichoiceList_CapsNone[] =
 
 static const struct MenuAction MultichoiceList_CapsB[] =
 {
-    {gText_Info2},
     {gText_BottleCap},
+    {gText_Info2},
     {gText_Exit},
 };
 
 static const struct MenuAction MultichoiceList_CapsR[] =
 {
-    {gText_Info2},
     {gText_RustedCap},
+    {gText_Info2},
     {gText_Exit},
 };
 
 static const struct MenuAction MultichoiceList_CapsBR[] =
 {
-    {gText_Info2},
     {gText_BottleCap},
     {gText_RustedCap},
+    {gText_Info2},
     {gText_Exit},
 };
 
 static const struct MenuAction MultichoiceList_CapsG[] =
 {
-    {gText_Info2},
     {gText_GoldCap},
+    {gText_Info2},
     {gText_Exit},
 };
 
 static const struct MenuAction MultichoiceList_CapsBG[] =
 {
-    {gText_Info2},
     {gText_BottleCap},
     {gText_GoldCap},
+    {gText_Info2},
     {gText_Exit},
 };
 
 static const struct MenuAction MultichoiceList_CapsRG[] =
 {
-    {gText_Info2},
     {gText_RustedCap},
     {gText_GoldCap},
+    {gText_Info2},
     {gText_Exit},
 };
 
 static const struct MenuAction MultichoiceList_CapsBRG[] =
 {
-    {gText_Info2},
     {gText_BottleCap},
     {gText_RustedCap},
     {gText_GoldCap},
+    {gText_Info2},
     {gText_Exit},
 };
 
