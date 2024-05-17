@@ -131,26 +131,29 @@ EventScript_CapOptionsBRG::
 
 EventScript_TradeBottleCap::
 	msgbox gText_MrHyper_TradeBottleCap, MSGBOX_DEFAULT
-	setvar VAR_0x8004, ITEM_BOTTLE_CAP
+	setvar VAR_0x8005, ITEM_BOTTLE_CAP
 	special ChooseMonForHyperTraining
 	waitstate
-    release
-    end
-
-EventScript_TradeGoldCap::
-	msgbox gText_MrHyper_TradeGoldCap, MSGBOX_DEFAULT
-	setvar VAR_0x8004, ITEM_GOLD_CAP
-	special ChooseMonForHyperTraining
-	waitstate
-    release
+	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, EventScript_MrHyperExit
+	release
     end
 
 EventScript_TradeRustedCap::
 	msgbox gText_MrHyper_TradeRustedCap, MSGBOX_DEFAULT
-	setvar VAR_0x8004, ITEM_RUSTED_CAP
+	setvar VAR_0x8005, ITEM_RUSTED_CAP
 	special ChooseMonForHyperTraining
 	waitstate
-    release
+	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, EventScript_MrHyperExit
+	release
+    end
+
+EventScript_TradeGoldCap::
+	msgbox gText_MrHyper_TradeGoldCap, MSGBOX_DEFAULT
+	setvar VAR_0x8005, ITEM_GOLD_CAP
+	special ChooseMonForHyperTraining
+	waitstate
+	goto_if_eq VAR_0x8004, PARTY_NOTHING_CHOSEN, EventScript_MrHyperExit
+	release
     end
 
 EventScript_MrHyperInfo::

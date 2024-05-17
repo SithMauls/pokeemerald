@@ -3767,12 +3767,12 @@ static void CursorCb_IVChange(u8 taskId, u8 statType)
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
 
-    if (gSpecialVar_0x8004 == ITEM_BOTTLE_CAP && iv < MAX_PER_STAT_IVS)
+    if (gSpecialVar_0x8005 == ITEM_BOTTLE_CAP && iv < MAX_PER_STAT_IVS)
     {
         newIv = MAX_PER_STAT_IVS;
         text = gText_StatsIVIncreased;
     }
-    else if (gSpecialVar_0x8004 == ITEM_RUSTED_CAP && iv > MIN_PER_STAT_IVS)
+    else if (gSpecialVar_0x8005 == ITEM_RUSTED_CAP && iv > MIN_PER_STAT_IVS)
     {
         newIv = MIN_PER_STAT_IVS;
         text = gText_StatsIVDecreased;
@@ -3787,7 +3787,7 @@ static void CursorCb_IVChange(u8 taskId, u8 statType)
     }
 
     PlayCry_NormalNoDucking(GetMonData(mon, MON_DATA_SPECIES), 0, CRY_VOLUME_RS, CRY_PRIORITY_NORMAL);
-    RemoveBagItem(gSpecialVar_0x8004, 1);
+    RemoveBagItem(gSpecialVar_0x8005, 1);
     SetMonData(mon, stat, &newIv);
     CalculateMonStats(mon);
     StringCopy(gStringVar2, statTexts[statType]);
@@ -6411,7 +6411,7 @@ static void Task_ChooseMonForHyperTraining(u8 taskId)
     if (!gPaletteFade.active)
     {
         CleanupOverworldWindowsAndTilemaps();
-        if(gSpecialVar_0x8004 == ITEM_GOLD_CAP)
+        if(gSpecialVar_0x8005 == ITEM_GOLD_CAP)
             InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_GOLD_CAP, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
         else
             InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
@@ -6447,7 +6447,7 @@ static void GoldCapHyperTrainSelectedMon(u8 taskId)
             SetMonData(mon, MON_DATA_HP_IV + i, &maxIv);
 
         PlayCry_NormalNoDucking(GetMonData(mon, MON_DATA_SPECIES), 0, CRY_VOLUME_RS, CRY_PRIORITY_NORMAL);
-        RemoveBagItem(gSpecialVar_0x8004, 1);
+        RemoveBagItem(gSpecialVar_0x8005, 1);
         CalculateMonStats(mon);
         GetMonNickname(mon, gStringVar1);
         StringExpandPlaceholders(gStringVar4, gText_AllIVsMaxedOut);
