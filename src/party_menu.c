@@ -313,6 +313,7 @@ static bool8 IsSelectedMonNotEgg(u8 *);
 static void PartyMenuRemoveWindow(u8 *);
 static void CB2_SetUpExitToBattleScreen(void);
 static void Task_ClosePartyMenuAfterText(u8);
+static void Task_ClosePartyMenuAfterHyperTraining(u8);
 static void TryTutorSelectedMon(u8);
 static void TryGiveMailToSelectedMon(u8);
 static void TryGiveItemOrMailToSelectedMon(u8);
@@ -5124,7 +5125,20 @@ static void Task_DisplayLevelUpStatsPg2(u8 taskId)
     {
         PlaySE(SE_SELECT);
         DisplayLevelUpStatsPg2(taskId);
-        gTasks[taskId].func = Task_TryLearnNewMoves;
+        if (gSpecialVar_0x8005 == ITEM_BOTTLE_CAP || gSpecialVar_0x8005 == ITEM_RUSTED_CAP || gSpecialVar_0x8005 == ITEM_GOLD_CAP)
+            gTasks[taskId].func = Task_ClosePartyMenuAfterHyperTraining;
+        else
+            gTasks[taskId].func = Task_TryLearnNewMoves;
+    }
+}
+
+static void Task_ClosePartyMenuAfterHyperTraining(u8 taskId)
+{
+    if ((JOY_NEW(A_BUTTON)) || (JOY_NEW(B_BUTTON)))
+    {
+        RemoveLevelUpStatsWindow();
+        gSpecialVar_0x8005 = ITEM_NONE;
+        gTasks[taskId].func = Task_ClosePartyMenuAfterText;
     }
 }
 
