@@ -3763,6 +3763,8 @@ static void CursorCb_IVChange(u8 taskId, u8 statType)
     u32 iv = GetMonData(mon, stat);
     u32 newIv = 0;
     const char *text;
+    struct PartyMenuInternal *ptr = sPartyMenuInternal;
+    s16 *arrayPtr = ptr->data;
 
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
@@ -3786,14 +3788,19 @@ static void CursorCb_IVChange(u8 taskId, u8 statType)
         return;
     }
 
-    PlayCry_NormalNoDucking(GetMonData(mon, MON_DATA_SPECIES), 0, CRY_VOLUME_RS, CRY_PRIORITY_NORMAL);
-    RemoveBagItem(gSpecialVar_0x8005, 1);
+    BufferMonStatsToTaskData(mon, arrayPtr);
     SetMonData(mon, stat, &newIv);
     CalculateMonStats(mon);
+    BufferMonStatsToTaskData(mon, &ptr->data[NUM_STATS]);
+
+    PlayCry_NormalNoDucking(GetMonData(mon, MON_DATA_SPECIES), 0, CRY_VOLUME_RS, CRY_PRIORITY_NORMAL);
+    UpdateMonDisplayInfoAfterRareCandy(gPartyMenu.slotId, mon);
+    RemoveBagItem(gSpecialVar_0x8005, 1);
+    GetMonNickname(mon, gStringVar1);
     StringCopy(gStringVar2, statTexts[statType]);
     StringExpandPlaceholders(gStringVar4, text);
     DisplayPartyMenuMessage(gStringVar4, TRUE);
-    gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+    gTasks[taskId].func = Task_DisplayLevelUpStatsPg1;
 }
 
 static void CursorCb_FieldMove(u8 taskId)
@@ -6426,6 +6433,8 @@ static void GoldCapHyperTrainSelectedMon(u8 taskId)
     u32 totalIvs = 0;
     u32 maxIv = MAX_PER_STAT_IVS;
     u32 i;
+    struct PartyMenuInternal *ptr = sPartyMenuInternal;
+    s16 *arrayPtr = ptr->data;
 
     for (i = 0; i < NUM_STATS; i++)
     {
@@ -6443,16 +6452,19 @@ static void GoldCapHyperTrainSelectedMon(u8 taskId)
     }
     else
     {
+        BufferMonStatsToTaskData(mon, arrayPtr);
         for (i = 0; i < NUM_STATS; i++)
             SetMonData(mon, MON_DATA_HP_IV + i, &maxIv);
+        CalculateMonStats(mon);
+        BufferMonStatsToTaskData(mon, &ptr->data[NUM_STATS]);
 
         PlayCry_NormalNoDucking(GetMonData(mon, MON_DATA_SPECIES), 0, CRY_VOLUME_RS, CRY_PRIORITY_NORMAL);
+        UpdateMonDisplayInfoAfterRareCandy(gPartyMenu.slotId, mon);
         RemoveBagItem(gSpecialVar_0x8005, 1);
-        CalculateMonStats(mon);
         GetMonNickname(mon, gStringVar1);
         StringExpandPlaceholders(gStringVar4, gText_AllIVsMaxedOut);
         DisplayPartyMenuMessage(gStringVar4, TRUE);
-        gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+        gTasks[taskId].func = Task_DisplayLevelUpStatsPg1;
     }
 }
 
