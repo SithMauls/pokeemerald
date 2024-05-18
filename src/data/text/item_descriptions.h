@@ -302,14 +302,19 @@ static const u8 sPPMaxDesc[] = _(
     "points.");
 
 static const u8 sBottleCapDesc[] = _(
-    "Raises one IV stat\n"
-    "of one POKéMON to\n"
-    "maximum value.");
+    "A silver bottle\n"
+    "cap. Some people\n"
+    "collect these.");
 
 static const u8 sRustedCapDesc[] = _(
-    "Lowers one IV stat\n"
-    "of one POKéMON to\n"
-    "minimum value.");
+    "A rusted bottle\n"
+    "cap. Someone might\n"
+    "want one.");
+
+static const u8 sGoldCapDesc[] = _(
+    "A shiny gold\n"
+    "bottle cap. Some\n"
+    "people prize these.");
 
 // Battle items
 static const u8 sGuardSpecDesc[] = _(

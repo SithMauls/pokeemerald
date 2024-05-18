@@ -767,12 +767,12 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
 
-    [ITEM_03C] =
+    [ITEM_GOLD_CAP] =
     {
-        .name = _("????????"),
-        .itemId = ITEM_NONE,
-        .price = 0,
-        .description = sDummyDesc,
+        .name = _("GOLD CAP"),
+        .itemId = ITEM_GOLD_CAP,
+        .price = 9800,
+        .description = sGoldCapDesc,
         .pocket = POCKET_ITEMS,
         .type = ITEM_USE_BAG_MENU,
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,

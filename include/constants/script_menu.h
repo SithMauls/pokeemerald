@@ -140,12 +140,12 @@
 #define MULTI_TAG_MATCH_TYPE               129
 #define MULTI_CAPS_NONE                    130
 #define MULTI_CAPS_B                       131
-#define MULTI_CAPS_G                       132
-#define MULTI_CAPS_BG                      133
-#define MULTI_CAPS_R                       134
-#define MULTI_CAPS_BR                      135
-#define MULTI_CAPS_GR                      136
-#define MULTI_CAPS_BGR                     137
+#define MULTI_CAPS_R                       132
+#define MULTI_CAPS_BR                      133
+#define MULTI_CAPS_G                       134
+#define MULTI_CAPS_BG                      135
+#define MULTI_CAPS_RG                      136
+#define MULTI_CAPS_BRG                     137
 
 // Lilycove SS Tidal Multichoice Selections
 #define SSTIDAL_SELECTION_SLATEPORT        0

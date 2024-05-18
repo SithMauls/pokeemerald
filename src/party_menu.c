@@ -313,6 +313,7 @@ static bool8 IsSelectedMonNotEgg(u8 *);
 static void PartyMenuRemoveWindow(u8 *);
 static void CB2_SetUpExitToBattleScreen(void);
 static void Task_ClosePartyMenuAfterText(u8);
+static void Task_ClosePartyMenuAfterHyperTraining(u8);
 static void TryTutorSelectedMon(u8);
 static void TryGiveMailToSelectedMon(u8);
 static void TryGiveItemOrMailToSelectedMon(u8);
@@ -461,6 +462,7 @@ static void Task_ChoosePartyMon(u8 taskId);
 static void Task_ChooseMonForMoveRelearner(u8);
 static void CB2_ChooseMonForMoveRelearner(void);
 static void Task_ChooseMonForHyperTraining(u8);
+static void GoldCapHyperTrainSelectedMon(u8);
 static void Task_BattlePyramidChooseMonHeldItems(u8);
 static void ShiftMoveSlot(struct Pokemon *, u8, u8);
 static void BlitBitmapToPartyWindow_LeftColumn(u8, u8, u8, u8, u8, bool8);
@@ -1377,6 +1379,13 @@ static void HandleChooseMonSelection(u8 taskId, s8 *slotPtr)
             if (IsSelectedMonNotEgg((u8 *)slotPtr))
             {
                 TryEnterMonForMinigame(taskId, (u8)*slotPtr);
+            }
+            break;
+        case PARTY_ACTION_GOLD_CAP:
+            if (IsSelectedMonNotEgg((u8 *)slotPtr))
+            {
+                PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
+                GoldCapHyperTrainSelectedMon(taskId);
             }
             break;
         default:
@@ -3755,16 +3764,18 @@ static void CursorCb_IVChange(u8 taskId, u8 statType)
     u32 iv = GetMonData(mon, stat);
     u32 newIv = 0;
     const char *text;
+    struct PartyMenuInternal *ptr = sPartyMenuInternal;
+    s16 *arrayPtr = ptr->data;
 
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[0]);
     PartyMenuRemoveWindow(&sPartyMenuInternal->windowId[1]);
 
-    if (gSpecialVar_0x8004 == ITEM_BOTTLE_CAP && iv < MAX_PER_STAT_IVS)
+    if (gSpecialVar_0x8005 == ITEM_BOTTLE_CAP && iv < MAX_PER_STAT_IVS)
     {
         newIv = MAX_PER_STAT_IVS;
         text = gText_StatsIVIncreased;
     }
-    else if (gSpecialVar_0x8004 == ITEM_RUSTED_CAP && iv > MIN_PER_STAT_IVS)
+    else if (gSpecialVar_0x8005 == ITEM_RUSTED_CAP && iv > MIN_PER_STAT_IVS)
     {
         newIv = MIN_PER_STAT_IVS;
         text = gText_StatsIVDecreased;
@@ -3778,14 +3789,19 @@ static void CursorCb_IVChange(u8 taskId, u8 statType)
         return;
     }
 
-    PlaySE(SE_USE_ITEM);
-    RemoveBagItem(gSpecialVar_0x8004, 1);
+    BufferMonStatsToTaskData(mon, arrayPtr);
     SetMonData(mon, stat, &newIv);
     CalculateMonStats(mon);
+    BufferMonStatsToTaskData(mon, &ptr->data[NUM_STATS]);
+
+    PlayCry_NormalNoDucking(GetMonData(mon, MON_DATA_SPECIES), 0, CRY_VOLUME_RS, CRY_PRIORITY_NORMAL);
+    UpdateMonDisplayInfoAfterRareCandy(gPartyMenu.slotId, mon);
+    RemoveBagItem(gSpecialVar_0x8005, 1);
+    GetMonNickname(mon, gStringVar1);
     StringCopy(gStringVar2, statTexts[statType]);
     StringExpandPlaceholders(gStringVar4, text);
     DisplayPartyMenuMessage(gStringVar4, TRUE);
-    gTasks[taskId].func = Task_ClosePartyMenuAfterText;
+    gTasks[taskId].func = Task_DisplayLevelUpStatsPg1;
 }
 
 static void CursorCb_FieldMove(u8 taskId)
@@ -5109,7 +5125,20 @@ static void Task_DisplayLevelUpStatsPg2(u8 taskId)
     {
         PlaySE(SE_SELECT);
         DisplayLevelUpStatsPg2(taskId);
-        gTasks[taskId].func = Task_TryLearnNewMoves;
+        if (gSpecialVar_0x8005 == ITEM_BOTTLE_CAP || gSpecialVar_0x8005 == ITEM_RUSTED_CAP || gSpecialVar_0x8005 == ITEM_GOLD_CAP)
+            gTasks[taskId].func = Task_ClosePartyMenuAfterHyperTraining;
+        else
+            gTasks[taskId].func = Task_TryLearnNewMoves;
+    }
+}
+
+static void Task_ClosePartyMenuAfterHyperTraining(u8 taskId)
+{
+    if ((JOY_NEW(A_BUTTON)) || (JOY_NEW(B_BUTTON)))
+    {
+        RemoveLevelUpStatsWindow();
+        gSpecialVar_0x8005 = ITEM_NONE;
+        gTasks[taskId].func = Task_ClosePartyMenuAfterText;
     }
 }
 
@@ -6400,23 +6429,56 @@ void ChooseMonForHyperTraining(u16 item)
 
 static void Task_ChooseMonForHyperTraining(u8 taskId)
 {
-
     if (!gPaletteFade.active)
     {
         CleanupOverworldWindowsAndTilemaps();
-        switch(gSpecialVar_0x8004){
-            case ITEM_BOTTLE_CAP:
-                InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
-                break;
-            
-            case ITEM_RUSTED_CAP:
-                InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
-                break;
-
-            default:
-                break;
-        }
+        if(gSpecialVar_0x8005 == ITEM_GOLD_CAP)
+            InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_GOLD_CAP, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
+        else
+            InitPartyMenu(PARTY_MENU_TYPE_HYPER_TRAINING, PARTY_LAYOUT_SINGLE, PARTY_ACTION_CHOOSE_MON, FALSE, PARTY_MSG_CHOOSE_MON, Task_HandleChooseMonInput, BufferMonSelection);
         DestroyTask(taskId);
+    }
+}
+
+static void GoldCapHyperTrainSelectedMon(u8 taskId)
+{
+    struct Pokemon *mon = &gPlayerParty[gPartyMenu.slotId];
+    u32 ivStorage[NUM_STATS];
+    u32 totalIvs = 0;
+    u32 maxIv = MAX_PER_STAT_IVS;
+    u32 i;
+    struct PartyMenuInternal *ptr = sPartyMenuInternal;
+    s16 *arrayPtr = ptr->data;
+
+    for (i = 0; i < NUM_STATS; i++)
+    {
+        ivStorage[i] = GetMonData(mon, MON_DATA_HP_IV + i);
+        totalIvs += ivStorage[i];
+    }
+
+    if (totalIvs >= 186)
+    {
+        PlaySE(SE_FAILURE);
+        StringExpandPlaceholders(gStringVar4, gText_WontHaveEffect);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
+        return;
+    }
+    else
+    {
+        BufferMonStatsToTaskData(mon, arrayPtr);
+        for (i = 0; i < NUM_STATS; i++)
+            SetMonData(mon, MON_DATA_HP_IV + i, &maxIv);
+        CalculateMonStats(mon);
+        BufferMonStatsToTaskData(mon, &ptr->data[NUM_STATS]);
+
+        PlayCry_NormalNoDucking(GetMonData(mon, MON_DATA_SPECIES), 0, CRY_VOLUME_RS, CRY_PRIORITY_NORMAL);
+        UpdateMonDisplayInfoAfterRareCandy(gPartyMenu.slotId, mon);
+        RemoveBagItem(gSpecialVar_0x8005, 1);
+        GetMonNickname(mon, gStringVar1);
+        StringExpandPlaceholders(gStringVar4, gText_AllIVsMaxedOut);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
+        gTasks[taskId].func = Task_DisplayLevelUpStatsPg1;
     }
 }
 
