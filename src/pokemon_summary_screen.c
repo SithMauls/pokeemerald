@@ -2787,9 +2787,9 @@ static void DrawFriendshipHearts(struct Pokemon *unused)
     for (i = 0; i < 8; i++)
     {
         if (numFriendshipHeartTicks > 7)
-            dst[i] = 0x50A8;
+            dst[i] = 0x20A8;
         else
-            dst[i] = 0x50A0 + (numFriendshipHeartTicks % 8);
+            dst[i] = 0x20A0 + (numFriendshipHeartTicks % 8);
         numFriendshipHeartTicks -= 8;
         if (numFriendshipHeartTicks < 0)
             numFriendshipHeartTicks = 0;
@@ -3540,9 +3540,9 @@ static void PrintRibbonCount(void)
 static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 n)
 {
     // list of colors can be found in charmap.txt
-    static const u8 sTextNatureDown[]    = _("{COLOR}{08}");
-    static const u8 sTextNatureUp[]      = _("{COLOR}{05}");
-    static const u8 sTextNatureNeutral[] = _("{COLOR}{01}");
+    static const u8 sTextNatureDown[]    = _("{COLOR DYNAMIC_COLOR3}{SHADOW DYNAMIC_COLOR2}");
+    static const u8 sTextNatureUp[]      = _("{COLOR LIGHT_RED}{SHADOW GREEN}");
+    static const u8 sTextNatureNeutral[] = _("{COLOR WHITE}{SHADOW DARK_GRAY}");
     u8 *txtPtr;
 
     if (natureMod == 0)
