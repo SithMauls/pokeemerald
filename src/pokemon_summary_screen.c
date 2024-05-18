@@ -2787,9 +2787,9 @@ static void DrawFriendshipHearts(struct Pokemon *unused)
     for (i = 0; i < 8; i++)
     {
         if (numFriendshipHeartTicks > 7)
-            dst[i] = 0x50A8;
+            dst[i] = 0x20A8;
         else
-            dst[i] = 0x50A0 + (numFriendshipHeartTicks % 8);
+            dst[i] = 0x20A0 + (numFriendshipHeartTicks % 8);
         numFriendshipHeartTicks -= 8;
         if (numFriendshipHeartTicks < 0)
             numFriendshipHeartTicks = 0;
