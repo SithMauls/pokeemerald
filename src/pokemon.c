@@ -71,6 +71,7 @@ static bool8 ShouldGetStatBadgeBoost(u16 flagId, u8 battlerId);
 static u16 GiveMoveToBoxMon(struct BoxPokemon *boxMon, u16 move);
 static bool8 ShouldSkipFriendshipChange(void);
 static u8 CopyMonToPC(struct Pokemon *mon);
+static u16 GetPreEvolution(u16 species);
 
 EWRAM_DATA static u8 sLearningMoveTableID = 0;
 EWRAM_DATA u8 gPlayerPartyCount = 0;
@@ -6274,6 +6275,21 @@ u32 CanSpeciesLearnTMHM(u16 species, u8 tm)
     }
 }
 
+static u16 GetPreEvolution(u16 species)
+{
+    int i, j;
+
+    for (i = 1; i < NUM_SPECIES; i++)
+    {
+        for (j = 0; j < EVOS_PER_MON; j++)
+        {
+            if (gEvolutionTable[i][j].targetSpecies == species)
+                return i;
+        }
+    }
+    return SPECIES_NONE;
+}
+
 u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
 {
     u16 learnedMoves[MAX_MON_MOVES];
@@ -6290,6 +6306,12 @@ u8 GetMoveRelearnerMoves(struct Pokemon *mon, u16 *moves)
         u16 moveLevel;
 
         if (gLevelUpLearnsets[species][i] == LEVEL_UP_END)
+        {
+            i = 0;
+            species = GetPreEvolution(species);
+        }
+
+        if (species == SPECIES_NONE)
             break;
 
         moveLevel = gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_LV;
@@ -6344,6 +6366,12 @@ u8 GetNumberOfRelearnableMoves(struct Pokemon *mon)
         u16 moveLevel;
 
         if (gLevelUpLearnsets[species][i] == LEVEL_UP_END)
+        {
+            i = 0;
+            species = GetPreEvolution(species);
+        }
+
+        if (species == SPECIES_NONE)
             break;
 
         moveLevel = gLevelUpLearnsets[species][i] & LEVEL_UP_MOVE_LV;
