@@ -280,6 +280,7 @@ const u8 *const gPyramidBagMenu_ReturnToStrings[] =
 
 const u8 gText_ReturnToVar1[] = _("Return to\n{STR_VAR_1}.");
 const u8 gText_ItemsPocket[] = _("ITEMS");
+const u8 gText_MedicinePocket[] = _("MEDICINE");
 const u8 gText_PokeBallsPocket[] = _("POKé BALLS");
 const u8 gText_TMHMPocket[] = _("TMs & HMs");
 const u8 gText_BerriesPocket[] = _("BERRIES");
@@ -288,6 +289,7 @@ const u8 gText_KeyItemsPocket[] = _("KEY ITEMS");
 const u8 *const gPocketNamesStringsTable[] =
 {
     [ITEMS_POCKET] = gText_ItemsPocket,
+    [MEDICINE_POCKET] = gText_MedicinePocket,
     [BALLS_POCKET] = gText_PokeBallsPocket,
     [TMHM_POCKET]  = gText_TMHMPocket,
     [BERRIES_POCKET] = gText_BerriesPocket,
@@ -699,6 +701,7 @@ const u8 gText_Cute2[] = _("CUTE");
 const u8 gText_Smart2[] = _("SMART");
 const u8 gText_Tough2[] = _("TOUGH");
 const u8 gText_Items[] = _("ITEMS");
+const u8 gText_Medicine[] = _("MEDICINE");
 const u8 gText_Key_Items[] = _("KEY ITEMS");
 const u8 gText_Poke_Balls[] = _("POKé BALLS");
 const u8 gText_TMs_Hms[] = _("TMs & HMs");
