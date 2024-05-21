@@ -9,8 +9,8 @@ gText_PutItemInPocket::
 	.string "in the {STR_VAR_3} POCKET.$"
 
 gText_PutItemInPC::
-	.string "{PLAYER} put away the {STR_VAR_2}\n"
-	.string "in the PC since bag is full.$"
+	.string "{PLAYER} transferred the {STR_VAR_2}\n"
+	.string "to the PC because the BAG is full.$"
 
 gText_PlayerFoundOneItem::
 	.string "{PLAYER} found one {STR_VAR_2}!$"
