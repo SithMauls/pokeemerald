@@ -63,7 +63,8 @@
                             max(BAG_BERRIES_COUNT,           \
                             max(BAG_ITEMS_COUNT,             \
                             max(BAG_KEYITEMS_COUNT,          \
-                                BAG_POKEBALLS_COUNT))))) + 1)
+                            max(BAG_POKEBALLS_COUNT,         \
+                                BAG_MEDICINE_COUNT)))))) + 1)
 
 // Up to 8 item slots can be visible at a time
 #define MAX_ITEMS_SHOWN 8
@@ -666,6 +667,7 @@ void GoToBagMenu(u8 location, u8 pocket, void ( *exitCallback)())
         gBagMenu->pocketSwitchArrowsTask = TASK_NONE;
         memset(gBagMenu->spriteIds, SPRITE_NONE, sizeof(gBagMenu->spriteIds));
         memset(gBagMenu->windowIds, WINDOW_NONE, sizeof(gBagMenu->windowIds));
+        MoveMedicineToItemsPocket();
         SetMainCallback2(CB2_Bag);
     }
 }
@@ -1660,6 +1662,7 @@ static void OpenContextMenu(u8 taskId)
             switch (gBagPosition.pocket)
             {
             case ITEMS_POCKET:
+            case MEDICINE_POCKET:
                 gBagMenu->contextMenuItemsPtr = gBagMenu->contextMenuItemsBuffer;
                 gBagMenu->contextMenuNumItems = ARRAY_COUNT(sContextMenuItems_ItemsPocket);
                 memcpy(&gBagMenu->contextMenuItemsBuffer, &sContextMenuItems_ItemsPocket, sizeof(sContextMenuItems_ItemsPocket));
@@ -3090,6 +3093,7 @@ static void AddBagSortSubMenu(void)
     switch (gBagPosition.pocket + 1)
     {
         case POCKET_ITEMS:
+        case POCKET_MEDICINE:
             gBagMenu->contextMenuItemsPtr = sBagMenuSortIndex2NameUsage;
             memcpy(&gBagMenu->contextMenuItemsBuffer, &sBagMenuSortIndex2NameUsage, NELEMS(sBagMenuSortIndex2NameUsage));
             gBagMenu->contextMenuNumItems = NELEMS(sBagMenuSortIndex2NameUsage);
@@ -3193,6 +3197,10 @@ static void SortItemsInBag(u8 pocket, u8 type)
     case ITEMS_POCKET:
         itemMem = gSaveBlock1Ptr->bagPocket_Items;
         itemAmount = BAG_ITEMS_COUNT;
+        break;
+    case MEDICINE_POCKET:
+        itemMem = gSaveBlock1Ptr->bagPocket_Medicine;
+        itemAmount = BAG_MEDICINE_COUNT;
         break;
     case KEYITEMS_POCKET:
         itemMem = gSaveBlock1Ptr->bagPocket_KeyItems;

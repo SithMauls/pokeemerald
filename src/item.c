@@ -63,6 +63,9 @@ void SetBagItemsPointers(void)
     gBagPockets[ITEMS_POCKET].itemSlots = gSaveBlock1Ptr->bagPocket_Items;
     gBagPockets[ITEMS_POCKET].capacity = BAG_ITEMS_COUNT;
 
+    gBagPockets[MEDICINE_POCKET].itemSlots = gSaveBlock1Ptr->bagPocket_Medicine;
+    gBagPockets[MEDICINE_POCKET].capacity = BAG_MEDICINE_COUNT;
+
     gBagPockets[KEYITEMS_POCKET].itemSlots = gSaveBlock1Ptr->bagPocket_KeyItems;
     gBagPockets[KEYITEMS_POCKET].capacity = BAG_KEYITEMS_COUNT;
 
@@ -233,6 +236,53 @@ bool8 CheckBagHasSpace(u16 itemId, u16 count)
     }
 
     return TRUE;
+}
+
+void MoveMedicineToItemsPocket()
+{
+    u8 i;
+    u8 y;
+    u16 quantity;
+
+    struct BagPocket *itemsPocket;
+    struct BagPocket *medicinePocket;
+    struct ItemSlot *items;
+    struct ItemSlot *medicines;
+    
+    itemsPocket = &gBagPockets[POCKET_ITEMS - 1];
+    medicinePocket = &gBagPockets[POCKET_MEDICINE - 1];
+    items = AllocZeroed(itemsPocket->capacity * sizeof(struct ItemSlot));
+    memcpy(items, itemsPocket->itemSlots, itemsPocket->capacity * sizeof(struct ItemSlot));
+    medicines = AllocZeroed(medicinePocket->capacity * sizeof(struct ItemSlot));
+    memcpy(medicines, medicinePocket->itemSlots, medicinePocket->capacity * sizeof(struct ItemSlot));
+
+    for (i = 0; i < itemsPocket->capacity; i++)
+    {
+        if (ItemId_GetPocket(items[i].itemId) == POCKET_MEDICINE)
+        {
+            quantity = GetBagItemQuantity(&itemsPocket->itemSlots[i].quantity);
+
+            for (y = 0; y < medicinePocket->capacity; y++)
+            {
+                if (medicines[y].itemId == ITEM_NONE)
+                {
+                    // Add items to Medicine pocket
+                    medicines[y].itemId = items[i].itemId;
+                    SetBagItemQuantity(&medicines[y].quantity, quantity);
+                    break;
+                }
+            }
+
+            // Remove items from Items pocket
+            SetBagItemQuantity(&itemsPocket->itemSlots[i].quantity, 0);
+            itemsPocket->itemSlots[i].itemId = ITEM_NONE;
+        }
+    }
+
+    memcpy(medicinePocket->itemSlots, medicines, medicinePocket->capacity * sizeof(struct ItemSlot));
+    Free(medicines);
+    Free(items);
+    return;
 }
 
 bool8 AddBagItem(u16 itemId, u16 count)
