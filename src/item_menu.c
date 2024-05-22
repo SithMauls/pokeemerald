@@ -2778,9 +2778,6 @@ static const u16 sItemsByIndex[ITEMS_COUNT] =
     [ITEM_CALCIUM]          =  78,
     [ITEM_ZINC]             =  79,
     [ITEM_CARBOS]           =  80,
-    [ITEM_BOTTLE_CAP]       =  81,
-    [ITEM_RUSTED_CAP]       =  82,
-    [ITEM_GOLD_CAP]         =  83,
     [ITEM_PP_UP]            =  86,
     [ITEM_PP_MAX]           =  87,
 
@@ -2790,13 +2787,11 @@ static const u16 sItemsByIndex[ITEMS_COUNT] =
     [ITEM_WATER_STONE]      =  93,
     [ITEM_SUN_STONE]        =  94,
     [ITEM_MOON_STONE]       =  95,
-    [ITEM_LINK_STONE]       =  96,
 
     [ITEM_RED_SHARD]        = 100,
     [ITEM_GREEN_SHARD]      = 101,
     [ITEM_YELLOW_SHARD]     = 102,
     [ITEM_BLUE_SHARD]       = 103,
-    [ITEM_GRAY_SHARD]       = 104,
 
     [ITEM_DEEP_SEA_SCALE]   = 105,
     [ITEM_DEEP_SEA_TOOTH]   = 106,
@@ -2987,9 +2982,6 @@ static const u16 sItemsByType[ITEMS_COUNT] =
     [ITEM_ZINC]             = ITEM_TYPE_STAT_BOOST_DRINK,
     [ITEM_PP_MAX]           = ITEM_TYPE_STAT_BOOST_DRINK,
 
-    [ITEM_BOTTLE_CAP]       = ITEM_TYPE_COLLECTIBLE,
-    [ITEM_RUSTED_CAP]       = ITEM_TYPE_COLLECTIBLE,
-    [ITEM_GOLD_CAP]         = ITEM_TYPE_COLLECTIBLE,
     [ITEM_HEART_SCALE]      = ITEM_TYPE_COLLECTIBLE,
 
     [ITEM_MACHO_BRACE]      = ITEM_TYPE_STAT_BOOST_HELD_ITEM,
@@ -3000,7 +2992,6 @@ static const u16 sItemsByType[ITEMS_COUNT] =
     [ITEM_THUNDER_STONE]    = ITEM_TYPE_EVOLUTION_STONE,
     [ITEM_WATER_STONE]      = ITEM_TYPE_EVOLUTION_STONE,
     [ITEM_LEAF_STONE]       = ITEM_TYPE_EVOLUTION_STONE,
-    [ITEM_LINK_STONE]       = ITEM_TYPE_EVOLUTION_STONE,
 
     [ITEM_KINGS_ROCK]       = ITEM_TYPE_EVOLUTION_ITEM,
     [ITEM_DEEP_SEA_TOOTH]   = ITEM_TYPE_EVOLUTION_ITEM,
@@ -3081,7 +3072,6 @@ static const u16 sItemsByType[ITEMS_COUNT] =
     [ITEM_BLUE_SHARD]       = ITEM_TYPE_SHARD,
     [ITEM_YELLOW_SHARD]     = ITEM_TYPE_SHARD,
     [ITEM_GREEN_SHARD]      = ITEM_TYPE_SHARD,
-    [ITEM_GRAY_SHARD]       = ITEM_TYPE_SHARD,
 
     [ITEM_ORANGE_MAIL]      = ITEM_TYPE_MAIL,
     [ITEM_HARBOR_MAIL]      = ITEM_TYPE_MAIL,
