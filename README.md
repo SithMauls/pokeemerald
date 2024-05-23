@@ -9,6 +9,7 @@
    - Graphic added to Bag menu to indicate Sort functionality
  - Picking up or receiving an item whilst the relevant Bag Pocket is full will automatically transfer that item to the PC
  - A **Medicine** pocket has been added between the Items and Poké Balls pocket to store healing, stat-boosting, and battle items
+   - The Medicine pocket can hold 30 stacks of items, with no detriment to other pocket capacities
    - The Bag graphic in the Bag menu has been updated to reflect the extra pocket
 
 ### Hyper Training
