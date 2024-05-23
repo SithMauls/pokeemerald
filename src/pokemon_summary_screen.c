@@ -3540,7 +3540,7 @@ static void PrintRibbonCount(void)
 static void BufferStat(u8 *dst, s8 natureMod, u32 stat, u32 strId, u32 n)
 {
     // list of colors can be found in charmap.txt
-    static const u8 sTextNatureDown[]    = _("{COLOR DYNAMIC_COLOR3}{SHADOW DYNAMIC_COLOR2}");
+    static const u8 sTextNatureDown[]    = _("{COLOR BLUE}{SHADOW LIGHT_GREEN}");
     static const u8 sTextNatureUp[]      = _("{COLOR LIGHT_RED}{SHADOW GREEN}");
     static const u8 sTextNatureNeutral[] = _("{COLOR WHITE}{SHADOW DARK_GRAY}");
     u8 *txtPtr;
