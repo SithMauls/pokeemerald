@@ -90,10 +90,9 @@ enum {
     ACTION_SHOW,
     ACTION_GIVE_FAVOR_LADY,
     ACTION_CONFIRM_QUIZ_LADY,
-    ACTION_BY_NAME,
-    ACTION_BY_USAGE,
+    ACTION_BY_TYPE,
     ACTION_BY_INDEX,
-    ACTION_BY_INDEX2,
+    ACTION_BY_NAME,
     ACTION_DUMMY,
 };
 
@@ -219,19 +218,17 @@ static void CancelSell(u8);
 
 // Bag Sort
 static void Task_LoadBagSortOptions(u8 taskId);
-static void ItemMenu_SortByName(u8 taskId);
-static void ItemMenu_SortByUsage(u8 taskId);
+static void ItemMenu_SortByType(u8 taskId);
 static void ItemMenu_SortByIndex(u8 taskId);
-static void ItemMenu_SortByIndex2(u8 taskId);
+static void ItemMenu_SortByName(u8 taskId);
 static void SortBagItems(u8 taskId);
 static void Task_SortFinish(u8 taskId);
 static void SortItemsInBag(u8 pocket, u8 type);
 static void MergeSort(struct ItemSlot* array, u32 low, u32 high, s8 (*comparator)(struct ItemSlot*, struct ItemSlot*));
 static void Merge(struct ItemSlot* array, u32 low, u32 mid, u32 high, s8 (*comparator)(struct ItemSlot*, struct ItemSlot*));
-static s8 CompareItemsAlphabetically(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
-static s8 CompareItemsByUsage(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
+static s8 CompareItemsByType(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
 static s8 CompareItemsByIndex(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
-static s8 CompareItemsByIndex2(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
+static s8 CompareItemsByName(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
 
 static const struct BgTemplate sBgTemplates_ItemMenu[] =
 {
@@ -286,9 +283,9 @@ static const struct ListMenuTemplate sItemListMenu =
     .cursorKind = CURSOR_BLACK_ARROW
 };
 
-static const u8 sMenuText_ByName[] = _("NAME");
-static const u8 sMenuText_ByUsage[] = _("USAGE");
+static const u8 sMenuText_ByType[] = _("TYPE");
 static const u8 sMenuText_ByIndex[] = _("INDEX");
+static const u8 sMenuText_ByName[] = _("NAME");
 static const u8 sText_NothingToSort[] = _("There's nothing to sort!");
 
 static const struct MenuAction sItemMenuActions[] = {
@@ -306,10 +303,9 @@ static const struct MenuAction sItemMenuActions[] = {
     [ACTION_SHOW]              = {gMenuText_Show,     {ItemMenu_Show}},
     [ACTION_GIVE_FAVOR_LADY]   = {gMenuText_Give2,    {ItemMenu_GiveFavorLady}},
     [ACTION_CONFIRM_QUIZ_LADY] = {gMenuText_Confirm,  {ItemMenu_ConfirmQuizLady}},
+    [ACTION_BY_TYPE]           = {sMenuText_ByType,   {ItemMenu_SortByType}},
+    [ACTION_BY_INDEX]          = {sMenuText_ByIndex,  {ItemMenu_SortByIndex}},    
     [ACTION_BY_NAME]           = {sMenuText_ByName,   {ItemMenu_SortByName}},
-    [ACTION_BY_USAGE]          = {sMenuText_ByUsage,  {ItemMenu_SortByUsage}},
-    [ACTION_BY_INDEX]          = {sMenuText_ByIndex,  {ItemMenu_SortByIndex}},
-    [ACTION_BY_INDEX2]         = {sMenuText_ByIndex,  {ItemMenu_SortByIndex2}},
     [ACTION_DUMMY]             = {gText_EmptyString2, {NULL}}
 };
 
@@ -2664,37 +2660,18 @@ static void PrintTMHMMoveData(u16 itemId)
 // Bag sorting
 enum BagSortOptions
 {
-    SORT_ALPHABETICALLY,
+    SORT_BY_TYPE,
     SORT_BY_INDEX,
-    SORT_BY_INDEX2,
-    SORT_BY_USAGE,
+    SORT_BY_NAME,
 };
-enum ItemSortType
-{
-    ITEM_TYPE_FLUTE,
-	ITEM_TYPE_FIELD_USE,
-	ITEM_TYPE_HEALTH_RECOVERY,
-	ITEM_TYPE_STATUS_RECOVERY,
-	ITEM_TYPE_PP_RECOVERY,
-    ITEM_TYPE_BATTLE_ITEM,
-	ITEM_TYPE_STAT_BOOST_DRINK,
-    ITEM_TYPE_SELLABLE,
-	ITEM_TYPE_EVOLUTION_STONE,
-	ITEM_TYPE_EVOLUTION_ITEM,
-    ITEM_TYPE_INCENSE,
-    ITEM_TYPE_STAT_BOOST_HELD_ITEM,
-	ITEM_TYPE_HELD_ITEM,
-    ITEM_TYPE_COLLECTIBLE,
-	ITEM_TYPE_SHARD,
-	ITEM_TYPE_MAIL,
-};
+
 static const u8 sText_SortItemsHow[] = _("Sort {STR_VAR_1}\nby what?");
 
-static const u8 sBagMenuSortIndex2NameUsage[] =
+static const u8 sBagMenuSortTypeName[] =
 {
-    ACTION_BY_INDEX2,
+    ACTION_BY_TYPE,
     ACTION_BY_NAME,
-    ACTION_BY_USAGE,
+    ACTION_DUMMY,
     ACTION_CANCEL,
 };
 
@@ -2706,409 +2683,265 @@ static const u8 sBagMenuSortIndexName[] =
     ACTION_CANCEL,
 };
 
-static const u8 sBagMenuSortIndex2Name[] =
-{
-    ACTION_BY_INDEX2,
-    ACTION_BY_NAME,
-    ACTION_DUMMY,
-    ACTION_CANCEL,
-};
-
-static const u16 sItemsByIndex[ITEMS_COUNT] =
-{
-    [ITEM_BLUE_FLUTE]       =   0,
-    [ITEM_YELLOW_FLUTE]     =   1,
-    [ITEM_RED_FLUTE]        =   2,
-    [ITEM_BLACK_FLUTE]      =   3,
-    [ITEM_WHITE_FLUTE]      =   4,
-
-    [ITEM_REPEL]            =   5,
-    [ITEM_SUPER_REPEL]      =   6,
-    [ITEM_MAX_REPEL]        =   7,
-    [ITEM_ESCAPE_ROPE]      =   8,
-
-    [ITEM_ANTIDOTE]         =  10,
-    [ITEM_AWAKENING]        =  11,
-    [ITEM_BURN_HEAL]        =  12,
-    [ITEM_ICE_HEAL]         =  13,
-    [ITEM_PARALYZE_HEAL]    =  14,
-    [ITEM_FULL_HEAL]        =  16,
-
-    [ITEM_POTION]           =  20,
-    [ITEM_SUPER_POTION]     =  22,
-    [ITEM_HYPER_POTION]     =  26,
-    [ITEM_MAX_POTION]       =  27,
-    
-    [ITEM_FULL_RESTORE]     =  30,
-
-    [ITEM_REVIVE]           =  35,
-    [ITEM_MAX_REVIVE]       =  36,
-
-    [ITEM_ETHER]            =  40,
-    [ITEM_MAX_ETHER]        =  41,
-    [ITEM_ELIXIR]           =  42,
-    [ITEM_MAX_ELIXIR]       =  43,
-
-    [ITEM_GUARD_SPEC]       =  50,
-    [ITEM_DIRE_HIT]         =  51,
-    [ITEM_X_ATTACK]         =  52,
-    [ITEM_X_DEFEND]         =  53,
-    [ITEM_X_SPECIAL]        =  54,
-    [ITEM_X_SPEED]          =  55,
-    [ITEM_X_ACCURACY]       =  56,
-    [ITEM_POKE_DOLL]        =  57,
-    [ITEM_FLUFFY_TAIL]      =  58,
-
-    [ITEM_BERRY_JUICE]      =  61,
-    [ITEM_FRESH_WATER]      =  62,
-    [ITEM_SODA_POP]         =  63,
-    [ITEM_LEMONADE]         =  64,
-    [ITEM_MOOMOO_MILK]      =  65,
-
-    [ITEM_LAVA_COOKIE]      =  66,
-    [ITEM_ENERGY_POWDER]    =  67,
-    [ITEM_ENERGY_ROOT]      =  68,
-    [ITEM_REVIVAL_HERB]     =  69,
-    [ITEM_SACRED_ASH]       =  70,
-
-    [ITEM_RARE_CANDY]       =  73,
-    [ITEM_HP_UP]            =  75,
-    [ITEM_PROTEIN]          =  76,
-    [ITEM_IRON]             =  77,
-    [ITEM_CALCIUM]          =  78,
-    [ITEM_ZINC]             =  79,
-    [ITEM_CARBOS]           =  80,
-    [ITEM_PP_UP]            =  86,
-    [ITEM_PP_MAX]           =  87,
-
-    [ITEM_FIRE_STONE]       =  90,
-    [ITEM_LEAF_STONE]       =  91,
-    [ITEM_THUNDER_STONE]    =  92,
-    [ITEM_WATER_STONE]      =  93,
-    [ITEM_SUN_STONE]        =  94,
-    [ITEM_MOON_STONE]       =  95,
-
-    [ITEM_RED_SHARD]        = 100,
-    [ITEM_GREEN_SHARD]      = 101,
-    [ITEM_YELLOW_SHARD]     = 102,
-    [ITEM_BLUE_SHARD]       = 103,
-
-    [ITEM_DEEP_SEA_SCALE]   = 105,
-    [ITEM_DEEP_SEA_TOOTH]   = 106,
-    [ITEM_DRAGON_SCALE]     = 107,
-    [ITEM_KINGS_ROCK]       = 108,
-    [ITEM_UP_GRADE]         = 109,
-
-    [ITEM_BLACK_BELT]       = 110,
-    [ITEM_BLACK_GLASSES]    = 111,
-    [ITEM_CHARCOAL]         = 112,
-    [ITEM_DRAGON_FANG]      = 113,
-    [ITEM_HARD_STONE]       = 114,
-    [ITEM_MAGNET]           = 115,
-    [ITEM_METAL_COAT]       = 116,
-    [ITEM_MIRACLE_SEED]     = 117,
-    [ITEM_MYSTIC_WATER]     = 118,
-    [ITEM_NEVER_MELT_ICE]   = 119,
-    [ITEM_POISON_BARB]      = 120,
-    [ITEM_SHARP_BEAK]       = 121,
-    [ITEM_SILK_SCARF]       = 122,
-    [ITEM_SILVER_POWDER]    = 123,
-    [ITEM_SOFT_SAND]        = 124,
-    [ITEM_SPELL_TAG]        = 125,
-    [ITEM_TWISTED_SPOON]    = 126,
-
-    [ITEM_RED_SCARF]        = 130,
-    [ITEM_YELLOW_SCARF]     = 131,
-    [ITEM_BLUE_SCARF]       = 132,
-    [ITEM_GREEN_SCARF]      = 133,
-    [ITEM_PINK_SCARF]       = 134,
-
-    [ITEM_AMULET_COIN]      = 140,
-    [ITEM_BRIGHT_POWDER]    = 141,
-    [ITEM_CHOICE_BAND]      = 142,
-    [ITEM_CLEANSE_TAG]      = 143,
-    [ITEM_EVERSTONE]        = 147,
-    [ITEM_EXP_SHARE]        = 148,
-    [ITEM_FOCUS_BAND]       = 149,    
-    [ITEM_STICK]            = 150,
-    [ITEM_LAX_INCENSE]      = 151,
-    [ITEM_LEFTOVERS]        = 152,
-    [ITEM_LIGHT_BALL]       = 153,
-    [ITEM_LUCKY_EGG]        = 154,
-    [ITEM_LUCKY_PUNCH]      = 155,
-    [ITEM_MACHO_BRACE]      = 157,
-    [ITEM_MENTAL_HERB]      = 158,
-    [ITEM_METAL_POWDER]     = 159,
-    [ITEM_QUICK_CLAW]       = 160,
-    [ITEM_SEA_INCENSE]      = 161,
-    [ITEM_SCOPE_LENS]       = 162,
-    [ITEM_SHELL_BELL]       = 163,
-    [ITEM_SMOKE_BALL]       = 164,
-    [ITEM_SOOTHE_BELL]      = 165,
-    [ITEM_SOUL_DEW]         = 166,
-    [ITEM_THICK_CLUB]       = 167,
-    [ITEM_WHITE_HERB]       = 169,
-    
-    [ITEM_TINY_MUSHROOM]    = 202,
-    [ITEM_BIG_MUSHROOM]     = 203,
-    [ITEM_PEARL]            = 204,
-    [ITEM_BIG_PEARL]        = 205,
-    [ITEM_STARDUST]         = 206,
-    [ITEM_STAR_PIECE]       = 207,
-    [ITEM_NUGGET]           = 208,
-
-    [ITEM_SHOAL_SALT]       = 209,
-    [ITEM_SHOAL_SHELL]      = 210,
-    [ITEM_HEART_SCALE]      = 220,
-
-    [ITEM_BEAD_MAIL]        = 260,
-    [ITEM_DREAM_MAIL]       = 261,
-    [ITEM_FAB_MAIL]         = 262,
-    [ITEM_GLITTER_MAIL]     = 263,
-    [ITEM_HARBOR_MAIL]      = 264,
-    [ITEM_MECH_MAIL]        = 265,
-    [ITEM_ORANGE_MAIL]      = 266,
-    [ITEM_RETRO_MAIL]       = 267,
-    [ITEM_SHADOW_MAIL]      = 268,
-    [ITEM_TROPIC_MAIL]      = 269,
-    [ITEM_WAVE_MAIL]        = 270,
-    [ITEM_WOOD_MAIL]        = 271,
-    
-    [ITEM_POKE_BALL]        = 300,
-    [ITEM_GREAT_BALL]       = 301,
-    [ITEM_ULTRA_BALL]       = 302,
-    [ITEM_PREMIER_BALL]     = 303,
-    [ITEM_DIVE_BALL]        = 304,
-    [ITEM_LUXURY_BALL]      = 305,
-    [ITEM_NEST_BALL]        = 306,
-    [ITEM_NET_BALL]         = 307,
-    [ITEM_REPEAT_BALL]      = 308,
-    [ITEM_SAFARI_BALL]      = 309,
-    [ITEM_TIMER_BALL]       = 310,
-    [ITEM_MASTER_BALL]      = 311,
-
-    [ITEM_ACRO_BIKE]        = 320,
-    [ITEM_MACH_BIKE]        = 321,
-    [ITEM_OLD_ROD]          = 322,
-    [ITEM_GOOD_ROD]         = 323,
-    [ITEM_SUPER_ROD]        = 324, 
-    [ITEM_ITEMFINDER]       = 325,
-
-    [ITEM_COIN_CASE]        = 327,
-    [ITEM_POKEBLOCK_CASE]   = 328,
-    [ITEM_POWDER_JAR]       = 329,
-    [ITEM_SOOT_SACK]        = 330,
-    
-    [ITEM_CONTEST_PASS]     = 340,
-    [ITEM_DEVON_SCOPE]      = 341,
-    [ITEM_GO_GOGGLES]       = 342,
-    [ITEM_MAGMA_EMBLEM]     = 343,
-    [ITEM_WAILMER_PAIL]     = 345,
-
-    [ITEM_HELIX_FOSSIL]     = 350,
-    [ITEM_DOME_FOSSIL]      = 351,
-    [ITEM_OLD_AMBER]        = 352,
-    [ITEM_ROOT_FOSSIL]      = 353,
-    [ITEM_CLAW_FOSSIL]      = 354,
-
-    [ITEM_SS_TICKET]        = 360,
-    [ITEM_AURORA_TICKET]    = 361,
-    [ITEM_EON_TICKET]       = 362, 
-    [ITEM_MYSTIC_TICKET]    = 363,
-    [ITEM_OLD_SEA_MAP]      = 364,
-
-    [ITEM_BASEMENT_KEY]     = 370,    
-    [ITEM_ROOM_1_KEY]       = 371,
-    [ITEM_ROOM_2_KEY]       = 372,
-    [ITEM_ROOM_4_KEY]       = 373,
-    [ITEM_ROOM_6_KEY]       = 374,
-    [ITEM_STORAGE_KEY]      = 375,
-
-    [ITEM_BLUE_ORB]         = 380,
-    [ITEM_RED_ORB]          = 381,
-
-    [ITEM_DEVON_GOODS]      = 390,
-    [ITEM_LETTER]           = 391,
-    [ITEM_METEORITE]        = 392,
-    [ITEM_SCANNER]          = 393,
-
-    [ITEM_10B]              = 500,
-};
-
 static const u16 sItemsByType[ITEMS_COUNT] =
 {
-    [ITEM_REPEL]            = ITEM_TYPE_FIELD_USE,
-    [ITEM_SUPER_REPEL]      = ITEM_TYPE_FIELD_USE,
-    [ITEM_MAX_REPEL]        = ITEM_TYPE_FIELD_USE,
-    [ITEM_ESCAPE_ROPE]      = ITEM_TYPE_FIELD_USE,
+    // Poké balls
+    [ITEM_POKE_BALL]        = 5,
+    [ITEM_GREAT_BALL]       = 6,
+    [ITEM_ULTRA_BALL]       = 7,
+    [ITEM_PREMIER_BALL]     = 8,
+    [ITEM_DIVE_BALL]        = 9,
+    [ITEM_LUXURY_BALL]      = 10,
+    [ITEM_NEST_BALL]        = 11,
+    [ITEM_NET_BALL]         = 12,
+    [ITEM_REPEAT_BALL]      = 13,
+    [ITEM_SAFARI_BALL]      = 14,
+    [ITEM_TIMER_BALL]       = 15,
+    [ITEM_MASTER_BALL]      = 16,
 
-    [ITEM_POTION]           = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_FULL_RESTORE]     = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_MAX_POTION]       = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_HYPER_POTION]     = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_SUPER_POTION]     = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_REVIVE]           = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_MAX_REVIVE]       = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_FRESH_WATER]      = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_SODA_POP]         = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_LEMONADE]         = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_MOOMOO_MILK]      = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_ENERGY_POWDER]    = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_ENERGY_ROOT]      = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_REVIVAL_HERB]     = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_BERRY_JUICE]      = ITEM_TYPE_HEALTH_RECOVERY,
-    [ITEM_SACRED_ASH]       = ITEM_TYPE_HEALTH_RECOVERY,
+    // Flutes
+    [ITEM_BLUE_FLUTE]       = 21,
+    [ITEM_YELLOW_FLUTE]     = 22,
+    [ITEM_RED_FLUTE]        = 23,
+    [ITEM_BLACK_FLUTE]      = 24,
+    [ITEM_WHITE_FLUTE]      = 25,
 
-    [ITEM_ANTIDOTE]         = ITEM_TYPE_STATUS_RECOVERY,
-    [ITEM_BURN_HEAL]        = ITEM_TYPE_STATUS_RECOVERY,
-    [ITEM_ICE_HEAL]         = ITEM_TYPE_STATUS_RECOVERY,
-    [ITEM_AWAKENING]        = ITEM_TYPE_STATUS_RECOVERY,
-    [ITEM_PARALYZE_HEAL]    = ITEM_TYPE_STATUS_RECOVERY,
-    [ITEM_FULL_HEAL]        = ITEM_TYPE_STATUS_RECOVERY,
-    [ITEM_LAVA_COOKIE]      = ITEM_TYPE_STATUS_RECOVERY,
+    // Field use
+    [ITEM_REPEL]            = 30,
+    [ITEM_SUPER_REPEL]      = 31,
+    [ITEM_MAX_REPEL]        = 32,
+    [ITEM_ESCAPE_ROPE]      = 33,
 
-    [ITEM_ETHER]            = ITEM_TYPE_PP_RECOVERY,
-    [ITEM_MAX_ETHER]        = ITEM_TYPE_PP_RECOVERY,
-    [ITEM_ELIXIR]           = ITEM_TYPE_PP_RECOVERY,
-    [ITEM_MAX_ELIXIR]       = ITEM_TYPE_PP_RECOVERY,
+    // Status recovery
+    [ITEM_ANTIDOTE]         = 38,
+    [ITEM_BURN_HEAL]        = 39,
+    [ITEM_ICE_HEAL]         = 40,
+    [ITEM_AWAKENING]        = 41,
+    [ITEM_PARALYZE_HEAL]    = 42,
+    [ITEM_FULL_HEAL]        = 43,
 
-    [ITEM_HP_UP]            = ITEM_TYPE_STAT_BOOST_DRINK,
-    [ITEM_PROTEIN]          = ITEM_TYPE_STAT_BOOST_DRINK,
-    [ITEM_IRON]             = ITEM_TYPE_STAT_BOOST_DRINK,
-    [ITEM_CARBOS]           = ITEM_TYPE_STAT_BOOST_DRINK,
-    [ITEM_CALCIUM]          = ITEM_TYPE_STAT_BOOST_DRINK,
-    [ITEM_RARE_CANDY]       = ITEM_TYPE_STAT_BOOST_DRINK,
-    [ITEM_PP_UP]            = ITEM_TYPE_STAT_BOOST_DRINK,
-    [ITEM_ZINC]             = ITEM_TYPE_STAT_BOOST_DRINK,
-    [ITEM_PP_MAX]           = ITEM_TYPE_STAT_BOOST_DRINK,
+    // Health recovery
+    [ITEM_POTION]           = 48,
+    [ITEM_SUPER_POTION]     = 49,
+    [ITEM_HYPER_POTION]     = 50,
+    [ITEM_MAX_POTION]       = 51,
+    [ITEM_FULL_RESTORE]     = 52,
+    [ITEM_REVIVE]           = 53,
+    [ITEM_MAX_REVIVE]       = 54,
 
-    [ITEM_HEART_SCALE]      = ITEM_TYPE_COLLECTIBLE,
+    // PP recovery
+    [ITEM_ETHER]            = 59,
+    [ITEM_MAX_ETHER]        = 60,
+    [ITEM_ELIXIR]           = 61,
+    [ITEM_MAX_ELIXIR]       = 62,
 
-    [ITEM_MACHO_BRACE]      = ITEM_TYPE_STAT_BOOST_HELD_ITEM,
+    // Battle items
+    [ITEM_DIRE_HIT]         = 67,
+    [ITEM_GUARD_SPEC]       = 68,
+    [ITEM_X_ACCURACY]       = 69,
+    [ITEM_X_ATTACK]         = 70,
+    [ITEM_X_DEFEND]         = 71,
+    [ITEM_X_SPECIAL]        = 72,
+    [ITEM_X_SPEED]          = 73,
+    [ITEM_POKE_DOLL]        = 74,
+    [ITEM_FLUFFY_TAIL]      = 75,
 
-    [ITEM_SUN_STONE]        = ITEM_TYPE_EVOLUTION_STONE,
-    [ITEM_MOON_STONE]       = ITEM_TYPE_EVOLUTION_STONE,
-    [ITEM_FIRE_STONE]       = ITEM_TYPE_EVOLUTION_STONE,
-    [ITEM_THUNDER_STONE]    = ITEM_TYPE_EVOLUTION_STONE,
-    [ITEM_WATER_STONE]      = ITEM_TYPE_EVOLUTION_STONE,
-    [ITEM_LEAF_STONE]       = ITEM_TYPE_EVOLUTION_STONE,
+    // Food
+    [ITEM_LAVA_COOKIE]      = 80,
+    [ITEM_BERRY_JUICE]      = 81,
+    [ITEM_FRESH_WATER]      = 82,
+    [ITEM_SODA_POP]         = 83,
+    [ITEM_LEMONADE]         = 84,
+    [ITEM_MOOMOO_MILK]      = 85,
 
-    [ITEM_KINGS_ROCK]       = ITEM_TYPE_EVOLUTION_ITEM,
-    [ITEM_DEEP_SEA_TOOTH]   = ITEM_TYPE_EVOLUTION_ITEM,
-    [ITEM_DEEP_SEA_SCALE]   = ITEM_TYPE_EVOLUTION_ITEM,
-    [ITEM_EVERSTONE]        = ITEM_TYPE_EVOLUTION_ITEM,
-    [ITEM_METAL_COAT]       = ITEM_TYPE_EVOLUTION_ITEM,
-    [ITEM_DRAGON_SCALE]     = ITEM_TYPE_EVOLUTION_ITEM,
-    [ITEM_UP_GRADE]         = ITEM_TYPE_EVOLUTION_ITEM,
+    // Herbal medicine
+    [ITEM_HEAL_POWDER]      = 90,
+    [ITEM_ENERGY_POWDER]    = 91,
+    [ITEM_ENERGY_ROOT]      = 92,
+    [ITEM_REVIVAL_HERB]     = 93,
+    [ITEM_SACRED_ASH]       = 94,
 
-    [ITEM_GUARD_SPEC]       = ITEM_TYPE_BATTLE_ITEM,
-    [ITEM_DIRE_HIT]         = ITEM_TYPE_BATTLE_ITEM,
-    [ITEM_X_ATTACK]         = ITEM_TYPE_BATTLE_ITEM,
-    [ITEM_X_DEFEND]         = ITEM_TYPE_BATTLE_ITEM,
-    [ITEM_X_SPEED]          = ITEM_TYPE_BATTLE_ITEM,
-    [ITEM_X_ACCURACY]       = ITEM_TYPE_BATTLE_ITEM,
-    [ITEM_X_SPECIAL]        = ITEM_TYPE_BATTLE_ITEM,
-    [ITEM_POKE_DOLL]        = ITEM_TYPE_BATTLE_ITEM,
-    [ITEM_FLUFFY_TAIL]      = ITEM_TYPE_BATTLE_ITEM,
+    // Stat boost
+    [ITEM_RARE_CANDY]       = 99,
+    [ITEM_HP_UP]            = 100,
+    [ITEM_PROTEIN]          = 101,
+    [ITEM_IRON]             = 102,
+    [ITEM_CALCIUM]          = 103,
+    [ITEM_ZINC]             = 104,
+    [ITEM_CARBOS]           = 105,
+    [ITEM_PP_UP]            = 106,
+    [ITEM_PP_MAX]           = 107,
 
-    [ITEM_BRIGHT_POWDER]    = ITEM_TYPE_HELD_ITEM,
-    [ITEM_WHITE_HERB]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_EXP_SHARE]        = ITEM_TYPE_HELD_ITEM,
-    [ITEM_QUICK_CLAW]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_SOOTHE_BELL]      = ITEM_TYPE_HELD_ITEM,
-    [ITEM_MENTAL_HERB]      = ITEM_TYPE_HELD_ITEM,
-    [ITEM_CHOICE_BAND]      = ITEM_TYPE_HELD_ITEM,
-    [ITEM_SILVER_POWDER]    = ITEM_TYPE_HELD_ITEM,
-    [ITEM_AMULET_COIN]      = ITEM_TYPE_HELD_ITEM,
-    [ITEM_CLEANSE_TAG]      = ITEM_TYPE_HELD_ITEM,
-    [ITEM_SOUL_DEW]         = ITEM_TYPE_HELD_ITEM,
-    [ITEM_SMOKE_BALL]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_FOCUS_BAND]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_LUCKY_EGG]        = ITEM_TYPE_HELD_ITEM,
-    [ITEM_SCOPE_LENS]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_LEFTOVERS]        = ITEM_TYPE_HELD_ITEM,
-    [ITEM_LIGHT_BALL]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_SOFT_SAND]        = ITEM_TYPE_HELD_ITEM,
-    [ITEM_HARD_STONE]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_MIRACLE_SEED]     = ITEM_TYPE_HELD_ITEM,
-    [ITEM_BLACK_GLASSES]    = ITEM_TYPE_HELD_ITEM,
-    [ITEM_BLACK_BELT]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_MAGNET]           = ITEM_TYPE_HELD_ITEM,
-    [ITEM_MYSTIC_WATER]     = ITEM_TYPE_HELD_ITEM,
-    [ITEM_SHARP_BEAK]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_POISON_BARB]      = ITEM_TYPE_HELD_ITEM,
-    [ITEM_NEVER_MELT_ICE]   = ITEM_TYPE_HELD_ITEM,
-    [ITEM_SPELL_TAG]        = ITEM_TYPE_HELD_ITEM,
-    [ITEM_TWISTED_SPOON]    = ITEM_TYPE_HELD_ITEM,
-    [ITEM_CHARCOAL]         = ITEM_TYPE_HELD_ITEM,
-    [ITEM_DRAGON_FANG]      = ITEM_TYPE_HELD_ITEM,
-    [ITEM_SILK_SCARF]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_SHELL_BELL]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_LUCKY_PUNCH]      = ITEM_TYPE_HELD_ITEM,
-    [ITEM_METAL_POWDER]     = ITEM_TYPE_HELD_ITEM,
-    [ITEM_THICK_CLUB]       = ITEM_TYPE_HELD_ITEM,
-    [ITEM_STICK]            = ITEM_TYPE_HELD_ITEM,
+    // Valuable
+    [ITEM_TINY_MUSHROOM]    = 112,
+    [ITEM_BIG_MUSHROOM]     = 113,
+    [ITEM_PEARL]            = 114,
+    [ITEM_BIG_PEARL]        = 115,
+    [ITEM_STARDUST]         = 116,
+    [ITEM_STAR_PIECE]       = 117,
+    [ITEM_NUGGET]           = 118,
 
-    [ITEM_SEA_INCENSE]      = ITEM_TYPE_INCENSE,
-    [ITEM_LAX_INCENSE]      = ITEM_TYPE_INCENSE,
+    // Evolution stones
+    [ITEM_FIRE_STONE]       = 123,
+    [ITEM_WATER_STONE]      = 124,
+    [ITEM_THUNDER_STONE]    = 125,
+    [ITEM_LEAF_STONE]       = 126,
+    [ITEM_SUN_STONE]        = 128,
+    [ITEM_MOON_STONE]       = 129,
 
-    [ITEM_BLUE_FLUTE]       = ITEM_TYPE_FLUTE,
-    [ITEM_YELLOW_FLUTE]     = ITEM_TYPE_FLUTE,
-    [ITEM_RED_FLUTE]        = ITEM_TYPE_FLUTE,
-    [ITEM_BLACK_FLUTE]      = ITEM_TYPE_FLUTE,
-    [ITEM_WHITE_FLUTE]      = ITEM_TYPE_FLUTE,
+    // Type enhancing held items
+    [ITEM_BLACK_BELT]       = 134,
+    [ITEM_BLACK_GLASSES]    = 135,
+    [ITEM_CHARCOAL]         = 136,
+    [ITEM_DRAGON_FANG]      = 137,
+    [ITEM_HARD_STONE]       = 138,
+    [ITEM_MAGNET]           = 139,
+    [ITEM_METAL_COAT]       = 140,
+    [ITEM_MIRACLE_SEED]     = 141,
+    [ITEM_MYSTIC_WATER]     = 142,
+    [ITEM_NEVER_MELT_ICE]   = 143,
+    [ITEM_POISON_BARB]      = 144,
+    [ITEM_SHARP_BEAK]       = 145,
+    [ITEM_SILK_SCARF]       = 146,
+    [ITEM_SILVER_POWDER]    = 147,
+    [ITEM_SOFT_SAND]        = 148,
+    [ITEM_SPELL_TAG]        = 149,
+    [ITEM_TWISTED_SPOON]    = 150,
 
-    [ITEM_SHOAL_SALT]       = ITEM_TYPE_SELLABLE,
-    [ITEM_SHOAL_SHELL]      = ITEM_TYPE_SELLABLE,
-    [ITEM_TINY_MUSHROOM]    = ITEM_TYPE_SELLABLE,
-    [ITEM_BIG_MUSHROOM]     = ITEM_TYPE_SELLABLE,
-    [ITEM_PEARL]            = ITEM_TYPE_SELLABLE,
-    [ITEM_BIG_PEARL]        = ITEM_TYPE_SELLABLE,
-    [ITEM_STARDUST]         = ITEM_TYPE_SELLABLE,
-    [ITEM_STAR_PIECE]       = ITEM_TYPE_SELLABLE,
-    [ITEM_NUGGET]           = ITEM_TYPE_SELLABLE,
+    // Held items
+    [ITEM_AMULET_COIN]      = 155,
+    [ITEM_BRIGHT_POWDER]    = 156,
+    [ITEM_CHOICE_BAND]      = 157,
+    [ITEM_CLEANSE_TAG]      = 158,
+    [ITEM_DEEP_SEA_TOOTH]   = 159,
+    [ITEM_DEEP_SEA_SCALE]   = 160,
+    [ITEM_DRAGON_SCALE]     = 161,
+    [ITEM_EVERSTONE]        = 162,
+    [ITEM_EXP_SHARE]        = 163,
+    [ITEM_FOCUS_BAND]       = 164,
+    [ITEM_KINGS_ROCK]       = 165,
+    [ITEM_LAX_INCENSE]      = 166,
+    [ITEM_LEFTOVERS]        = 167,
+    [ITEM_LIGHT_BALL]       = 168,
+    [ITEM_LUCKY_EGG]        = 169,
+    [ITEM_LUCKY_PUNCH]      = 170,
+    [ITEM_MACHO_BRACE]      = 171,
+    [ITEM_MENTAL_HERB]      = 172,
+    [ITEM_METAL_POWDER]     = 173,
+    [ITEM_QUICK_CLAW]       = 174,
+    [ITEM_SCOPE_LENS]       = 175,
+    [ITEM_SEA_INCENSE]      = 176,
+    [ITEM_SHELL_BELL]       = 177,
+    [ITEM_SMOKE_BALL]       = 178,
+    [ITEM_SOOTHE_BELL]      = 179,
+    [ITEM_SOUL_DEW]         = 180,
+    [ITEM_STICK]            = 181,
+    [ITEM_THICK_CLUB]       = 182,
+    [ITEM_UP_GRADE]         = 183,
+    [ITEM_WHITE_HERB]       = 184,
 
-    [ITEM_RED_SHARD]        = ITEM_TYPE_SHARD,
-    [ITEM_BLUE_SHARD]       = ITEM_TYPE_SHARD,
-    [ITEM_YELLOW_SHARD]     = ITEM_TYPE_SHARD,
-    [ITEM_GREEN_SHARD]      = ITEM_TYPE_SHARD,
+    // Scarves
+    [ITEM_RED_SCARF]        = 189,
+    [ITEM_YELLOW_SCARF]     = 190,
+    [ITEM_BLUE_SCARF]       = 191,
+    [ITEM_GREEN_SCARF]      = 192,
+    [ITEM_PINK_SCARF]       = 193,
 
-    [ITEM_ORANGE_MAIL]      = ITEM_TYPE_MAIL,
-    [ITEM_HARBOR_MAIL]      = ITEM_TYPE_MAIL,
-    [ITEM_GLITTER_MAIL]     = ITEM_TYPE_MAIL,
-    [ITEM_MECH_MAIL]        = ITEM_TYPE_MAIL,
-    [ITEM_WOOD_MAIL]        = ITEM_TYPE_MAIL,
-    [ITEM_WAVE_MAIL]        = ITEM_TYPE_MAIL,
-    [ITEM_BEAD_MAIL]        = ITEM_TYPE_MAIL,
-    [ITEM_SHADOW_MAIL]      = ITEM_TYPE_MAIL,
-    [ITEM_TROPIC_MAIL]      = ITEM_TYPE_MAIL,
-    [ITEM_DREAM_MAIL]       = ITEM_TYPE_MAIL,
-    [ITEM_FAB_MAIL]         = ITEM_TYPE_MAIL,
-    [ITEM_RETRO_MAIL]       = ITEM_TYPE_MAIL,
+    // Collectibles
+    [ITEM_SHOAL_SALT]       = 198,
+    [ITEM_SHOAL_SHELL]      = 199,
+    [ITEM_HEART_SCALE]      = 200,
+    [ITEM_RED_SHARD]        = 201,
+    [ITEM_BLUE_SHARD]       = 202,
+    [ITEM_YELLOW_SHARD]     = 203,
+    [ITEM_GREEN_SHARD]      = 204,
+
+    // Mail
+    [ITEM_BEAD_MAIL]        = 213,
+    [ITEM_DREAM_MAIL]       = 214,
+    [ITEM_FAB_MAIL]         = 215,
+    [ITEM_GLITTER_MAIL]     = 216,
+    [ITEM_HARBOR_MAIL]      = 217,
+    [ITEM_MECH_MAIL]        = 218,
+    [ITEM_ORANGE_MAIL]      = 219,
+    [ITEM_RETRO_MAIL]       = 220,
+    [ITEM_SHADOW_MAIL]      = 221,
+    [ITEM_TROPIC_MAIL]      = 222,
+    [ITEM_WAVE_MAIL]        = 223,
+    [ITEM_WOOD_MAIL]        = 224,
+
+    // Usable key items
+    [ITEM_ACRO_BIKE]        = 229,
+    [ITEM_MACH_BIKE]        = 230,
+    [ITEM_OLD_ROD]          = 231,
+    [ITEM_GOOD_ROD]         = 232,
+    [ITEM_SUPER_ROD]        = 233,
+    [ITEM_ITEMFINDER]       = 234,
+
+    // Cases
+    [ITEM_COIN_CASE]        = 239,
+    [ITEM_POKEBLOCK_CASE]   = 240,
+    [ITEM_POWDER_JAR]       = 241,
+    [ITEM_SOOT_SACK]        = 242,
+
+    // Function unlocks
+    [ITEM_CONTEST_PASS]     = 247,
+    [ITEM_DEVON_SCOPE]      = 248,
+    [ITEM_GO_GOGGLES]       = 249,
+    [ITEM_WAILMER_PAIL]     = 250,
+
+    // Ferry tickets
+    [ITEM_SS_TICKET]        = 255,
+    [ITEM_OLD_SEA_MAP]      = 256,
+    [ITEM_MYSTIC_TICKET]    = 257,
+    [ITEM_EON_TICKET]       = 258,
+    [ITEM_AURORA_TICKET]    = 259,
+
+    // Keys
+    [ITEM_BASEMENT_KEY]     = 264,
+    [ITEM_MAGMA_EMBLEM]     = 265,
+    [ITEM_ROOM_1_KEY]       = 266,
+    [ITEM_ROOM_2_KEY]       = 267,
+    [ITEM_ROOM_4_KEY]       = 268,
+    [ITEM_ROOM_6_KEY]       = 269,
+    [ITEM_STORAGE_KEY]      = 270,
+
+    // Orbs
+    [ITEM_BLUE_ORB]         = 275,
+    [ITEM_RED_ORB]          = 276,
+
+    // Deliverables
+    [ITEM_DEVON_GOODS]      = 281,
+    [ITEM_LETTER]           = 282,
+    [ITEM_METEORITE]        = 283,
+    [ITEM_SCANNER]          = 284,
+
+    // Fossils
+    [ITEM_HELIX_FOSSIL]     = 289,
+    [ITEM_DOME_FOSSIL]      = 290,
+    [ITEM_OLD_AMBER]        = 291,
+    [ITEM_ROOT_FOSSIL]      = 292,
+    [ITEM_CLAW_FOSSIL]      = 293,
 };
 
 static void AddBagSortSubMenu(void)
 {
     switch (gBagPosition.pocket + 1)
     {
-        case POCKET_ITEMS:
-        case POCKET_MEDICINE:
-            gBagMenu->contextMenuItemsPtr = sBagMenuSortIndex2NameUsage;
-            memcpy(&gBagMenu->contextMenuItemsBuffer, &sBagMenuSortIndex2NameUsage, NELEMS(sBagMenuSortIndex2NameUsage));
-            gBagMenu->contextMenuNumItems = NELEMS(sBagMenuSortIndex2NameUsage);
-            break;
-        case POCKET_POKE_BALLS:
-        case POCKET_KEY_ITEMS:
-            gBagMenu->contextMenuItemsPtr = sBagMenuSortIndex2Name;
-            memcpy(&gBagMenu->contextMenuItemsBuffer, &sBagMenuSortIndex2Name, NELEMS(sBagMenuSortIndex2Name));
-            gBagMenu->contextMenuNumItems = NELEMS(sBagMenuSortIndex2Name);
-            break;
         case POCKET_TM_HM:
         case POCKET_BERRIES:
-        default:
             gBagMenu->contextMenuItemsPtr = sBagMenuSortIndexName;
             memcpy(&gBagMenu->contextMenuItemsBuffer, &sBagMenuSortIndexName, NELEMS(sBagMenuSortIndexName));
             gBagMenu->contextMenuNumItems = NELEMS(sBagMenuSortIndexName);
+            break;
+        case POCKET_ITEMS:
+        case POCKET_MEDICINE:
+        case POCKET_POKE_BALLS:
+        case POCKET_KEY_ITEMS:
+        default:
+            gBagMenu->contextMenuItemsPtr = sBagMenuSortTypeName;
+            memcpy(&gBagMenu->contextMenuItemsBuffer, &sBagMenuSortTypeName, NELEMS(sBagMenuSortTypeName));
+            gBagMenu->contextMenuNumItems = NELEMS(sBagMenuSortTypeName);
             break;
     }
 
@@ -3135,9 +2968,9 @@ static void Task_LoadBagSortOptions(u8 taskId)
 }
 
 #define tSortType data[2]
-static void ItemMenu_SortByName(u8 taskId)
+static void ItemMenu_SortByType(u8 taskId)
 {
-    gTasks[taskId].tSortType = SORT_ALPHABETICALLY;
+    gTasks[taskId].tSortType = SORT_BY_TYPE;
     gTasks[taskId].func = SortBagItems;
 }
 static void ItemMenu_SortByIndex(u8 taskId)
@@ -3145,14 +2978,9 @@ static void ItemMenu_SortByIndex(u8 taskId)
     gTasks[taskId].tSortType = SORT_BY_INDEX;
     gTasks[taskId].func = SortBagItems;
 }
-static void ItemMenu_SortByIndex2(u8 taskId)
+static void ItemMenu_SortByName(u8 taskId)
 {
-    gTasks[taskId].tSortType = SORT_BY_INDEX2;
-    gTasks[taskId].func = SortBagItems;
-}
-static void ItemMenu_SortByUsage(u8 taskId)
-{
-    gTasks[taskId].tSortType = SORT_BY_USAGE;
+    gTasks[taskId].tSortType = SORT_BY_NAME;
     gTasks[taskId].func = SortBagItems;
 }
 
@@ -3223,18 +3051,15 @@ static void SortItemsInBag(u8 pocket, u8 type)
 
     switch (type)
     {
-    case SORT_ALPHABETICALLY:
-        MergeSort(itemMem, 0, itemAmount - 1, CompareItemsAlphabetically);
+    case SORT_BY_TYPE:
+        MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByType);
         break;
     case SORT_BY_INDEX:
         MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByIndex);
         break;
-        case SORT_BY_INDEX2:
-        MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByIndex2);
-        break;
-    case SORT_BY_USAGE:
+    case SORT_BY_NAME:
     default:
-        MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByUsage);
+        MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByName);
         break;
     }
 }
@@ -3275,7 +3100,7 @@ static void Merge(struct ItemSlot* array, u32 low, u32 mid, u32 high, s8 (*compa
     }
 }
 
-static s8 CompareItemsAlphabetically(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
+static s8 CompareItemsByName(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
 {
     u16 item1 = itemSlot1->itemId;
     u16 item2 = itemSlot2->itemId;
@@ -3328,29 +3153,14 @@ static s8 CompareItemsByIndex(struct ItemSlot* itemSlot1, struct ItemSlot* itemS
     else if (index1 > index2)
         return 1;
 }
-
-static s8 CompareItemsByIndex2(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
+static s8 CompareItemsByType(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
 {
     // Null items go last
-    u8 index1 = (itemSlot1->itemId == ITEM_NONE) ? 0xFF : sItemsByIndex[itemSlot1->itemId];
-    u8 index2 = (itemSlot2->itemId == ITEM_NONE) ? 0xFF : sItemsByIndex[itemSlot2->itemId];
+    u8 type1 = (itemSlot1->itemId == ITEM_NONE) ? 0xFF : sItemsByType[itemSlot1->itemId];
+    u8 type2 = (itemSlot2->itemId == ITEM_NONE) ? 0xFF : sItemsByType[itemSlot2->itemId];
 
-    if (index1 < index2)
+    if (type1 < type2)
         return -1;
-    else if (index1 > index2)
+    else if (type1 > type2)
         return 1;
-}
-
-static s8 CompareItemsByUsage(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
-{
-    //Null items go last
-    u8 usage1 = (itemSlot1->itemId == ITEM_NONE) ? 0xFF : sItemsByType[itemSlot1->itemId];
-    u8 usage2 = (itemSlot2->itemId == ITEM_NONE) ? 0xFF : sItemsByType[itemSlot2->itemId];
-
-    if (usage1 < usage2)
-        return -1;
-    else if (usage1 > usage2)
-        return 1;
-
-    return CompareItemsByIndex2(itemSlot1, itemSlot2); // Items are of same type so sort by index
 }
