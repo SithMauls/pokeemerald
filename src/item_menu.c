@@ -93,6 +93,7 @@ enum {
     ACTION_BY_TYPE,
     ACTION_BY_INDEX,
     ACTION_BY_NAME,
+    ACTION_BY_VALUE,
     ACTION_DUMMY,
 };
 
@@ -221,6 +222,7 @@ static void Task_LoadBagSortOptions(u8 taskId);
 static void ItemMenu_SortByType(u8 taskId);
 static void ItemMenu_SortByIndex(u8 taskId);
 static void ItemMenu_SortByName(u8 taskId);
+static void ItemMenu_SortByValue(u8 taskId);
 static void SortBagItems(u8 taskId);
 static void Task_SortFinish(u8 taskId);
 static void SortItemsInBag(u8 pocket, u8 type);
@@ -229,6 +231,7 @@ static void Merge(struct ItemSlot* array, u32 low, u32 mid, u32 high, s8 (*compa
 static s8 CompareItemsByType(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
 static s8 CompareItemsByIndex(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
 static s8 CompareItemsByName(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
+static s8 CompareItemsByValue(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
 
 static const struct BgTemplate sBgTemplates_ItemMenu[] =
 {
@@ -286,6 +289,7 @@ static const struct ListMenuTemplate sItemListMenu =
 static const u8 sMenuText_ByType[] = _("TYPE");
 static const u8 sMenuText_ByIndex[] = _("INDEX");
 static const u8 sMenuText_ByName[] = _("NAME");
+static const u8 sMenuText_ByValue[] = _("VALUE");
 static const u8 sText_NothingToSort[] = _("There's nothing to sort!");
 
 static const struct MenuAction sItemMenuActions[] = {
@@ -306,6 +310,7 @@ static const struct MenuAction sItemMenuActions[] = {
     [ACTION_BY_TYPE]           = {sMenuText_ByType,   {ItemMenu_SortByType}},
     [ACTION_BY_INDEX]          = {sMenuText_ByIndex,  {ItemMenu_SortByIndex}},    
     [ACTION_BY_NAME]           = {sMenuText_ByName,   {ItemMenu_SortByName}},
+    [ACTION_BY_VALUE]          = {sMenuText_ByValue,  {ItemMenu_SortByValue}},
     [ACTION_DUMMY]             = {gText_EmptyString2, {NULL}}
 };
 
@@ -2663,21 +2668,30 @@ enum BagSortOptions
     SORT_BY_TYPE,
     SORT_BY_INDEX,
     SORT_BY_NAME,
+    SORT_BY_VALUE,
 };
 
 static const u8 sText_SortItemsHow[] = _("Sort {STR_VAR_1}\nby what?");
 
-static const u8 sBagMenuSortTypeName[] =
+static const u8 sBagMenuSortTypeNameValue[] =
 {
     ACTION_BY_TYPE,
     ACTION_BY_NAME,
-    ACTION_DUMMY,
+    ACTION_BY_VALUE,
     ACTION_CANCEL,
 };
 
 static const u8 sBagMenuSortIndexName[] =
 {
     ACTION_BY_INDEX,
+    ACTION_BY_NAME,
+    ACTION_DUMMY,
+    ACTION_CANCEL,
+};
+
+static const u8 sBagMenuSortTypeName[] =
+{
+    ACTION_BY_TYPE,
     ACTION_BY_NAME,
     ACTION_DUMMY,
     ACTION_CANCEL,
@@ -2712,22 +2726,22 @@ static const u16 sItemsByType[ITEMS_COUNT] =
     [ITEM_MAX_REPEL]        = 32,
     [ITEM_ESCAPE_ROPE]      = 33,
 
-    // Status recovery
-    [ITEM_ANTIDOTE]         = 38,
-    [ITEM_BURN_HEAL]        = 39,
-    [ITEM_ICE_HEAL]         = 40,
-    [ITEM_AWAKENING]        = 41,
-    [ITEM_PARALYZE_HEAL]    = 42,
-    [ITEM_FULL_HEAL]        = 43,
-
     // Health recovery
-    [ITEM_POTION]           = 48,
-    [ITEM_SUPER_POTION]     = 49,
-    [ITEM_HYPER_POTION]     = 50,
-    [ITEM_MAX_POTION]       = 51,
-    [ITEM_FULL_RESTORE]     = 52,
-    [ITEM_REVIVE]           = 53,
-    [ITEM_MAX_REVIVE]       = 54,
+    [ITEM_POTION]           = 38,
+    [ITEM_SUPER_POTION]     = 39,
+    [ITEM_HYPER_POTION]     = 40,
+    [ITEM_MAX_POTION]       = 41,
+    [ITEM_FULL_RESTORE]     = 42,
+    [ITEM_REVIVE]           = 43,
+    [ITEM_MAX_REVIVE]       = 44,
+
+    // Status recovery
+    [ITEM_ANTIDOTE]         = 49,
+    [ITEM_BURN_HEAL]        = 50,
+    [ITEM_ICE_HEAL]         = 51,
+    [ITEM_AWAKENING]        = 52,
+    [ITEM_PARALYZE_HEAL]    = 53,
+    [ITEM_FULL_HEAL]        = 54,
 
     // PP recovery
     [ITEM_ETHER]            = 59,
@@ -2747,19 +2761,19 @@ static const u16 sItemsByType[ITEMS_COUNT] =
     [ITEM_FLUFFY_TAIL]      = 75,
 
     // Food
-    [ITEM_LAVA_COOKIE]      = 80,
-    [ITEM_BERRY_JUICE]      = 81,
-    [ITEM_FRESH_WATER]      = 82,
-    [ITEM_SODA_POP]         = 83,
-    [ITEM_LEMONADE]         = 84,
-    [ITEM_MOOMOO_MILK]      = 85,
+    [ITEM_BERRY_JUICE]      = 80,
+    [ITEM_FRESH_WATER]      = 81,
+    [ITEM_SODA_POP]         = 82,
+    [ITEM_LEMONADE]         = 83,
+    [ITEM_MOOMOO_MILK]      = 84,
+    [ITEM_LAVA_COOKIE]      = 85,
 
     // Herbal medicine
-    [ITEM_HEAL_POWDER]      = 90,
-    [ITEM_ENERGY_POWDER]    = 91,
-    [ITEM_ENERGY_ROOT]      = 92,
-    [ITEM_REVIVAL_HERB]     = 93,
-    [ITEM_SACRED_ASH]       = 94,
+    [ITEM_ENERGY_POWDER]    = 90,
+    [ITEM_ENERGY_ROOT]      = 91,
+    [ITEM_REVIVAL_HERB]     = 92,
+    [ITEM_SACRED_ASH]       = 93,
+    [ITEM_HEAL_POWDER]      = 94,
 
     // Stat boost
     [ITEM_RARE_CANDY]       = 99,
@@ -2937,6 +2951,10 @@ static void AddBagSortSubMenu(void)
         case POCKET_ITEMS:
         case POCKET_MEDICINE:
         case POCKET_POKE_BALLS:
+            gBagMenu->contextMenuItemsPtr = sBagMenuSortTypeNameValue;
+            memcpy(&gBagMenu->contextMenuItemsBuffer, &sBagMenuSortTypeNameValue, NELEMS(sBagMenuSortTypeNameValue));
+            gBagMenu->contextMenuNumItems = NELEMS(sBagMenuSortTypeNameValue);
+            break;
         case POCKET_KEY_ITEMS:
         default:
             gBagMenu->contextMenuItemsPtr = sBagMenuSortTypeName;
@@ -2981,6 +2999,11 @@ static void ItemMenu_SortByIndex(u8 taskId)
 static void ItemMenu_SortByName(u8 taskId)
 {
     gTasks[taskId].tSortType = SORT_BY_NAME;
+    gTasks[taskId].func = SortBagItems;
+}
+static void ItemMenu_SortByValue(u8 taskId)
+{
+    gTasks[taskId].tSortType = SORT_BY_VALUE;
     gTasks[taskId].func = SortBagItems;
 }
 
@@ -3058,8 +3081,11 @@ static void SortItemsInBag(u8 pocket, u8 type)
         MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByIndex);
         break;
     case SORT_BY_NAME:
-    default:
         MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByName);
+        break;
+    case SORT_BY_VALUE:
+    default:
+        MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByValue);
         break;
     }
 }
@@ -3130,7 +3156,14 @@ static s8 CompareItemsByName(struct ItemSlot* itemSlot1, struct ItemSlot* itemSl
         else if (name1[i] != EOS && name2[i] == EOS)
             return 1;
         else if (name1[i] == EOS && name2[i] == EOS)
+        {
+            if (itemSlot1->quantity > itemSlot2->quantity)
+                return 1;
+            else if (itemSlot1->quantity < itemSlot2->quantity)
+                return -1;
+
             return 0;
+        }
 
         // Includes fix for Pokéblock Case
         if ((name1[i] == 85 ? 202 : name1[i]) < (name2[i] == 85 ? 202 : name2[i]))
@@ -3145,22 +3178,45 @@ static s8 CompareItemsByName(struct ItemSlot* itemSlot1, struct ItemSlot* itemSl
 static s8 CompareItemsByIndex(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
 {
     // Null items go last
-    u8 index1 = (itemSlot1->itemId == ITEM_NONE) ? 0xFF : itemSlot1->itemId;
-    u8 index2 = (itemSlot2->itemId == ITEM_NONE) ? 0xFF : itemSlot2->itemId;
+    u32 index1 = (itemSlot1->itemId == ITEM_NONE) ? 0xFFFFFFFF : itemSlot1->itemId;
+    u32 index2 = (itemSlot2->itemId == ITEM_NONE) ? 0xFFFFFFFF : itemSlot2->itemId;
 
     if (index1 < index2)
         return -1;
     else if (index1 > index2)
         return 1;
 }
+
 static s8 CompareItemsByType(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
 {
     // Null items go last
-    u8 type1 = (itemSlot1->itemId == ITEM_NONE) ? 0xFF : sItemsByType[itemSlot1->itemId];
-    u8 type2 = (itemSlot2->itemId == ITEM_NONE) ? 0xFF : sItemsByType[itemSlot2->itemId];
+    u32 type1 = (itemSlot1->itemId == ITEM_NONE) ? 0xFFFFFFFF : sItemsByType[itemSlot1->itemId];
+    u32 type2 = (itemSlot2->itemId == ITEM_NONE) ? 0xFFFFFFFF : sItemsByType[itemSlot2->itemId];
 
     if (type1 < type2)
         return -1;
     else if (type1 > type2)
+        return 1;
+
+    if (itemSlot1->quantity > itemSlot2->quantity)
+        return 1;
+    else if (itemSlot1->quantity < itemSlot2->quantity)
+        return -1;
+}
+
+static s8 CompareItemsByValue(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
+{
+    // Null items go last
+    s32 value1 = (itemSlot1->itemId == ITEM_NONE) ? 0x7FFFFFFF : -ItemId_GetPrice(itemSlot1->itemId);
+    s32 value2 = (itemSlot2->itemId == ITEM_NONE) ? 0x7FFFFFFF : -ItemId_GetPrice(itemSlot2->itemId);
+
+    if (value1 < value2)
+        return -1;
+    else if (value1 > value2)
+        return 1;
+
+    if (itemSlot1->quantity > itemSlot2->quantity)
+        return -1;
+    else if (itemSlot1->quantity < itemSlot2->quantity)
         return 1;
 }
