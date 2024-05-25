@@ -1145,7 +1145,7 @@ void UpdatePocketItemList(u8 pocketId)
     {
     case TMHM_POCKET:
     case BERRIES_POCKET:
-        SortBerriesOrTMHMs(pocket);
+        //SortBerriesOrTMHMs(pocket);
         break;
     default:
         CompactItemsInBagPocket(pocket);
