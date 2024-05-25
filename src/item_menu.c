@@ -94,6 +94,7 @@ enum {
     ACTION_BY_INDEX,
     ACTION_BY_NAME,
     ACTION_BY_VALUE,
+    ACTION_BY_MOVETYPE,
     ACTION_DUMMY,
 };
 
@@ -223,6 +224,7 @@ static void ItemMenu_SortByType(u8 taskId);
 static void ItemMenu_SortByIndex(u8 taskId);
 static void ItemMenu_SortByName(u8 taskId);
 static void ItemMenu_SortByValue(u8 taskId);
+static void ItemMenu_SortByMoveType(u8 taskId);
 static void SortBagItems(u8 taskId);
 static void Task_SortFinish(u8 taskId);
 static void SortItemsInBag(u8 pocket, u8 type);
@@ -232,6 +234,7 @@ static s8 CompareItemsByType(struct ItemSlot* itemSlot1, struct ItemSlot* itemSl
 static s8 CompareItemsByIndex(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
 static s8 CompareItemsByName(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
 static s8 CompareItemsByValue(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
+static s8 CompareItemsByMoveType(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2);
 
 static const struct BgTemplate sBgTemplates_ItemMenu[] =
 {
@@ -311,6 +314,7 @@ static const struct MenuAction sItemMenuActions[] = {
     [ACTION_BY_INDEX]          = {sMenuText_ByIndex,  {ItemMenu_SortByIndex}},    
     [ACTION_BY_NAME]           = {sMenuText_ByName,   {ItemMenu_SortByName}},
     [ACTION_BY_VALUE]          = {sMenuText_ByValue,  {ItemMenu_SortByValue}},
+    [ACTION_BY_MOVETYPE]       = {sMenuText_ByType,   {ItemMenu_SortByMoveType}},
     [ACTION_DUMMY]             = {gText_EmptyString2, {NULL}}
 };
 
@@ -2669,6 +2673,7 @@ enum BagSortOptions
     SORT_BY_INDEX,
     SORT_BY_NAME,
     SORT_BY_VALUE,
+    SORT_BY_MOVETYPE,
 };
 
 static const u8 sText_SortItemsHow[] = _("Sort {STR_VAR_1}\nby what?");
@@ -2694,6 +2699,14 @@ static const u8 sBagMenuSortTypeName[] =
     ACTION_BY_TYPE,
     ACTION_BY_NAME,
     ACTION_DUMMY,
+    ACTION_CANCEL,
+};
+
+static const u8 sBagMenuSortIndexNameType[] =
+{
+    ACTION_BY_INDEX,
+    ACTION_BY_NAME,
+    ACTION_BY_MOVETYPE,
     ACTION_CANCEL,
 };
 
@@ -2943,6 +2956,10 @@ static void AddBagSortSubMenu(void)
     switch (gBagPosition.pocket + 1)
     {
         case POCKET_TM_HM:
+            gBagMenu->contextMenuItemsPtr = sBagMenuSortIndexNameType;
+            memcpy(&gBagMenu->contextMenuItemsBuffer, &sBagMenuSortIndexNameType, NELEMS(sBagMenuSortIndexNameType));
+            gBagMenu->contextMenuNumItems = NELEMS(sBagMenuSortIndexNameType);
+            break;
         case POCKET_BERRIES:
             gBagMenu->contextMenuItemsPtr = sBagMenuSortIndexName;
             memcpy(&gBagMenu->contextMenuItemsBuffer, &sBagMenuSortIndexName, NELEMS(sBagMenuSortIndexName));
@@ -3004,6 +3021,11 @@ static void ItemMenu_SortByName(u8 taskId)
 static void ItemMenu_SortByValue(u8 taskId)
 {
     gTasks[taskId].tSortType = SORT_BY_VALUE;
+    gTasks[taskId].func = SortBagItems;
+}
+static void ItemMenu_SortByMoveType(u8 taskId)
+{
+    gTasks[taskId].tSortType = SORT_BY_MOVETYPE;
     gTasks[taskId].func = SortBagItems;
 }
 
@@ -3084,8 +3106,11 @@ static void SortItemsInBag(u8 pocket, u8 type)
         MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByName);
         break;
     case SORT_BY_VALUE:
-    default:
         MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByValue);
+        break;
+    case SORT_BY_MOVETYPE:
+    default:
+        MergeSort(itemMem, 0, itemAmount - 1, CompareItemsByMoveType);
         break;
     }
 }
@@ -3202,6 +3227,8 @@ static s8 CompareItemsByType(struct ItemSlot* itemSlot1, struct ItemSlot* itemSl
         return 1;
     else if (itemSlot1->quantity < itemSlot2->quantity)
         return -1;
+
+    return 0;
 }
 
 static s8 CompareItemsByValue(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
@@ -3215,8 +3242,20 @@ static s8 CompareItemsByValue(struct ItemSlot* itemSlot1, struct ItemSlot* itemS
     else if (value1 > value2)
         return 1;
 
-    if (itemSlot1->quantity > itemSlot2->quantity)
+    return 0;
+}
+
+
+static s8 CompareItemsByMoveType(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
+{
+    // Null items go last
+    u32 moveType1 = (itemSlot1->itemId == ITEM_NONE) ? 0xFFFFFFFF : gBattleMoves[ItemIdToBattleMoveId(itemSlot1->itemId)].type;
+    u32 moveType2 = (itemSlot2->itemId == ITEM_NONE) ? 0xFFFFFFFF : gBattleMoves[ItemIdToBattleMoveId(itemSlot2->itemId)].type;
+
+    if (moveType1 < moveType2)
         return -1;
-    else if (itemSlot1->quantity < itemSlot2->quantity)
+    else if (moveType1 > moveType2)
         return 1;
+
+    return 0;
 }
