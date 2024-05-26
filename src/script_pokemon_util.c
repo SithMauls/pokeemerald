@@ -49,6 +49,8 @@ void HealPlayerParty(void)
             SetMonData(&gPlayerParty[i], MON_DATA_PP1 + j, arg);
         }
 
+        CalculateMonStats(&gPlayerParty[i]);
+
         // since status is u32, the four 0 assignments here are probably for safety to prevent undefined data from reaching SetMonData.
         arg[0] = 0;
         arg[1] = 0;
