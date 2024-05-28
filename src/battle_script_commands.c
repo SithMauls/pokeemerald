@@ -3246,8 +3246,10 @@ static void Cmd_getexp(void)
     s32 sentIn;
     s32 viaExpShare = 0;
     u16 *exp = &gBattleStruct->expValue;
+    u16 holdItem;
 
     gBattlerFainted = GetBattlerForBattleScript(gBattlescriptCurrInstr[1]);
+    holdItem = gBattleMons[gBattlerFainted].item;
     sentIn = gSentPokesToOpponent[(gBattlerFainted & 2) >> 1];
 
     switch (gBattleScripting.getexpState)
@@ -3507,10 +3509,10 @@ static void Cmd_getexp(void)
         }
         break;
     case 6: // check if wild Pokémon has a hold item after fainting
-        if (gBattleStruct->wildVictorySong && gBattleMons[gBattlerFainted].item != ITEM_NONE)
+        if (gBattleStruct->wildVictorySong && holdItem != ITEM_NONE)
         {
             PrepareStringBattle(STRINGID_PKMNDROPPEDITEM, gBattleStruct->expGetterBattlerId);
-            gBattleScripting.getexpState = 7; // add item to bag
+            gBattleScripting.getexpState++; // add item to bag
         }
         else
         {
@@ -3518,20 +3520,22 @@ static void Cmd_getexp(void)
         }
         break;
     case 7: // add dropped item to bag if space available
-        if (CheckBagHasSpace(gBattleMons[gBattlerFainted].item, 1) == TRUE)
+        if (AddBagItem(holdItem, 1) == TRUE)
         {
-            AddBagItem(gBattleMons[gBattlerFainted].item, 1);
-            PREPARE_ITEM_BUFFER(gBattleTextBuff1, gBattleMons[gBattlerFainted].item);
-            PREPARE_POCKET_BUFFER(gBattleTextBuff2, gBattleMons[gBattlerFainted].item);
+            PREPARE_ITEM_BUFFER(gBattleTextBuff1, holdItem);
+            PREPARE_POCKET_BUFFER(gBattleTextBuff2, holdItem);
             PrepareStringBattle(STRINGID_ADDEDTOBAG, gBattleStruct->expGetterBattlerId);
-            gBattleScripting.getexpState = 8;
+        }
+        else if (AddPCItem(holdItem, 1) == TRUE)
+        {
+            PREPARE_ITEM_BUFFER(gBattleTextBuff1, holdItem);
+            PrepareStringBattle(STRINGID_TRANSFERREDTOPC, gBattleStruct->expGetterBattlerId);
         }
         else
         {
-            PrepareStringBattle(STRINGID_BAGISFULL, gBattleStruct->expGetterBattlerId);
-            gBattleScripting.getexpState = 8;
+            PrepareStringBattle(STRINGID_BAGANDPCAREFULL, gBattleStruct->expGetterBattlerId);
         }
-        break;
+        gBattleScripting.getexpState++;
     case 8: // increment instruction
         if (gBattleControllerExecFlags == 0)
         {
