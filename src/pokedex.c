@@ -31,6 +31,8 @@
 #include "data/pokemon/egg_moves.h"
 #include "constants/items.h"
 #include "data/tmhm_moves.h"
+#include "constants/party_menu.h"
+#include "data/pokemon/tutor_learnsets.h"
 
 enum
 {
@@ -111,6 +113,7 @@ enum {
     MOVE_EGG,
     MOVE_TM,
     MOVE_HM,
+    MOVE_TUTOR,
 };
 
 // For scrolling search parameter
@@ -898,8 +901,9 @@ static const struct WindowTemplate sPokemonList_WindowTemplate[] =
 
 static const u8 sText_No000[] = _("{NO}000");
 static const u8 sText_Lv00[] = _("{LV_2}  ");
-static const u8 sText_Egg[] = _("Egg");
+static const u8 sText_Egg[] = _("EGG");
 static const u8 sText_TM00[] = _("TM00");
+static const u8 sText_Tutor[] = _("TUTOR");
 static const u8 sCaughtBall_Gfx[] = INCBIN_U8("graphics/pokedex/caught_ball.4bpp");
 static const u8 sText_TenDashes[] = _("----------");
 
@@ -2500,12 +2504,12 @@ static void CreateMoveListEntry(u8 position, u16 b, u16 ignored)
         {
             if (entryNum < 0 || entryNum >= sMovesView->movesListCount)
             {
-                ClearMoveListEntry(17, i * 2, ignored);
+                ClearMoveListEntry(16, i * 2, ignored);
             }
             else
             {
-                ClearMoveListEntry(17, i * 2, ignored);
-                CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 17, i * 2);
+                ClearMoveListEntry(16, i * 2, ignored);
+                CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 16, i * 2);
                 CreateMoveName(sMovesView->movesList[entryNum].move, 20, i * 2);
             }
             entryNum++;
@@ -2515,12 +2519,12 @@ static void CreateMoveListEntry(u8 position, u16 b, u16 ignored)
         entryNum = b - 4;
         if (entryNum < 0 || entryNum >= sMovesView->movesListCount)
         {
-            ClearMoveListEntry(17, sMovesView->listVOffset * 2, ignored);
+            ClearMoveListEntry(16, sMovesView->listVOffset * 2, ignored);
         }
         else
         {
-            ClearMoveListEntry(17, sMovesView->listVOffset * 2, ignored);
-            CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 17, sMovesView->listVOffset * 2);
+            ClearMoveListEntry(16, sMovesView->listVOffset * 2, ignored);
+            CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 16, sMovesView->listVOffset * 2);
             CreateMoveName(sMovesView->movesList[entryNum].move, 20, sMovesView->listVOffset * 2);
         }
         break;
@@ -2530,11 +2534,11 @@ static void CreateMoveListEntry(u8 position, u16 b, u16 ignored)
         if (vOffset >= LIST_SCROLL_STEP)
             vOffset -= LIST_SCROLL_STEP;
         if (entryNum < 0 || entryNum >= sMovesView->movesListCount)
-            ClearMoveListEntry(17, vOffset * 2, ignored);
+            ClearMoveListEntry(16, vOffset * 2, ignored);
         else
         {
-            ClearMoveListEntry(17, vOffset * 2, ignored);
-            CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 17, vOffset * 2);
+            ClearMoveListEntry(16, vOffset * 2, ignored);
+            CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 16, vOffset * 2);
             CreateMoveName(sMovesView->movesList[entryNum].move, 20, vOffset * 2);
         }
         break;
@@ -2580,7 +2584,7 @@ static u8 CreateMonName(u16 num, u8 left, u8 top)
 
 static void CreateMovePrefix(u8 type, u16 index, u8 left, u8 top)
 {
-    u8 text[5];
+    u8 text[6];
 
     switch (type)
     {
@@ -2610,6 +2614,9 @@ static void CreateMovePrefix(u8 type, u16 index, u8 left, u8 top)
         text[0] = CHAR_H;
         text[2] = CHAR_0 + (index - 50 % 100) / 10;
         text[3] = CHAR_0 + (index - 50 % 100) % 10;
+        break;
+    case MOVE_TUTOR:
+        memcpy(text, sText_Tutor, ARRAY_COUNT(text));
         break;
     default:
         text[0] = '\0';
@@ -4021,6 +4028,18 @@ static void CreateMovesList(void)
                 moves[numMoves].type = MOVE_HM;
             moves[numMoves].move = sTMHMMoves[i];
             moves[numMoves++].index = i + 1;
+        }
+    }
+
+    // Tutor moves
+    for (i = 0; i < TUTOR_MOVE_COUNT; i++)
+    {
+        if (sTutorLearnsets[species] & (1 << i))
+        {
+            DebugPrintf("sTutorLearnsets[species]: %d (0x%x)", sTutorLearnsets[species], sTutorLearnsets[species]);
+            DebugPrintf("gTutorMoves[i]: %S", gMoveNames[gTutorMoves[i]]);
+            moves[numMoves].type = MOVE_TUTOR;
+            moves[numMoves++].move = gTutorMoves[i];
         }
     }
 
