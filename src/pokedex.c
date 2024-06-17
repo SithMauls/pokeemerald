@@ -33,6 +33,7 @@
 #include "data/tmhm_moves.h"
 #include "constants/party_menu.h"
 #include "data/pokemon/tutor_learnsets.h"
+#include "data/text/move_descriptions.h"
 
 enum
 {
@@ -106,6 +107,7 @@ enum {
     WIN_CRY_WAVE,
     WIN_VU_METER,
     WIN_MOVES,
+    WIN_MOVES_DESC,
 };
 
 enum {
@@ -362,6 +364,7 @@ static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored);
 static void Task_WaitForMovesScroll(u8 taskId);
 static bool8 UpdateMovesListScroll(u8 direction, u8 monMoveIncrement, u8 scrollTimerMax);
 static void Task_SwitchScreensFromMovesScreen(u8);
+static void PrintMoveDescription(u8 windowId, u8 fontId, const u8 *str, u8 left, u8 top);
 
 // const rom data
 #include "data/pokemon/pokedex_orders.h"
@@ -999,12 +1002,22 @@ static const struct WindowTemplate sInfoScreen_WindowTemplates[] =
     [WIN_MOVES] =
     {
         .bg = 3,
-        .tilemapLeft = 0,
+        .tilemapLeft = 16,
         .tilemapTop = 0,
-        .width = 32,
+        .width = 14,
         .height = 32,
         .paletteNum = 0,
         .baseBlock = 1,
+    },
+    [WIN_MOVES_DESC] =
+    {
+        .bg = 1,
+        .tilemapLeft = 1,
+        .tilemapTop = 16,
+        .width = 29,
+        .height = 4,
+        .paletteNum = 0,
+        .baseBlock = 449,
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -2400,6 +2413,16 @@ static void PrintMonDexNumAndName(u8 windowId, u8 fontId, const u8 *str, u8 left
     AddTextPrinterParameterized4(windowId, fontId, left * 8, (top * 8) + 1, 0, 0, color, TEXT_SKIP_DRAW, str);
 }
 
+static void PrintMoveDescription(u8 windowId, u8 fontId, const u8 *str, u8 left, u8 top)
+{
+    u8 color[3];
+
+    color[0] = TEXT_COLOR_TRANSPARENT;
+    color[1] = TEXT_DYNAMIC_COLOR_6;
+    color[2] = TEXT_COLOR_LIGHT_GRAY;
+    AddTextPrinterParameterized4(windowId, fontId, left, top, 0, -2, color, TEXT_SKIP_DRAW, str);
+}
+
 // u16 ignored is passed but never used
 static void CreateMonListEntry(u8 position, u16 b, u16 ignored)
 {
@@ -2489,61 +2512,70 @@ static void CreateMonListEntry(u8 position, u16 b, u16 ignored)
 }
 
 // u16 ignored is passed but never used
-static void CreateMoveListEntry(u8 position, u16 b, u16 ignored)
+static void CreateMoveListEntry(u8 position, u16 selectedMove, u16 ignored)
 {
     s16 entryNum;
     u16 i;
     u16 vOffset;
+    u8 textColors[][3] =
+    {
+        {0, 1, 2},
+    };
 
     switch (position)
     {
     case 0: // Initial
     default:
-        entryNum = b - 4;
+        entryNum = selectedMove - 4;
         for (i = 0; i <= 10; i++)
         {
             if (entryNum < 0 || entryNum >= sMovesView->movesListCount)
             {
-                ClearMoveListEntry(16, i * 2, ignored);
+                ClearMoveListEntry(0, i * 2, ignored);
             }
             else
             {
-                ClearMoveListEntry(16, i * 2, ignored);
-                CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 16, i * 2);
-                CreateMoveName(sMovesView->movesList[entryNum].move, 20, i * 2);
+                ClearMoveListEntry(0, i * 2, ignored);
+                CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 0, i * 2);
+                CreateMoveName(sMovesView->movesList[entryNum].move, 4, i * 2);
             }
             entryNum++;
         }
         break;
     case 1: // Up
-        entryNum = b - 4;
+        entryNum = selectedMove - 4;
         if (entryNum < 0 || entryNum >= sMovesView->movesListCount)
         {
-            ClearMoveListEntry(16, sMovesView->listVOffset * 2, ignored);
+            ClearMoveListEntry(0, sMovesView->listVOffset * 2, ignored);
         }
         else
         {
-            ClearMoveListEntry(16, sMovesView->listVOffset * 2, ignored);
-            CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 16, sMovesView->listVOffset * 2);
-            CreateMoveName(sMovesView->movesList[entryNum].move, 20, sMovesView->listVOffset * 2);
+            ClearMoveListEntry(0, sMovesView->listVOffset * 2, ignored);
+            CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 0, sMovesView->listVOffset * 2);
+            CreateMoveName(sMovesView->movesList[entryNum].move, 4, sMovesView->listVOffset * 2);
         }
         break;
     case 2: // Down
-        entryNum = b + 6;
+        entryNum = selectedMove + 6;
         vOffset = sMovesView->listVOffset + 10;
         if (vOffset >= LIST_SCROLL_STEP)
             vOffset -= LIST_SCROLL_STEP;
         if (entryNum < 0 || entryNum >= sMovesView->movesListCount)
-            ClearMoveListEntry(16, vOffset * 2, ignored);
+            ClearMoveListEntry(0, vOffset * 2, ignored);
         else
         {
-            ClearMoveListEntry(16, vOffset * 2, ignored);
-            CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 16, vOffset * 2);
-            CreateMoveName(sMovesView->movesList[entryNum].move, 20, vOffset * 2);
+            ClearMoveListEntry(0, vOffset * 2, ignored);
+            CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 0, vOffset * 2);
+            CreateMoveName(sMovesView->movesList[entryNum].move, 4, vOffset * 2);
         }
         break;
     }
-    CopyWindowToVram(4, COPYWIN_GFX);
+
+    FillWindowPixelBuffer(WIN_MOVES_DESC, PIXEL_FILL(0));
+    PrintMoveDescription(WIN_MOVES_DESC, FONT_NORMAL, gMoveDescriptionPointers[sMovesView->movesList[selectedMove].move - 1], 0, 1);
+
+    CopyWindowToVram(WIN_MOVES_DESC, COPYWIN_GFX);
+    CopyWindowToVram(WIN_MOVES, COPYWIN_GFX);
 }
 
 static void CreateMonDexNum(u16 entryNum, u8 left, u8 top, u16 unused)
@@ -3839,6 +3871,7 @@ static void Task_LoadMovesScreen(u8 taskId)
     case 0:
         if (!gPaletteFade.active)
         {
+            SetBgTilemapBuffer(3, AllocZeroed(BG_SCREEN_SIZE));
             sPokedexView->currentPage = PAGE_MOVES;
             gPokedexVBlankCB = gMain.vblankCallback;
             SetVBlankCallback(NULL);
@@ -3855,6 +3888,7 @@ static void Task_LoadMovesScreen(u8 taskId)
         CopyToBgTilemapBuffer(2, gPokedexMovesScreen_Tilemap, 0, 0);
         FillWindowPixelBuffer(WIN_MOVES, PIXEL_FILL(0));
         PutWindowTilemap(WIN_MOVES);
+        PutWindowTilemap(WIN_MOVES_DESC);
         CopyToBgTilemapBuffer(0, gPokedexMovesUnderlay_Tilemap, 0, 0);
         gMain.state++;
         break;
@@ -3921,9 +3955,6 @@ static void Task_LoadMovesScreen(u8 taskId)
 
 static void Task_HandleMovesScreenInput(u8 taskId)
 {
-    //s32 itemId = ListMenu_ProcessInput(sMovesStruct->moveListMenuTask);
-    //ListMenuGetScrollAndRow(sMovesStruct->moveListMenuTask, &sMovesMenuSate.listOffset, &sMovesMenuSate.listRow);
-
     if (JOY_NEW(B_BUTTON))
     {
         BeginNormalPaletteFade(PALETTES_ALL & ~(0x14), 0, 0, 0x10, RGB_BLACK);
@@ -3968,8 +3999,9 @@ static void Task_SwitchScreensFromMovesScreen(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
-        //sMovesView->selectedMove = 0;
         FREE_AND_SET_NULL(sMovesView);
+        FillWindowPixelBuffer(WIN_MOVES_DESC, PIXEL_FILL(0));
+        CopyWindowToVram(WIN_MOVES_DESC, COPYWIN_FULL);
 
         switch (sPokedexView->screenSwitchState)
         {
@@ -4036,8 +4068,6 @@ static void CreateMovesList(void)
     {
         if (sTutorLearnsets[species] & (1 << i))
         {
-            DebugPrintf("sTutorLearnsets[species]: %d (0x%x)", sTutorLearnsets[species], sTutorLearnsets[species]);
-            DebugPrintf("gTutorMoves[i]: %S", gMoveNames[gTutorMoves[i]]);
             moves[numMoves].type = MOVE_TUTOR;
             moves[numMoves++].move = gTutorMoves[i];
         }
