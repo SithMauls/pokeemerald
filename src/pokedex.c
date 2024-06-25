@@ -118,6 +118,20 @@ enum {
     MOVE_TUTOR,
 };
 
+#define MOVE_SELECTOR_SPRITES_COUNT 10
+#define TYPE_ICON_SPRITE_COUNT (MAX_MON_MOVES + 1)
+// for the spriteIds field in PokemonSummaryScreenData
+enum
+{
+    SPRITE_ARR_ID_MON,
+    SPRITE_ARR_ID_BALL,
+    SPRITE_ARR_ID_STATUS,
+    SPRITE_ARR_ID_TYPE, // 2 for mon types, 5 for move types(4 moves and 1 to learn), used interchangeably, because mon types and move types aren't shown on the same screen
+    SPRITE_ARR_ID_MOVE_SELECTOR1 = SPRITE_ARR_ID_TYPE + TYPE_ICON_SPRITE_COUNT, // 10 sprites that make up the selector
+    SPRITE_ARR_ID_MOVE_SELECTOR2 = SPRITE_ARR_ID_MOVE_SELECTOR1 + MOVE_SELECTOR_SPRITES_COUNT,
+    SPRITE_ARR_ID_COUNT = SPRITE_ARR_ID_MOVE_SELECTOR2 + MOVE_SELECTOR_SPRITES_COUNT
+};
+
 // For scrolling search parameter
 #define MAX_SEARCH_PARAM_ON_SCREEN   6
 #define MAX_SEARCH_PARAM_CURSOR_POS  (MAX_SEARCH_PARAM_ON_SCREEN - 1)
@@ -244,6 +258,191 @@ struct MovesView
     u16 maxScrollTimer;
     u16 scrollSpeed;
     s16 menuY;
+    u8 spriteIds[SPRITE_ARR_ID_COUNT];
+    s16 spriteYPos[SPRITE_ARR_ID_COUNT];
+    s32 bg3VOffsetBuffer;
+};
+
+#define TAG_MOVE_TYPES 30002
+
+static const struct OamData sOamData_MoveTypes =
+{
+    .y = 0,
+    .affineMode = ST_OAM_AFFINE_OFF,
+    .objMode = ST_OAM_OBJ_NORMAL,
+    .mosaic = FALSE,
+    .bpp = ST_OAM_4BPP,
+    .shape = SPRITE_SHAPE(32x16),
+    .x = 0,
+    .matrixNum = 0,
+    .size = SPRITE_SIZE(32x16),
+    .tileNum = 0,
+    .priority = 2,
+    .paletteNum = 0,
+    .affineParam = 0,
+};
+
+static const union AnimCmd sSpriteAnim_TypeNormal[] = {
+    ANIMCMD_FRAME(TYPE_NORMAL * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeFighting[] = {
+    ANIMCMD_FRAME(TYPE_FIGHTING * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeFlying[] = {
+    ANIMCMD_FRAME(TYPE_FLYING * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypePoison[] = {
+    ANIMCMD_FRAME(TYPE_POISON * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeGround[] = {
+    ANIMCMD_FRAME(TYPE_GROUND * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeRock[] = {
+    ANIMCMD_FRAME(TYPE_ROCK * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeBug[] = {
+    ANIMCMD_FRAME(TYPE_BUG * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeGhost[] = {
+    ANIMCMD_FRAME(TYPE_GHOST * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeSteel[] = {
+    ANIMCMD_FRAME(TYPE_STEEL * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeMystery[] = {
+    ANIMCMD_FRAME(TYPE_MYSTERY * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeFire[] = {
+    ANIMCMD_FRAME(TYPE_FIRE * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeWater[] = {
+    ANIMCMD_FRAME(TYPE_WATER * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeGrass[] = {
+    ANIMCMD_FRAME(TYPE_GRASS * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeElectric[] = {
+    ANIMCMD_FRAME(TYPE_ELECTRIC * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypePsychic[] = {
+    ANIMCMD_FRAME(TYPE_PSYCHIC * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeIce[] = {
+    ANIMCMD_FRAME(TYPE_ICE * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeDragon[] = {
+    ANIMCMD_FRAME(TYPE_DRAGON * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_TypeDark[] = {
+    ANIMCMD_FRAME(TYPE_DARK * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_CategoryCool[] = {
+    ANIMCMD_FRAME((CONTEST_CATEGORY_COOL + NUMBER_OF_MON_TYPES) * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_CategoryBeauty[] = {
+    ANIMCMD_FRAME((CONTEST_CATEGORY_BEAUTY + NUMBER_OF_MON_TYPES) * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_CategoryCute[] = {
+    ANIMCMD_FRAME((CONTEST_CATEGORY_CUTE + NUMBER_OF_MON_TYPES) * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_CategorySmart[] = {
+    ANIMCMD_FRAME((CONTEST_CATEGORY_SMART + NUMBER_OF_MON_TYPES) * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_CategoryTough[] = {
+    ANIMCMD_FRAME((CONTEST_CATEGORY_TOUGH + NUMBER_OF_MON_TYPES) * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+
+static const union AnimCmd *const sSpriteAnimTable_MoveTypes[NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT] = {
+    sSpriteAnim_TypeNormal,
+    sSpriteAnim_TypeFighting,
+    sSpriteAnim_TypeFlying,
+    sSpriteAnim_TypePoison,
+    sSpriteAnim_TypeGround,
+    sSpriteAnim_TypeRock,
+    sSpriteAnim_TypeBug,
+    sSpriteAnim_TypeGhost,
+    sSpriteAnim_TypeSteel,
+    sSpriteAnim_TypeMystery,
+    sSpriteAnim_TypeFire,
+    sSpriteAnim_TypeWater,
+    sSpriteAnim_TypeGrass,
+    sSpriteAnim_TypeElectric,
+    sSpriteAnim_TypePsychic,
+    sSpriteAnim_TypeIce,
+    sSpriteAnim_TypeDragon,
+    sSpriteAnim_TypeDark,
+    sSpriteAnim_CategoryCool,
+    sSpriteAnim_CategoryBeauty,
+    sSpriteAnim_CategoryCute,
+    sSpriteAnim_CategorySmart,
+    sSpriteAnim_CategoryTough,
+};
+
+static const struct CompressedSpriteSheet sSpriteSheet_MoveTypes =
+{
+    .data = gMoveTypes_Gfx,
+    .size = (NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT) * 0x100,
+    .tag = TAG_MOVE_TYPES
+};
+static const struct SpriteTemplate sSpriteTemplate_MoveTypes =
+{
+    .tileTag = TAG_MOVE_TYPES,
+    .paletteTag = TAG_MOVE_TYPES,
+    .oam = &sOamData_MoveTypes,
+    .anims = sSpriteAnimTable_MoveTypes,
+    .images = NULL,
+    .affineAnims = gDummySpriteAffineAnimTable,
+    .callback = SpriteCallbackDummy
+};
+
+static const u8 sMoveTypeToOamPaletteNum[NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT] =
+{
+    [TYPE_NORMAL] = 13,
+    [TYPE_FIGHTING] = 13,
+    [TYPE_FLYING] = 14,
+    [TYPE_POISON] = 14,
+    [TYPE_GROUND] = 13,
+    [TYPE_ROCK] = 13,
+    [TYPE_BUG] = 15,
+    [TYPE_GHOST] = 14,
+    [TYPE_STEEL] = 13,
+    [TYPE_MYSTERY] = 15,
+    [TYPE_FIRE] = 13,
+    [TYPE_WATER] = 14,
+    [TYPE_GRASS] = 15,
+    [TYPE_ELECTRIC] = 13,
+    [TYPE_PSYCHIC] = 14,
+    [TYPE_ICE] = 14,
+    [TYPE_DRAGON] = 15,
+    [TYPE_DARK] = 13,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_COOL] = 13,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_BEAUTY] = 14,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_CUTE] = 14,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_SMART] = 15,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_TOUGH] = 13,
 };
 
 // this file's functions
@@ -365,6 +564,11 @@ static void Task_WaitForMovesScroll(u8 taskId);
 static bool8 UpdateMovesListScroll(u8 direction, u8 monMoveIncrement, u8 scrollTimerMax);
 static void Task_SwitchScreensFromMovesScreen(u8);
 static void PrintMoveDescription(u8 windowId, u8 fontId, const u8 *str, u8 left, u8 top);
+static void CreateMoveTypeIcons(void);
+static void SetMoveTypeIcons(void);
+static void SetTypeSpritePosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId);
+static void ResetSpriteIds(void);
+static void SyncBg3VOffset();
 
 // const rom data
 #include "data/pokemon/pokedex_orders.h"
@@ -1002,9 +1206,9 @@ static const struct WindowTemplate sInfoScreen_WindowTemplates[] =
     [WIN_MOVES] =
     {
         .bg = 3,
-        .tilemapLeft = 16,
+        .tilemapLeft = 12,
         .tilemapTop = 0,
-        .width = 14,
+        .width = 16,
         .height = 32,
         .paletteNum = 0,
         .baseBlock = 1,
@@ -1017,7 +1221,7 @@ static const struct WindowTemplate sInfoScreen_WindowTemplates[] =
         .width = 29,
         .height = 4,
         .paletteNum = 0,
-        .baseBlock = 449,
+        .baseBlock = 513,
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -1616,6 +1820,8 @@ static void VBlankCB_Pokedex(void)
 {
     LoadOam();
     ProcessSpriteCopyRequests();
+    if (sPokedexView->currentPage == PAGE_MOVES)
+        SyncBg3VOffset();
     TransferPlttBuffer();
 }
 
@@ -1694,7 +1900,6 @@ void CB2_OpenPokedex(void)
         gMain.state++;
         break;
     case 2:
-        //sMovesView = AllocZeroed(sizeof(struct MovesView));
         sPokedexView = AllocZeroed(sizeof(struct PokedexView));
         ResetPokedexView(sPokedexView);
         CreateTask(Task_OpenPokedexMainPage, 0);
@@ -2526,23 +2731,27 @@ static void CreateMoveListEntry(u8 position, u16 selectedMove, u16 ignored)
     {
     case 0: // Initial
     default:
-        entryNum = selectedMove - 4;
-        for (i = 0; i <= 10; i++)
+        entryNum = selectedMove - 4; // 4 = list slots above selected move
+        for (i = 0; i < 10; i++) // 10 = list slots on sreen at once
         {
             if (entryNum < 0 || entryNum >= sMovesView->movesListCount)
             {
                 ClearMoveListEntry(0, i * 2, ignored);
+                gSprites[sMovesView->spriteIds[i]].invisible = TRUE;
             }
             else
             {
                 ClearMoveListEntry(0, i * 2, ignored);
                 CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 0, i * 2);
-                CreateMoveName(sMovesView->movesList[entryNum].move, 4, i * 2);
+                CreateMoveName(sMovesView->movesList[entryNum].move, 8, i * 2);
+                gSprites[sMovesView->spriteIds[i]].invisible = FALSE;
+                StartSpriteAnim(&gSprites[sMovesView->spriteIds[i]], gBattleMoves[sMovesView->movesList[entryNum].move].type);
+                gSprites[sMovesView->spriteIds[i]].oam.paletteNum = sMoveTypeToOamPaletteNum[gBattleMoves[sMovesView->movesList[entryNum].move].type];
             }
             entryNum++;
         }
         break;
-    case 1: // Up
+    case 1: // Pressed Up
         entryNum = selectedMove - 4;
         if (entryNum < 0 || entryNum >= sMovesView->movesListCount)
         {
@@ -2552,21 +2761,23 @@ static void CreateMoveListEntry(u8 position, u16 selectedMove, u16 ignored)
         {
             ClearMoveListEntry(0, sMovesView->listVOffset * 2, ignored);
             CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 0, sMovesView->listVOffset * 2);
-            CreateMoveName(sMovesView->movesList[entryNum].move, 4, sMovesView->listVOffset * 2);
+            CreateMoveName(sMovesView->movesList[entryNum].move, 8, sMovesView->listVOffset * 2);
         }
         break;
-    case 2: // Down
-        entryNum = selectedMove + 6;
-        vOffset = sMovesView->listVOffset + 10;
+    case 2: // Pressed Down
+        entryNum = selectedMove + 5;
+        vOffset = sMovesView->listVOffset + 9;
         if (vOffset >= LIST_SCROLL_STEP)
             vOffset -= LIST_SCROLL_STEP;
         if (entryNum < 0 || entryNum >= sMovesView->movesListCount)
+        {
             ClearMoveListEntry(0, vOffset * 2, ignored);
+        }
         else
         {
             ClearMoveListEntry(0, vOffset * 2, ignored);
             CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 0, vOffset * 2);
-            CreateMoveName(sMovesView->movesList[entryNum].move, 4, vOffset * 2);
+            CreateMoveName(sMovesView->movesList[entryNum].move, 8, vOffset * 2);
         }
         break;
     }
@@ -2675,7 +2886,7 @@ static void ClearMonListEntry(u8 x, u8 y, u16 unused)
 
 static void ClearMoveListEntry(u8 x, u8 y, u16 unused)
 {
-    FillWindowPixelRect(4, PIXEL_FILL(0), x * 8, y * 8, 0x60, 16);
+    FillWindowPixelRect(4, PIXEL_FILL(0), x * 8, y * 8, 128, 16);
 }
 
 // u16 ignored is passed but never used
@@ -2769,29 +2980,54 @@ static bool8 UpdateDexListScroll(u8 direction, u8 monMoveIncrement, u8 scrollTim
 
 static bool8 UpdateMovesListScroll(u8 direction, u8 monMoveIncrement, u8 scrollTimerMax)
 {
-    u8 step;
+    s32 offset, newOffset, moveIndex;
+    u32 step, moveType;
+    u32 i;
 
     if (sMovesView->scrollTimer)
     {
         sMovesView->scrollTimer--;
-        switch (direction)
+        offset = sMovesView->listMovingVOffset * LIST_SCROLL_STEP;
+        step = LIST_SCROLL_STEP * (scrollTimerMax - sMovesView->scrollTimer) / scrollTimerMax;
+        newOffset = (direction == 1) ? (offset - step) : (offset + step);
+        
+        for (i = 0; i < 10; i++)
         {
-        case 1: // Up
-            step = LIST_SCROLL_STEP * (scrollTimerMax - sMovesView->scrollTimer) / scrollTimerMax;
-            SetGpuReg(REG_OFFSET_BG3VOFS, sMovesView->initialVOffset + sMovesView->listMovingVOffset * LIST_SCROLL_STEP - step);
-            break;
-        case 2: // Down
-            step = LIST_SCROLL_STEP * (scrollTimerMax - sMovesView->scrollTimer) / scrollTimerMax;
-            SetGpuReg(REG_OFFSET_BG3VOFS, sMovesView->initialVOffset + sMovesView->listMovingVOffset * LIST_SCROLL_STEP + step);
-            break;
+            gSprites[sMovesView->spriteIds[i]].y = sMovesView->spriteYPos[i] + (direction == 1 ? step : -step);
         }
+        sMovesView->bg3VOffsetBuffer = sMovesView->initialVOffset + newOffset;
+        
         return FALSE;
     }
     else
     {
-        SetGpuReg(REG_OFFSET_BG3VOFS, sMovesView->initialVOffset + sMovesView->listVOffset * LIST_SCROLL_STEP);
+        for (i = 0; i < 10; i++)
+        {
+            struct Sprite* currentSprite = &gSprites[sMovesView->spriteIds[i]];
+            currentSprite->y = sMovesView->spriteYPos[i];
+            moveIndex = sMovesView->selectedMove + i - 4;
+            
+            if(moveIndex < 0 || moveIndex >= sMovesView->movesListCount)
+            {
+                currentSprite->invisible = TRUE;
+            }
+            else
+            {
+                currentSprite->invisible = FALSE;
+                moveType = gBattleMoves[sMovesView->movesList[moveIndex].move].type;
+                StartSpriteAnim(currentSprite, moveType);
+                currentSprite->oam.paletteNum = sMoveTypeToOamPaletteNum[moveType];
+            }
+        }
+        sMovesView->bg3VOffsetBuffer = sMovesView->initialVOffset + sMovesView->listVOffset * LIST_SCROLL_STEP;
+
         return TRUE;
     }
+}
+
+static void SyncBg3VOffset()
+{
+    SetGpuReg(REG_OFFSET_BG3VOFS, sMovesView->bg3VOffsetBuffer);
 }
 
 static void CreateScrollingPokemonSprite(u8 direction, u16 selectedMon)
@@ -2928,7 +3164,6 @@ static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored)
     u8 i;
     u16 startingPos;
     u8 scrollDir = 0;
-    u8 color[3];
 
     if (JOY_HELD(DPAD_UP) && (selectedMove > 0))
     {
@@ -2944,11 +3179,6 @@ static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored)
         selectedMove = GetNextPosition(0, selectedMove, 0, sMovesView->movesListCount - 1);
         CreateScrollingMoveSprite(2, selectedMove);
         CreateMoveListEntry(2, selectedMove, ignored);
-        
-        color[0] = TEXT_COLOR_TRANSPARENT;
-        color[1] = TEXT_DYNAMIC_COLOR_6;
-        color[2] = TEXT_COLOR_LIGHT_GRAY;
-        AddTextPrinterParameterized4(WIN_INFO, FONT_NORMAL, 1, 16, 0, 0, color, TEXT_SKIP_DRAW, sText_Egg);
         PlaySE(SE_DEX_SCROLL);
     }
 
@@ -2966,9 +3196,48 @@ static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored)
     sMovesView->scrollMovesIncrement = scrollMovesIncrement;
     sMovesView->scrollDirection = scrollDir;
     UpdateMovesListScroll(sMovesView->scrollDirection, sMovesView->scrollMovesIncrement, sMovesView->maxScrollTimer);
-    if (sMovesView->scrollSpeed < 12)
+    if (sMovesView->scrollSpeed < 8)
         sMovesView->scrollSpeed++;
     return selectedMove;
+}
+
+static void SetTypeSpritePosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId)
+{
+    struct Sprite *sprite = &gSprites[sMovesView->spriteIds[spriteArrayId]]; // + 1 to exclude the scrollbar sprite
+    StartSpriteAnim(sprite, typeId);
+    sprite->oam.paletteNum = sMoveTypeToOamPaletteNum[typeId];
+    sprite->oam.affineMode = ST_OAM_AFFINE_OFF;
+    sprite->x = x + 16;
+    sprite->y = y + 8;
+}
+
+static void SetMoveTypeIcons(void)
+{
+    u8 i;
+
+    for (i = 0; i < 10; i++)
+    {
+        SetTypeSpritePosAndPal(TYPE_MYSTERY, 125, i * 16, i);
+        sMovesView->spriteYPos[i] = i * 16 + 8;
+    }
+}
+
+static void ResetSpriteIds(void)
+{
+    u8 i;
+
+    for (i = 0; i < 10; i++)
+        sMovesView->spriteIds[i] = SPRITE_NONE;
+}
+
+static void CreateMoveTypeIcons(void)
+{
+    u8 i;
+    for (i = 0; i < 10; i++)
+    {
+        if (sMovesView->spriteIds[i] == SPRITE_NONE)
+            sMovesView->spriteIds[i] = CreateSprite(&sSpriteTemplate_MoveTypes, 0, 0, 2);
+    }
 }
 
 static void UpdateSelectedMonSpriteId(void)
@@ -3904,12 +4173,17 @@ static void Task_LoadMovesScreen(u8 taskId)
         gReservedSpritePaletteCount = 8;
         LoadCompressedSpriteSheet(&sInterfaceSpriteSheet[0]);
         LoadSpritePalettes(sInterfaceSpritePalette);
-        CreateSprite(&sScrollBarSpriteTemplate, 230, 28, 0);
+        LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);
+        LoadCompressedPalette(gMoveTypes_Pal, OBJ_PLTT_ID(13), 3 * PLTT_SIZE_4BPP);
         gMain.state++;
         break;
     case 4:
         sMovesView = AllocZeroed(sizeof(struct MovesView));
         CreateMovesList();
+        ResetSpriteIds();
+        CreateMoveTypeIcons();
+        SetMoveTypeIcons();
+        CreateSprite(&sScrollBarSpriteTemplate, 230, 28, 0);
         CreateMoveSpritesAtPos(sMovesView->selectedMove, 0xE);
         gMain.state++;
         break;
@@ -3928,7 +4202,7 @@ static void Task_LoadMovesScreen(u8 taskId)
         break;
     case 7:
         BeginNormalPaletteFade(PALETTES_ALL & ~(0x14), 0, 0x10, 0, RGB_BLACK);
-        SetVBlankCallback(gPokedexVBlankCB);
+        SetVBlankCallback(VBlankCB_Pokedex);
         gMain.state++;
         break;
     case 8:
