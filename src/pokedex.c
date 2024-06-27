@@ -108,6 +108,8 @@ enum {
     WIN_VU_METER,
     WIN_MOVES,
     WIN_MOVES_DESC,
+    WIN_MOVES_BATTLE_LABELS,
+    WIN_MOVES_BATTLE_VALUES,
 };
 
 enum {
@@ -563,12 +565,13 @@ static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored);
 static void Task_WaitForMovesScroll(u8 taskId);
 static bool8 UpdateMovesListScroll(u8 direction, u8 monMoveIncrement, u8 scrollTimerMax);
 static void Task_SwitchScreensFromMovesScreen(u8);
-static void PrintMoveDescription(u8 windowId, u8 fontId, const u8 *str, u8 left, u8 top);
+static void PrintMoveData(u8 windowId, u8 fontId, const u8 *str, u8 left, u8 top);
 static void CreateMoveTypeIcons(void);
 static void SetMoveTypeIcons(void);
 static void SetTypeSpritePosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId);
 static void ResetSpriteIds(void);
 static void SyncBg3VOffset();
+static void PrintMoveInfo(u16 moveIndex);
 
 // const rom data
 #include "data/pokemon/pokedex_orders.h"
@@ -1218,10 +1221,30 @@ static const struct WindowTemplate sInfoScreen_WindowTemplates[] =
         .bg = 1,
         .tilemapLeft = 1,
         .tilemapTop = 16,
-        .width = 29,
+        .width = 28,
         .height = 4,
         .paletteNum = 0,
         .baseBlock = 513,
+    },
+    [WIN_MOVES_BATTLE_LABELS] =
+    {
+        .bg = 1,
+        .tilemapLeft = 1,
+        .tilemapTop = 4,
+        .width = 6,
+        .height = 10,
+        .paletteNum = 0,
+        .baseBlock = 625,
+    },
+    [WIN_MOVES_BATTLE_VALUES]
+    {
+        .bg = 1,
+        .tilemapLeft = 7,
+        .tilemapTop = 4,
+        .width = 3,
+        .height = 10,
+        .paletteNum = 0,
+        .baseBlock = 685,
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -2618,14 +2641,14 @@ static void PrintMonDexNumAndName(u8 windowId, u8 fontId, const u8 *str, u8 left
     AddTextPrinterParameterized4(windowId, fontId, left * 8, (top * 8) + 1, 0, 0, color, TEXT_SKIP_DRAW, str);
 }
 
-static void PrintMoveDescription(u8 windowId, u8 fontId, const u8 *str, u8 left, u8 top)
+static void PrintMoveData(u8 windowId, u8 fontId, const u8 *str, u8 x, u8 y)
 {
     u8 color[3];
 
     color[0] = TEXT_COLOR_TRANSPARENT;
     color[1] = TEXT_DYNAMIC_COLOR_6;
     color[2] = TEXT_COLOR_LIGHT_GRAY;
-    AddTextPrinterParameterized4(windowId, fontId, left, top, 0, -2, color, TEXT_SKIP_DRAW, str);
+    AddTextPrinterParameterized4(windowId, fontId, x, y, 0, -2, color, TEXT_SKIP_DRAW, str);
 }
 
 // u16 ignored is passed but never used
@@ -2782,11 +2805,81 @@ static void CreateMoveListEntry(u8 position, u16 selectedMove, u16 ignored)
         break;
     }
 
-    FillWindowPixelBuffer(WIN_MOVES_DESC, PIXEL_FILL(0));
-    PrintMoveDescription(WIN_MOVES_DESC, FONT_NORMAL, gMoveDescriptionPointers[sMovesView->movesList[selectedMove].move - 1], 0, 1);
+    PrintMoveInfo(sMovesView->movesList[selectedMove].move);
 
-    CopyWindowToVram(WIN_MOVES_DESC, COPYWIN_GFX);
     CopyWindowToVram(WIN_MOVES, COPYWIN_GFX);
+    CopyWindowToVram(WIN_MOVES_BATTLE_LABELS, COPYWIN_GFX);
+    CopyWindowToVram(WIN_MOVES_BATTLE_VALUES, COPYWIN_GFX);
+    CopyWindowToVram(WIN_MOVES_DESC, COPYWIN_GFX);
+    //ScheduleBgCopyTilemapToVram(1);
+}
+
+static void PrintMoveInfo(u16 moveIndex)
+{
+    const u8 *text;
+
+    // Clear windows
+    FillWindowPixelBuffer(WIN_MOVES_BATTLE_LABELS, PIXEL_FILL(0));
+    FillWindowPixelBuffer(WIN_MOVES_BATTLE_VALUES, PIXEL_FILL(0));
+    FillWindowPixelBuffer(WIN_MOVES_DESC, PIXEL_FILL(0));
+    
+    // Print labels
+    PrintMoveData(WIN_MOVES_BATTLE_LABELS, FONT_NORMAL, gText_Power, 0, 1);
+    PrintMoveData(WIN_MOVES_BATTLE_LABELS, FONT_NORMAL, gText_Accuracy2, 0, 17);
+    PrintMoveData(WIN_MOVES_BATTLE_LABELS, FONT_NORMAL, gText_EffectChance, 0, 33);
+    PrintMoveData(WIN_MOVES_BATTLE_LABELS, FONT_NORMAL, gText_Priority, 0, 49);
+    PrintMoveData(WIN_MOVES_BATTLE_LABELS, FONT_NORMAL, gText_PP, 38, 65);
+
+    // Print Power value
+    if (gBattleMoves[moveIndex].power < 2)
+    {
+        text = gText_ThreeDashes;
+    }
+    else
+    {
+        ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveIndex].power, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        text = gStringVar1;
+    }
+    PrintMoveData(WIN_MOVES_BATTLE_VALUES, FONT_NORMAL, text, 5, 1);
+
+    // Print Accuracy value
+    if (gBattleMoves[moveIndex].accuracy == 0)
+    {
+        text = gText_ThreeDashes;
+    }
+    else
+    {
+        ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveIndex].accuracy, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        text = gStringVar1;
+    }
+    PrintMoveData(WIN_MOVES_BATTLE_VALUES, FONT_NORMAL, text, 5, 17);
+
+    // Print Secondary Effect Chance value
+    if (gBattleMoves[moveIndex].secondaryEffectChance == 0)
+    {
+        text = gText_ThreeDashes;
+    }
+    else
+    {
+        ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveIndex].secondaryEffectChance, STR_CONV_MODE_RIGHT_ALIGN, 3);
+        text = gStringVar1;
+    }
+    PrintMoveData(WIN_MOVES_BATTLE_VALUES, FONT_NORMAL, text, 5, 33);
+
+    // Print Priority value
+    if (gBattleMoves[moveIndex].priority < 0)
+        PrintMoveData(WIN_MOVES_BATTLE_VALUES, FONT_NORMAL, gText_Dash, 11, 49);
+    ConvertIntToDecimalStringN(gStringVar1, abs(gBattleMoves[moveIndex].priority), STR_CONV_MODE_RIGHT_ALIGN, 3);
+    text = gStringVar1;
+    PrintMoveData(WIN_MOVES_BATTLE_VALUES, FONT_NORMAL, text, 5, 49);
+
+    // Print PP
+    ConvertIntToDecimalStringN(gStringVar1, gBattleMoves[moveIndex].pp, STR_CONV_MODE_RIGHT_ALIGN, 3);
+    text = gStringVar1;
+    PrintMoveData(WIN_MOVES_BATTLE_VALUES, FONT_NORMAL, text, 5, 65);
+
+    // Print Description
+    PrintMoveData(WIN_MOVES_DESC, FONT_NORMAL, gMoveDescriptionPointers[moveIndex - 1], 0, 1);
 }
 
 static void CreateMonDexNum(u16 entryNum, u8 left, u8 top, u16 unused)
@@ -4157,6 +4250,8 @@ static void Task_LoadMovesScreen(u8 taskId)
         CopyToBgTilemapBuffer(2, gPokedexMovesScreen_Tilemap, 0, 0);
         FillWindowPixelBuffer(WIN_MOVES, PIXEL_FILL(0));
         PutWindowTilemap(WIN_MOVES);
+        PutWindowTilemap(WIN_MOVES_BATTLE_LABELS);
+        PutWindowTilemap(WIN_MOVES_BATTLE_VALUES);
         PutWindowTilemap(WIN_MOVES_DESC);
         CopyToBgTilemapBuffer(0, gPokedexMovesUnderlay_Tilemap, 0, 0);
         gMain.state++;
@@ -4274,7 +4369,11 @@ static void Task_SwitchScreensFromMovesScreen(u8 taskId)
     if (!gPaletteFade.active)
     {
         FREE_AND_SET_NULL(sMovesView);
+        FillWindowPixelBuffer(WIN_MOVES_BATTLE_LABELS, PIXEL_FILL(0));
+        FillWindowPixelBuffer(WIN_MOVES_BATTLE_VALUES, PIXEL_FILL(0));
         FillWindowPixelBuffer(WIN_MOVES_DESC, PIXEL_FILL(0));
+        CopyWindowToVram(WIN_MOVES_BATTLE_LABELS, COPYWIN_FULL);
+        CopyWindowToVram(WIN_MOVES_BATTLE_VALUES, COPYWIN_FULL);
         CopyWindowToVram(WIN_MOVES_DESC, COPYWIN_FULL);
 
         switch (sPokedexView->screenSwitchState)
