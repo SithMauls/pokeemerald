@@ -263,6 +263,7 @@ struct MovesView
     u8 spriteIds[SPRITE_ARR_ID_COUNT];
     s16 spriteYPos[SPRITE_ARR_ID_COUNT];
     s32 bg3VOffsetBuffer;
+    u8 categorySpriteId;
 };
 
 #define TAG_MOVE_TYPES 30002
@@ -376,8 +377,21 @@ static const union AnimCmd sSpriteAnim_CategoryTough[] = {
     ANIMCMD_FRAME((CONTEST_CATEGORY_TOUGH + NUMBER_OF_MON_TYPES) * 8, 0, FALSE, FALSE),
     ANIMCMD_END
 };
+static const union AnimCmd sSpriteAnim_CategoryPhysical[] = {
+    ANIMCMD_FRAME((CATEGORY_PHYSICAL + NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT) * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_CategorySpecial[] = {
+    ANIMCMD_FRAME((CATEGORY_SPECIAL + NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT) * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
+static const union AnimCmd sSpriteAnim_CategoryStatus[] = {
+    ANIMCMD_FRAME((CATEGORY_STATUS + NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT) * 8, 0, FALSE, FALSE),
+    ANIMCMD_END
+};
 
-static const union AnimCmd *const sSpriteAnimTable_MoveTypes[NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT] = {
+
+static const union AnimCmd *const sSpriteAnimTable_MoveTypes[NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT + CATEGORIES_COUNT] = {
     sSpriteAnim_TypeNormal,
     sSpriteAnim_TypeFighting,
     sSpriteAnim_TypeFlying,
@@ -401,12 +415,15 @@ static const union AnimCmd *const sSpriteAnimTable_MoveTypes[NUMBER_OF_MON_TYPES
     sSpriteAnim_CategoryCute,
     sSpriteAnim_CategorySmart,
     sSpriteAnim_CategoryTough,
+    sSpriteAnim_CategoryPhysical,
+    sSpriteAnim_CategorySpecial,
+    sSpriteAnim_CategoryStatus,
 };
 
 static const struct CompressedSpriteSheet sSpriteSheet_MoveTypes =
 {
     .data = gMoveTypes_Gfx,
-    .size = (NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT) * 0x100,
+    .size = (NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT + CATEGORIES_COUNT) * 0x100,
     .tag = TAG_MOVE_TYPES
 };
 static const struct SpriteTemplate sSpriteTemplate_MoveTypes =
@@ -420,31 +437,34 @@ static const struct SpriteTemplate sSpriteTemplate_MoveTypes =
     .callback = SpriteCallbackDummy
 };
 
-static const u8 sMoveTypeToOamPaletteNum[NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT] =
+static const u8 sMoveTypeToOamPaletteNum[NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT + CATEGORIES_COUNT] =
 {
-    [TYPE_NORMAL] = 13,
-    [TYPE_FIGHTING] = 13,
-    [TYPE_FLYING] = 14,
-    [TYPE_POISON] = 14,
-    [TYPE_GROUND] = 13,
-    [TYPE_ROCK] = 13,
-    [TYPE_BUG] = 15,
-    [TYPE_GHOST] = 14,
-    [TYPE_STEEL] = 13,
-    [TYPE_MYSTERY] = 15,
-    [TYPE_FIRE] = 13,
-    [TYPE_WATER] = 14,
-    [TYPE_GRASS] = 15,
-    [TYPE_ELECTRIC] = 13,
-    [TYPE_PSYCHIC] = 14,
-    [TYPE_ICE] = 14,
-    [TYPE_DRAGON] = 15,
-    [TYPE_DARK] = 13,
-    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_COOL] = 13,
-    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_BEAUTY] = 14,
-    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_CUTE] = 14,
-    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_SMART] = 15,
-    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_TOUGH] = 13,
+    [TYPE_NORMAL] = 12,
+    [TYPE_FIGHTING] = 12,
+    [TYPE_FLYING] = 13,
+    [TYPE_POISON] = 13,
+    [TYPE_GROUND] = 12,
+    [TYPE_ROCK] = 12,
+    [TYPE_BUG] = 14,
+    [TYPE_GHOST] = 13,
+    [TYPE_STEEL] = 12,
+    [TYPE_MYSTERY] = 14,
+    [TYPE_FIRE] = 12,
+    [TYPE_WATER] = 13,
+    [TYPE_GRASS] = 14,
+    [TYPE_ELECTRIC] = 12,
+    [TYPE_PSYCHIC] = 13,
+    [TYPE_ICE] = 13,
+    [TYPE_DRAGON] = 14,
+    [TYPE_DARK] = 12,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_COOL] = 12,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_BEAUTY] = 13,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_CUTE] = 13,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_SMART] = 14,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORY_TOUGH] = 12,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT + CATEGORY_PHYSICAL] = 15,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT + CATEGORY_SPECIAL] = 15,
+    [NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT + CATEGORY_STATUS] = 15,
 };
 
 // this file's functions
@@ -2878,6 +2898,9 @@ static void PrintMoveInfo(u16 moveIndex)
     text = gStringVar1;
     PrintMoveData(WIN_MOVES_BATTLE_VALUES, FONT_NORMAL, text, 5, 65);
 
+    // Update Category sprite
+    StartSpriteAnim(&gSprites[sMovesView->categorySpriteId], NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT + gBattleMoves[moveIndex].category);
+
     // Print Description
     PrintMoveData(WIN_MOVES_DESC, FONT_NORMAL, gMoveDescriptionPointers[moveIndex - 1], 0, 1);
 }
@@ -3294,9 +3317,9 @@ static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored)
     return selectedMove;
 }
 
-static void SetTypeSpritePosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId)
+static void SetTypeSpritePosAndPal(u8 typeId, u8 x, u8 y, u8 spriteId)
 {
-    struct Sprite *sprite = &gSprites[sMovesView->spriteIds[spriteArrayId]]; // + 1 to exclude the scrollbar sprite
+    struct Sprite *sprite = &gSprites[spriteId];
     StartSpriteAnim(sprite, typeId);
     sprite->oam.paletteNum = sMoveTypeToOamPaletteNum[typeId];
     sprite->oam.affineMode = ST_OAM_AFFINE_OFF;
@@ -3310,9 +3333,11 @@ static void SetMoveTypeIcons(void)
 
     for (i = 0; i < 10; i++)
     {
-        SetTypeSpritePosAndPal(TYPE_MYSTERY, 125, i * 16, i);
+        SetTypeSpritePosAndPal(TYPE_MYSTERY, 125, i * 16, sMovesView->spriteIds[i]);
         sMovesView->spriteYPos[i] = i * 16 + 8;
     }
+
+    SetTypeSpritePosAndPal(NUMBER_OF_MON_TYPES + CONTEST_CATEGORIES_COUNT + CATEGORY_PHYSICAL, 8, 96, sMovesView->categorySpriteId);
 }
 
 static void ResetSpriteIds(void)
@@ -3321,6 +3346,8 @@ static void ResetSpriteIds(void)
 
     for (i = 0; i < 10; i++)
         sMovesView->spriteIds[i] = SPRITE_NONE;
+
+    sMovesView->categorySpriteId = SPRITE_NONE;
 }
 
 static void CreateMoveTypeIcons(void)
@@ -3331,6 +3358,9 @@ static void CreateMoveTypeIcons(void)
         if (sMovesView->spriteIds[i] == SPRITE_NONE)
             sMovesView->spriteIds[i] = CreateSprite(&sSpriteTemplate_MoveTypes, 0, 0, 2);
     }
+
+    if (sMovesView->categorySpriteId == SPRITE_NONE)
+        sMovesView->categorySpriteId = CreateSprite(&sSpriteTemplate_MoveTypes, 0, 0, 2);
 }
 
 static void UpdateSelectedMonSpriteId(void)
@@ -4269,7 +4299,7 @@ static void Task_LoadMovesScreen(u8 taskId)
         LoadCompressedSpriteSheet(&sInterfaceSpriteSheet[0]);
         LoadSpritePalettes(sInterfaceSpritePalette);
         LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);
-        LoadCompressedPalette(gMoveTypes_Pal, OBJ_PLTT_ID(13), 3 * PLTT_SIZE_4BPP);
+        LoadCompressedPalette(gMoveTypes_Pal, OBJ_PLTT_ID(12), 4 * PLTT_SIZE_4BPP);
         gMain.state++;
         break;
     case 4:
