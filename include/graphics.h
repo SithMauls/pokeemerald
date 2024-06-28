@@ -3288,6 +3288,7 @@ extern const u16 gPokedexBgHoenn_Pal[];
 extern const u32 gPokedexMenu_Gfx[];
 extern const u8 gPokedexList_Tilemap[];
 extern const u8 gPokedexListUnderlay_Tilemap[];
+extern const u8 gPokedexMovesUnderlay_Tilemap[];
 extern const u8 gPokedexStartMenuMain_Tilemap[];
 extern const u8 gPokedexStartMenuSearchResults_Tilemap[];
 extern const u16 gPokedexSearchResults_Pal[];
@@ -3302,6 +3303,7 @@ extern const u32 gPokedexSearchMenu_Gfx[];
 extern const u32 gPokedexSearchMenuHoenn_Tilemap[];
 extern const u32 gPokedexSearchMenuNational_Tilemap[];
 extern const u16 gPokedexSearchMenu_Pal[];
+extern const u8 gPokedexMovesScreen_Tilemap[];
 
 // berry tag screen
 extern const u32 gBerryCheck_Gfx[];

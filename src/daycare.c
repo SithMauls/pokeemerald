@@ -608,7 +608,7 @@ static u8 GetEggMoves(struct Pokemon *pokemon, u16 *eggMoves)
     numEggMoves = 0;
     eggMoveIdx = 0;
     species = GetMonData(pokemon, MON_DATA_SPECIES);
-    for (i = 0; i < ARRAY_COUNT(gEggMoves) - 1; i++)
+    for (i = 0; i < gEggMovesCount - 1; i++)
     {
         if (gEggMoves[i] == species + EGG_MOVES_SPECIES_OFFSET)
         {
