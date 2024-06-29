@@ -146,7 +146,7 @@ enum
 #define POKEBALL_ROTATION_BOTTOM (POKEBALL_ROTATION_TOP - 16)
 
 // Coordinates of the Pokémon sprite on its page (info/cry screens)
-#define MON_PAGE_X 48
+#define MON_PAGE_X 52
 #define MON_PAGE_Y 56
 
 static EWRAM_DATA struct PokedexView *sPokedexView = NULL;
