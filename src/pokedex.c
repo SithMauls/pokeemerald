@@ -146,7 +146,7 @@ enum
 #define POKEBALL_ROTATION_BOTTOM (POKEBALL_ROTATION_TOP - 16)
 
 // Coordinates of the Pokémon sprite on its page (info/cry screens)
-#define MON_PAGE_X 48
+#define MON_PAGE_X 52
 #define MON_PAGE_Y 56
 
 static EWRAM_DATA struct PokedexView *sPokedexView = NULL;
@@ -4263,7 +4263,7 @@ static void Task_LoadMovesScreen(u8 taskId)
     case 0:
         if (!gPaletteFade.active)
         {
-            SetBgTilemapBuffer(3, AllocZeroed(BG_SCREEN_SIZE));
+            FillBgTilemapBufferRect(3, 0, 0, 0, 32, 32, 0);
             sPokedexView->currentPage = PAGE_MOVES;
             gPokedexVBlankCB = gMain.vblankCallback;
             SetVBlankCallback(NULL);
@@ -4534,7 +4534,7 @@ static void Task_LoadCryScreen(u8 taskId)
         gMain.state++;
         break;
     case 2:
-        SetBgTilemapBuffer(1, AllocZeroed(BG_SCREEN_SIZE));
+        FillBgTilemapBufferRect(1, 0, 0, 0, 32, 32, 0);
         LoadScreenSelectBarSubmenu(0xD);
         HighlightSubmenuScreenSelectBarItem(2, 0xD);
         LoadPokedexBgPalette(sPokedexView->isSearchResults);
