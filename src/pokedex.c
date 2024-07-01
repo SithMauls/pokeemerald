@@ -264,6 +264,8 @@ struct MovesView
     s16 spriteYPos[SPRITE_ARR_ID_COUNT];
     s32 bg3VOffsetBuffer;
     u8 categorySpriteId;
+    bool8 inMenu;
+    u8 scrollStartBuffer;
 };
 
 #define TAG_MOVE_TYPES 30002
@@ -581,7 +583,8 @@ static void CreateMoveListEntry(u8 position, u16 b, u16 ignored);
 static void CreateMovePrefix(u8 type, u16 index, u8 left, u8 top);
 static u8 CreateMoveName(u16 move, u8 left, u8 top);
 static void Task_HandleMovesScreenInput(u8);
-static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored);
+static void Task_HandleMovesScreenInput2(u8);
+static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored, u8 taskId);
 static void Task_WaitForMovesScroll(u8 taskId);
 static bool8 UpdateMovesListScroll(u8 direction, u8 monMoveIncrement, u8 scrollTimerMax);
 static void Task_SwitchScreensFromMovesScreen(u8);
@@ -2764,7 +2767,7 @@ static void CreateMoveListEntry(u8 position, u16 selectedMove, u16 ignored)
 {
     s16 entryNum;
     u16 i;
-    u16 vOffset;
+    s16 vOffset;
     u8 textColors[][3] =
     {
         {0, 1, 2},
@@ -2823,6 +2826,30 @@ static void CreateMoveListEntry(u8 position, u16 selectedMove, u16 ignored)
             CreateMoveName(sMovesView->movesList[entryNum].move, 8, vOffset * 2);
         }
         break;
+    case 3: // Pressed Left/Right
+        entryNum = selectedMove - 4; // 4 = list slots above selected move
+        vOffset = sMovesView->listVOffset;
+        for (i = 0; i < 10; i++) // 10 = list slots on sreen at once
+        {
+            if (vOffset + i >= LIST_SCROLL_STEP)
+                vOffset -= LIST_SCROLL_STEP;
+            if (entryNum < 0 || entryNum >= sMovesView->movesListCount)
+            {
+                ClearMoveListEntry(0, (i + vOffset) * 2, ignored);
+                gSprites[sMovesView->spriteIds[i]].invisible = TRUE;
+            }
+            else
+            {
+                ClearMoveListEntry(0, (i + vOffset) * 2, ignored);
+                CreateMovePrefix(sMovesView->movesList[entryNum].type, sMovesView->movesList[entryNum].index, 0, (i + vOffset) * 2);
+                CreateMoveName(sMovesView->movesList[entryNum].move, 8, (i + vOffset) * 2);
+                gSprites[sMovesView->spriteIds[i]].invisible = FALSE;
+                StartSpriteAnim(&gSprites[sMovesView->spriteIds[i]], gBattleMoves[sMovesView->movesList[entryNum].move].type);
+                gSprites[sMovesView->spriteIds[i]].oam.paletteNum = sMoveTypeToOamPaletteNum[gBattleMoves[sMovesView->movesList[entryNum].move].type];
+            }
+            entryNum++;
+        }
+        break;
     }
 
     PrintMoveInfo(sMovesView->movesList[selectedMove].move);
@@ -2831,7 +2858,6 @@ static void CreateMoveListEntry(u8 position, u16 selectedMove, u16 ignored)
     CopyWindowToVram(WIN_MOVES_BATTLE_LABELS, COPYWIN_GFX);
     CopyWindowToVram(WIN_MOVES_BATTLE_VALUES, COPYWIN_GFX);
     CopyWindowToVram(WIN_MOVES_DESC, COPYWIN_GFX);
-    //ScheduleBgCopyTilemapToVram(1);
 }
 
 static void PrintMoveInfo(u16 moveIndex)
@@ -3183,10 +3209,8 @@ static void CreateScrollingPokemonSprite(u8 direction, u16 selectedMon)
     }
 }
 
-static void CreateScrollingMoveSprite(u8 direction, u16 selectedMove)
+static void CreateScrollingMoveSprite(u8 direction)
 {
-    u8 spriteId;
-
     sMovesView->listMovingVOffset = sMovesView->listVOffset;
     switch (direction)
     {
@@ -3273,7 +3297,7 @@ static u16 TryDoPokedexScroll(u16 selectedMon, u16 ignored)
 }
 
 // u16 ignored is passed but never used
-static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored)
+static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored, u8 taskId)
 {
     u8 scrollTimer;
     u8 scrollMovesIncrement;
@@ -3281,21 +3305,53 @@ static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored)
     u16 startingPos;
     u8 scrollDir = 0;
 
-    if (JOY_HELD(DPAD_UP) && (selectedMove > 0))
+    if (JOY_HELD(DPAD_UP))
     {
-        scrollDir = 1;
-        selectedMove = GetNextPosition(1, selectedMove, 0, sMovesView->movesListCount - 1);
-        CreateScrollingMoveSprite(1, selectedMove);
-        CreateMoveListEntry(1, selectedMove, ignored);
-        PlaySE(SE_DEX_SCROLL);
+        if (selectedMove > 0)
+        {
+            scrollDir = 1;
+            selectedMove = GetNextPosition(1, selectedMove, 0, sMovesView->movesListCount - 1);
+            CreateScrollingMoveSprite(1);
+            CreateMoveListEntry(1, selectedMove, ignored);
+            PlaySE(SE_DEX_SCROLL);
+        }
+        else
+        {
+            HighlightSubmenuScreenSelectBarItem(1, 0xD);
+            gTasks[taskId].func = Task_HandleMovesScreenInput;
+            sMovesView->inMenu = FALSE;
+            PlaySE(SE_DEX_PAGE);
+        }
     }
     else if (JOY_HELD(DPAD_DOWN) && (selectedMove < sMovesView->movesListCount - 1))
     {
         scrollDir = 2;
         selectedMove = GetNextPosition(0, selectedMove, 0, sMovesView->movesListCount - 1);
-        CreateScrollingMoveSprite(2, selectedMove);
+        CreateScrollingMoveSprite(2);
         CreateMoveListEntry(2, selectedMove, ignored);
         PlaySE(SE_DEX_SCROLL);
+    }
+    else if (JOY_NEW(DPAD_LEFT) && (selectedMove > 0))
+    {
+        for (i = 0; i < 5; i++)
+        {
+            selectedMove = GetNextPosition(1, selectedMove, 0, sMovesView->movesListCount - 1);
+            CreateScrollingMoveSprite(1);
+        }
+        CreateMoveListEntry(3, selectedMove, ignored);
+        sMovesView->bg3VOffsetBuffer = sMovesView->initialVOffset + sMovesView->listVOffset * LIST_SCROLL_STEP;
+        PlaySE(SE_DEX_PAGE);
+    }
+    else if (JOY_NEW(DPAD_RIGHT) && (selectedMove < sMovesView->movesListCount - 1))
+    {
+        for (i = 0; i < 5; i++)
+        {
+            selectedMove = GetNextPosition(0, selectedMove, 0, sMovesView->movesListCount - 1);
+            CreateScrollingMoveSprite(2);
+        }
+        CreateMoveListEntry(3, selectedMove, ignored);
+        sMovesView->bg3VOffsetBuffer = sMovesView->initialVOffset + sMovesView->listVOffset * LIST_SCROLL_STEP;
+        PlaySE(SE_DEX_PAGE);
     }
 
     if (scrollDir == 0)
@@ -4180,6 +4236,7 @@ static void Task_LoadInfoScreenWaitForFade(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
+        TRY_FREE_AND_SET_NULL(sMovesView);
         FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
         gTasks[taskId].func = Task_LoadInfoScreen;
     }
@@ -4189,6 +4246,7 @@ static void Task_ExitInfoScreen(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
+        TRY_FREE_AND_SET_NULL(sMovesView);
         FreeAndDestroyMonPicSprite(gTasks[taskId].tMonSpriteId);
         FreeInfoScreenWindowAndBgBuffers();
         DestroyTask(taskId);
@@ -4380,9 +4438,51 @@ static void Task_HandleMovesScreenInput(u8 taskId)
         PlaySE(SE_DEX_PAGE);
         return;
     }
+    if (JOY_NEW(DPAD_DOWN) || JOY_NEW(A_BUTTON))
+    {
+        LoadScreenSelectBarSubmenu(0xD);
+        HighlightSubmenuScreenSelectBarItem(5, 0xD);
+        sMovesView->scrollStartBuffer = 12;
+        gTasks[taskId].func = Task_HandleMovesScreenInput2;
+        PlaySE(SE_DEX_PAGE);
+        return;
+    }
+}
+
+static void Task_HandleMovesScreenInput2(u8 taskId)
+{
+    if (JOY_HELD(DPAD_ANY) && sMovesView->scrollStartBuffer > 0)
+    {
+        sMovesView->scrollStartBuffer--;
+        return;
+    }
+    else if (JOY_NEW(B_BUTTON))
+    {
+        HighlightSubmenuScreenSelectBarItem(1, 0xD);
+        gTasks[taskId].func = Task_HandleMovesScreenInput;
+        PlaySE(SE_DEX_PAGE);
+        return;
+    }
+    else if (JOY_NEW(L_BUTTON) && gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_LR)
+    {
+        BeginNormalPaletteFade(PALETTES_ALL & ~(0x14), 0, 0, 0x10, RGB_BLACK);
+        sPokedexView->screenSwitchState = 2;
+        gTasks[taskId].func = Task_SwitchScreensFromMovesScreen;
+        PlaySE(SE_DEX_PAGE);
+        return;
+    }
+    else if (JOY_NEW(R_BUTTON) && gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_LR)
+    {
+        BeginNormalPaletteFade(PALETTES_ALL & ~(0x14), 0, 0, 0x10, RGB_BLACK);
+        sPokedexView->screenSwitchState = 3;
+        gTasks[taskId].func = Task_SwitchScreensFromMovesScreen;
+        PlaySE(SE_DEX_PAGE);
+        return;
+    }
     else
     {
-        sMovesView->selectedMove = TryDoMovesScroll(sMovesView->selectedMove, 0xE);
+        sMovesView->scrollStartBuffer = 0;
+        sMovesView->selectedMove = TryDoMovesScroll(sMovesView->selectedMove, 0xE, taskId);
         if (sMovesView->scrollTimer)
             gTasks[taskId].func = Task_WaitForMovesScroll;
     }
@@ -4391,14 +4491,13 @@ static void Task_HandleMovesScreenInput(u8 taskId)
 static void Task_WaitForMovesScroll(u8 taskId)
 {
     if (UpdateMovesListScroll(sMovesView->scrollDirection, sMovesView->scrollMovesIncrement, sMovesView->maxScrollTimer))
-        gTasks[taskId].func = Task_HandleMovesScreenInput;
+        gTasks[taskId].func = Task_HandleMovesScreenInput2;
 }
 
 static void Task_SwitchScreensFromMovesScreen(u8 taskId)
 {
     if (!gPaletteFade.active)
     {
-        FREE_AND_SET_NULL(sMovesView);
         FillWindowPixelBuffer(WIN_MOVES_BATTLE_LABELS, PIXEL_FILL(0));
         FillWindowPixelBuffer(WIN_MOVES_BATTLE_VALUES, PIXEL_FILL(0));
         FillWindowPixelBuffer(WIN_MOVES_DESC, PIXEL_FILL(0));
