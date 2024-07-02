@@ -34,6 +34,7 @@
 #include "constants/party_menu.h"
 #include "data/pokemon/tutor_learnsets.h"
 #include "data/text/move_descriptions.h"
+#include "data/pokemon/evolution.h"
 
 enum
 {
@@ -118,6 +119,7 @@ enum {
     MOVE_TM,
     MOVE_HM,
     MOVE_TUTOR,
+    MOVE_PRE_EVOLUTION,
 };
 
 #define MOVE_SELECTOR_SPRITES_COUNT 10
@@ -1137,6 +1139,7 @@ static const u8 sText_Lv00[] = _("{LV_2}  ");
 static const u8 sText_Egg[] = _("EGG");
 static const u8 sText_TM00[] = _("TM00");
 static const u8 sText_Tutor[] = _("TUTOR");
+static const u8 sText_Pre[] = _("PRE");
 static const u8 sCaughtBall_Gfx[] = INCBIN_U8("graphics/pokedex/caught_ball.4bpp");
 static const u8 sText_TenDashes[] = _("----------");
 
@@ -3003,6 +3006,9 @@ static void CreateMovePrefix(u8 type, u16 index, u8 left, u8 top)
     case MOVE_TUTOR:
         memcpy(text, sText_Tutor, ARRAY_COUNT(text));
         break;
+    case MOVE_PRE_EVOLUTION:
+        memcpy(text, sText_Pre, ARRAY_COUNT(text));
+        break;
     default:
         text[0] = '\0';
         break;
@@ -4442,7 +4448,7 @@ static void Task_HandleMovesScreenInput(u8 taskId)
     {
         LoadScreenSelectBarSubmenu(0xD);
         HighlightSubmenuScreenSelectBarItem(5, 0xD);
-        sMovesView->scrollStartBuffer = 12;
+        sMovesView->scrollStartBuffer = 6;
         gTasks[taskId].func = Task_HandleMovesScreenInput2;
         PlaySE(SE_DEX_PAGE);
         return;
@@ -4537,19 +4543,48 @@ static void CreateMoveSpritesAtPos(u16 selectedMove, u16 ignored)
 static void CreateMovesList(void)
 {
     s32 i;
-    u16 species = NationalPokedexNumToSpecies(sPokedexListItem->dexNum);
-    u8 numMoves = 0;
+    u32 species = NationalPokedexNumToSpecies(sPokedexListItem->dexNum);
+    u32 pre_species = species, j, moveExists;
+    u32 numMoves = 0;
     const u16 *learnset = gLevelUpLearnsets[species];
     struct MovesListItem *moves = sMovesView->movesList;
+    u32 moveType = MOVE_LEVEL_UP;
 
     // Level up moves
-    for (i = 0; learnset[i] != LEVEL_UP_END && i < MAX_LEVEL_UP_MOVES; i++)
+    for (i = 0; i < MAX_LEVEL_UP_MOVES; i++)
     {
-        u16 moveId = learnset[i] & LEVEL_UP_MOVE_ID;
-        moves[numMoves].type = MOVE_LEVEL_UP;
-        moves[numMoves].move = moveId;
-        moves[numMoves++].index = (learnset[i] & LEVEL_UP_MOVE_LV) >> 9;
+        if (gLevelUpLearnsets[species][i] == LEVEL_UP_END)
+        {
+            i = 0;
+            species = GetPreEvolution(species);
+            if (species == SPECIES_NONE)
+                break;
+            pre_species = species;
+            learnset = gLevelUpLearnsets[species];
+            moveType = MOVE_PRE_EVOLUTION;
+        }
+
+        moveExists = FALSE;
+        if (moveType == MOVE_PRE_EVOLUTION)
+        {
+            for (j = 0; j < numMoves; j++)
+            {
+                if (moves[j].move == (learnset[i] & LEVEL_UP_MOVE_ID))
+                {
+                    moveExists = TRUE;
+                    break;
+                }
+            }
+        }
+
+        if (!moveExists) {
+            moves[numMoves].type = moveType;
+            moves[numMoves].move = learnset[i] & LEVEL_UP_MOVE_ID;
+            moves[numMoves++].index = (learnset[i] & LEVEL_UP_MOVE_LV) >> 9;
+        }
     }
+
+    species = NationalPokedexNumToSpecies(sPokedexListItem->dexNum);
 
     // TMs
     for (i = 0; i <= ITEM_HM08 - ITEM_TM01; i++)
@@ -4576,7 +4611,7 @@ static void CreateMovesList(void)
     }
 
     // Egg moves
-    i = FindSpeciesInEggMoves(species);
+    i = FindSpeciesInEggMoves(pre_species);
     if (i != -1)
     {
         i++; // Skip the species value
@@ -4601,6 +4636,23 @@ static s32 FindSpeciesInEggMoves(u16 species)
             return i;
     }
     return -1;
+}
+
+static u16 GetPreEvolution(u16 species)
+{
+    int i, j;
+
+    for (i = 1; i < NUM_SPECIES; i++)
+    {
+        for (j = 0; j < EVOS_PER_MON; j++)
+        {
+            if (gEvolutionTable[i][j].targetSpecies == species)
+            {
+                return i;
+            }
+        }
+    }
+    return SPECIES_NONE;
 }
 
 static void Task_LoadCryScreen(u8 taskId)
