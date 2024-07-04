@@ -1,0 +1,19 @@
+const u8 gEggGroupNames[EGG_GROUPS_COUNT][EGG_GROUP_NAME_LENGTH + 1] =
+{
+    [EGG_GROUP_NONE] = _("-------"),
+    [EGG_GROUP_MONSTER] = _("MONSTER"),
+    [EGG_GROUP_WATER_1] = _("WATER 1"),
+    [EGG_GROUP_BUG] = _("BUG"),
+    [EGG_GROUP_FLYING] = _("FLYING"),
+    [EGG_GROUP_FIELD] = _("FIELD"),
+    [EGG_GROUP_FAIRY] = _("FAIRY"),
+    [EGG_GROUP_GRASS] = _("GRASS"),
+    [EGG_GROUP_HUMAN_LIKE] = _("HUMAN-LIKE"),
+    [EGG_GROUP_WATER_3] = _("WATER 3"),
+    [EGG_GROUP_MINERAL] = _("MINERAL"),
+    [EGG_GROUP_AMORPHOUS] = _("AMORPHOUS"),
+    [EGG_GROUP_WATER_2] = _("WATER 2"),
+    [EGG_GROUP_DITTO] = _("DITTO"),
+    [EGG_GROUP_DRAGON] = _("DRAGON"),
+    [EGG_GROUP_NO_EGGS_DISCOVERED] = _("UNKNOWN"),
+};
