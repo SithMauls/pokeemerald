@@ -5341,8 +5341,8 @@ static void PrintMonInfo(u32 num, u32 value, u32 owned, u32 newEntry)
     }
     else
     {
-        PrintInfoScreenText(gText_UnkHeight, 0x81, 0x39);
-        PrintInfoScreenText(gText_UnkWeight, 0x81, 0x49);
+        PrintInfoScreenText(gText_UnkHeight, 137, 0x39);
+        PrintInfoScreenText(gText_UnkWeight, 137, 0x49);
     }
     if (owned)
         description = gPokedexEntries[num].description;
@@ -6136,7 +6136,7 @@ static void Task_HandleSearchTopBarInput(u8 taskId)
         gTasks[taskId].func = Task_ExitSearch;
         return;
     }
-    if (JOY_NEW(A_BUTTON))
+    if (JOY_NEW(A_BUTTON) || (JOY_NEW(DPAD_DOWN) && gTasks[taskId].tTopBarItem != SEARCH_TOPBAR_CANCEL))
     {
         switch (gTasks[taskId].tTopBarItem)
         {
@@ -6204,7 +6204,10 @@ static void Task_HandleSearchMenuInput(u8 taskId)
             movementMap = sSearchMovementMap_SearchNatDex;
     }
 
-    if (JOY_NEW(B_BUTTON))
+    if (JOY_NEW(B_BUTTON)
+        || (JOY_NEW(DPAD_UP)
+            && (gTasks[taskId].tMenuItem == SEARCH_NAME
+                || (gTasks[taskId].tMenuItem == SEARCH_ORDER && gTasks[taskId].tTopBarItem == SEARCH_TOPBAR_SHIFT))))
     {
         PlaySE(SE_BALL);
         SetDefaultSearchModeAndOrder(taskId);
