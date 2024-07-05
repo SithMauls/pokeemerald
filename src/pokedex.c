@@ -64,7 +64,9 @@ enum
 enum
 {
     SEARCH_NAME,
-    SEARCH_COLOR,
+    //SEARCH_COLOR,
+    SEARCH_GROUP_LEFT,
+    SEARCH_GROUP_RIGHT,
     SEARCH_TYPE_LEFT,
     SEARCH_TYPE_RIGHT,
     SEARCH_ORDER,
@@ -1388,6 +1390,7 @@ static const struct SearchMenuItem sSearchMenuItems[SEARCH_COUNT] =
         .selectionBgY = 2,
         .selectionBgWidth = 12,
     },
+    /*
     [SEARCH_COLOR] =
     {
         .description = gText_ListByBodyColor,
@@ -1397,6 +1400,27 @@ static const struct SearchMenuItem sSearchMenuItems[SEARCH_COUNT] =
         .selectionBgX = 5,
         .selectionBgY = 4,
         .selectionBgWidth = 12,
+    },
+    */
+    [SEARCH_GROUP_LEFT] =
+    {
+        .description = gText_ListByGroup,
+        .titleBgX = 0,
+        .titleBgY = 4,
+        .titleBgWidth = 5,
+        .selectionBgX = 5,
+        .selectionBgY = 4,
+        .selectionBgWidth = 6,
+    },
+    [SEARCH_GROUP_RIGHT] =
+    {
+        .description = gText_ListByGroup,
+        .titleBgX = 0,
+        .titleBgY = 4,
+        .titleBgWidth = 5,
+        .selectionBgX = 11,
+        .selectionBgY = 4,
+        .selectionBgWidth = 6,
     },
     [SEARCH_TYPE_LEFT] =
     {
@@ -1458,8 +1482,10 @@ static const u8 sSearchMovementMap_SearchNatDex[SEARCH_COUNT][4] =
         0xFF,
         0xFF,
         0xFF,
-        SEARCH_COLOR
+        //SEARCH_COLOR
+        SEARCH_GROUP_LEFT
     },
+    /*
     [SEARCH_COLOR] =
     {
         0xFF,
@@ -1467,17 +1493,33 @@ static const u8 sSearchMovementMap_SearchNatDex[SEARCH_COUNT][4] =
         SEARCH_NAME,
         SEARCH_TYPE_LEFT
     },
+    */
+    [SEARCH_GROUP_LEFT] =
+    {
+        0xFF,
+        SEARCH_GROUP_RIGHT,
+        SEARCH_NAME,
+        SEARCH_TYPE_LEFT
+    },
+    [SEARCH_GROUP_RIGHT] =
+    {   SEARCH_GROUP_LEFT,
+        0xFF,
+        SEARCH_NAME,
+        SEARCH_TYPE_RIGHT
+    },
     [SEARCH_TYPE_LEFT] =
     {
         0xFF,
         SEARCH_TYPE_RIGHT,
-        SEARCH_COLOR,
+        //SEARCH_COLOR,
+        SEARCH_GROUP_LEFT,
         SEARCH_ORDER
     },
     [SEARCH_TYPE_RIGHT] =
     {   SEARCH_TYPE_LEFT,
         0xFF,
-        SEARCH_COLOR,
+        //SEARCH_COLOR,
+        SEARCH_GROUP_RIGHT,
         SEARCH_ORDER
     },
     [SEARCH_ORDER] =
@@ -1513,7 +1555,23 @@ static const u8 sSearchMovementMap_ShiftNatDex[SEARCH_COUNT][4] =
         0xFF,
         0xFF
     },
+    /*
     [SEARCH_COLOR] =
+    {
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF
+    },
+    */
+    [SEARCH_GROUP_LEFT] =
+    {
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF
+    },
+    [SEARCH_GROUP_RIGHT] =
     {
         0xFF,
         0xFF,
@@ -1565,8 +1623,10 @@ static const u8 sSearchMovementMap_SearchHoennDex[SEARCH_COUNT][4] =
         0xFF,
         0xFF,
         0xFF,
-        SEARCH_COLOR
+        //SEARCH_COLOR
+        SEARCH_GROUP_LEFT
     },
+    /*
     [SEARCH_COLOR] =
     {
         0xFF,
@@ -1574,17 +1634,33 @@ static const u8 sSearchMovementMap_SearchHoennDex[SEARCH_COUNT][4] =
         SEARCH_NAME,
         SEARCH_TYPE_LEFT
     },
+    */
+    [SEARCH_GROUP_LEFT] =
+    {
+        0xFF,
+        SEARCH_GROUP_RIGHT,
+        SEARCH_NAME,
+        SEARCH_TYPE_LEFT
+    },
+    [SEARCH_GROUP_RIGHT] =
+    {   SEARCH_GROUP_LEFT,
+        0xFF,
+        SEARCH_NAME,
+        SEARCH_TYPE_RIGHT
+    },
     [SEARCH_TYPE_LEFT] =
     {
         0xFF,
         SEARCH_TYPE_RIGHT,
-        SEARCH_COLOR,
+        //SEARCH_COLOR,
+        SEARCH_GROUP_LEFT,
         SEARCH_ORDER
     },
     [SEARCH_TYPE_RIGHT] =
     {   SEARCH_TYPE_LEFT,
         0xFF,
-        SEARCH_COLOR,
+        //SEARCH_COLOR,
+        SEARCH_GROUP_RIGHT,
         SEARCH_ORDER
     },
     [SEARCH_ORDER] =
@@ -1620,7 +1696,23 @@ static const u8 sSearchMovementMap_ShiftHoennDex[SEARCH_COUNT][4] =
         0xFF,
         0xFF
     },
+    /*
     [SEARCH_COLOR] =
+    {
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF
+    },
+    */
+    [SEARCH_GROUP_LEFT] =
+    {
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF
+    },
+    [SEARCH_GROUP_RIGHT] =
     {
         0xFF,
         0xFF,
@@ -1675,9 +1767,9 @@ static const struct SearchOptionText sDexOrderOptions[] =
 {
     [ORDER_NUMERICAL]    = {gText_DexSortNumericalDescription, gText_DexSortNumericalTitle},
     [ORDER_ALPHABETICAL] = {gText_DexSortAtoZDescription,      gText_DexSortAtoZTitle},
-    [ORDER_WEIGHT]       = {gText_DexSortWeightDescription,  gText_DexSortWeightTitle},
+    [ORDER_WEIGHT]       = {gText_DexSortWeightDescription,    gText_DexSortWeightTitle},
     //[ORDER_LIGHTEST]     = {gText_DexSortLightestDescription,  gText_DexSortLightestTitle},
-    [ORDER_HEIGHT]       = {gText_DexSortHeightDescription,   gText_DexSortHeightTitle},
+    [ORDER_HEIGHT]       = {gText_DexSortHeightDescription,    gText_DexSortHeightTitle},
     //[ORDER_SMALLEST]     = {gText_DexSortSmallestDescription,  gText_DexSortSmallestTitle},
     {},
 };
@@ -1697,6 +1789,7 @@ static const struct SearchOptionText sDexSearchNameOptions[] =
     {},
 };
 
+/*
 static const struct SearchOptionText sDexSearchColorOptions[] =
 {
     {gText_DexEmptyString, gText_DexSearchDontSpecify},
@@ -1710,6 +1803,28 @@ static const struct SearchOptionText sDexSearchColorOptions[] =
     [BODY_COLOR_GRAY + 1]   = {gText_DexEmptyString, gText_DexSearchColorGray},
     [BODY_COLOR_WHITE + 1]  = {gText_DexEmptyString, gText_DexSearchColorWhite},
     [BODY_COLOR_PINK + 1]   = {gText_DexEmptyString, gText_DexSearchColorPink},
+    {},
+};
+*/
+
+static const struct SearchOptionText sDexSearchGroupOptions[] =
+{
+    {gText_DexEmptyString, gText_DexSearchTypeNone},
+    [EGG_GROUP_AMORPHOUS]           = {gText_DexEmptyString, gText_DexSearchGroupAmorphous},
+    [EGG_GROUP_BUG]                 = {gText_DexEmptyString, gText_DexSearchGroupBug},
+    [EGG_GROUP_DITTO]               = {gText_DexEmptyString, gText_DexSearchGroupDitto},
+    [EGG_GROUP_DRAGON]              = {gText_DexEmptyString, gText_DexSearchGroupDragon},
+    [EGG_GROUP_FAIRY]               = {gText_DexEmptyString, gText_DexSearchGroupFairy},
+    [EGG_GROUP_FIELD]               = {gText_DexEmptyString, gText_DexSearchGroupField},
+    [EGG_GROUP_FLYING]              = {gText_DexEmptyString, gText_DexSearchGroupFlying},
+    [EGG_GROUP_GRASS]               = {gText_DexEmptyString, gText_DexSearchGroupGrass},
+    [EGG_GROUP_HUMAN_LIKE]          = {gText_DexEmptyString, gText_DexSearchGroupHumanLike},
+    [EGG_GROUP_MINERAL]             = {gText_DexEmptyString, gText_DexSearchGroupMineral},
+    [EGG_GROUP_MONSTER]             = {gText_DexEmptyString, gText_DexSearchGroupMonster},
+    [EGG_GROUP_WATER_1]             = {gText_DexEmptyString, gText_DexSearchGroupWater1},
+    [EGG_GROUP_WATER_2]             = {gText_DexEmptyString, gText_DexSearchGroupWater2},
+    [EGG_GROUP_WATER_3]             = {gText_DexEmptyString, gText_DexSearchGroupWater3},
+    [EGG_GROUP_NO_EGGS_DISCOVERED]  = {gText_DexEmptyString, gText_DexSearchGroupUnknown},
     {},
 };
 
@@ -1769,16 +1884,38 @@ static const u8 sDexSearchTypeIds[NUMBER_OF_MON_TYPES] =
     TYPE_DARK,
 };
 
+static const u8 sDexSearchGroupIds[EGG_GROUPS_COUNT] =
+{
+    EGG_GROUP_NONE,
+    EGG_GROUP_MONSTER,
+    EGG_GROUP_WATER_1,
+    EGG_GROUP_BUG,
+    EGG_GROUP_FLYING,
+    EGG_GROUP_FIELD,
+    EGG_GROUP_FAIRY,
+    EGG_GROUP_GRASS,
+    EGG_GROUP_HUMAN_LIKE,
+    EGG_GROUP_WATER_3,
+    EGG_GROUP_MINERAL,
+    EGG_GROUP_AMORPHOUS,
+    EGG_GROUP_WATER_2,
+    EGG_GROUP_DITTO,
+    EGG_GROUP_DRAGON,
+    EGG_GROUP_NO_EGGS_DISCOVERED,
+};
+
 // Number pairs are the task data for tracking the cursor pos and scroll offset of each option list
 // See task data defines above Task_LoadSearchMenu
 static const struct SearchOption sSearchOptions[] =
 {
-    [SEARCH_NAME]       = {sDexSearchNameOptions,  6,  7, ARRAY_COUNT(sDexSearchNameOptions) - 1},
-    [SEARCH_COLOR]      = {sDexSearchColorOptions, 8,  9, ARRAY_COUNT(sDexSearchColorOptions) - 1},
-    [SEARCH_TYPE_LEFT]  = {sDexSearchTypeOptions, 10, 11, ARRAY_COUNT(sDexSearchTypeOptions) - 1},
-    [SEARCH_TYPE_RIGHT] = {sDexSearchTypeOptions, 12, 13, ARRAY_COUNT(sDexSearchTypeOptions) - 1},
-    [SEARCH_ORDER]      = {sDexOrderOptions,       4,  5, ARRAY_COUNT(sDexOrderOptions) - 1},
-    [SEARCH_MODE]       = {sDexModeOptions,        2,  3, ARRAY_COUNT(sDexModeOptions) - 1},
+    [SEARCH_NAME]        = {sDexSearchNameOptions,  6,  7, ARRAY_COUNT(sDexSearchNameOptions) - 1},
+    //[SEARCH_COLOR]      = {sDexSearchColorOptions, 8,  9, ARRAY_COUNT(sDexSearchColorOptions) - 1},
+    [SEARCH_GROUP_LEFT]  = {sDexSearchGroupOptions, 8,  9, ARRAY_COUNT(sDexSearchGroupOptions) - 1},
+    [SEARCH_GROUP_RIGHT] = {sDexSearchGroupOptions,10, 11, ARRAY_COUNT(sDexSearchGroupOptions) - 1},
+    [SEARCH_TYPE_LEFT]   = {sDexSearchTypeOptions, 12, 13, ARRAY_COUNT(sDexSearchTypeOptions) - 1},
+    [SEARCH_TYPE_RIGHT]  = {sDexSearchTypeOptions, 14, 15, ARRAY_COUNT(sDexSearchTypeOptions) - 1},
+    [SEARCH_ORDER]       = {sDexOrderOptions,       4,  5, ARRAY_COUNT(sDexOrderOptions) - 1},
+    [SEARCH_MODE]        = {sDexModeOptions,        2,  3, ARRAY_COUNT(sDexModeOptions) - 1},
 };
 
 static const struct BgTemplate sSearchMenu_BgTemplate[] =
@@ -4061,15 +4198,15 @@ static void Task_LoadInfoScreen(u8 taskId)
             LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);                         // Load spritesheet for move type sprites
             LoadCompressedPalette(gMoveTypes_Pal, OBJ_PLTT_ID(12), 4 * PLTT_SIZE_4BPP); // Load palettes for move type sprites
             sPokedexView->monSpriteIds[1] = CreateSprite(&sSpriteTemplate_MoveTypes, 0, 0, 2);
-            SetTypeSpritePosAndPal(types[0], 96, 56, sPokedexView->monSpriteIds[1]);
+            SetTypeSpritePosAndPal(types[0], 96, 57, sPokedexView->monSpriteIds[1]);
             if (types[1] == types[0])
             {
-                SetTypeSpritePosAndPal(types[0], 96, 64, sPokedexView->monSpriteIds[1]);
+                SetTypeSpritePosAndPal(types[0], 96, 65, sPokedexView->monSpriteIds[1]);
             }
             else
             {
                 sPokedexView->monSpriteIds[2] = CreateSprite(&sSpriteTemplate_MoveTypes, 0, 0, 2);
-                SetTypeSpritePosAndPal(types[1], 96, 72, sPokedexView->monSpriteIds[2]);
+                SetTypeSpritePosAndPal(types[1], 96, 73, sPokedexView->monSpriteIds[2]);
             }
 
             
@@ -5874,11 +6011,12 @@ static u16 CreateSizeScreenTrainerPic(u16 species, s16 x, s16 y, s8 paletteSlot)
     return CreateTrainerPicSprite(species, TRUE, x, y, paletteSlot, TAG_NONE);
 }
 
-static int DoPokedexSearch(u8 dexMode, u8 order, u8 abcGroup, u8 bodyColor, u8 type1, u8 type2)
+static int DoPokedexSearch(u8 dexMode, u8 order, u8 abcGroup, u8 eggGroup1, u8 eggGroup2, u8 type1, u8 type2)
 {
     u16 species;
     u16 i;
     u16 resultsCount;
+    u8 groups[2];
     u8 types[2];
 
     CreatePokedexList(dexMode, order);
@@ -5911,6 +6049,7 @@ static int DoPokedexSearch(u8 dexMode, u8 order, u8 abcGroup, u8 bodyColor, u8 t
         sPokedexView->pokemonListCount = resultsCount;
     }
 
+    /*
     // Search by body color
     if (bodyColor != 0xFF)
     {
@@ -5922,6 +6061,55 @@ static int DoPokedexSearch(u8 dexMode, u8 order, u8 abcGroup, u8 bodyColor, u8 t
             {
                 sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
                 resultsCount++;
+            }
+        }
+        sPokedexView->pokemonListCount = resultsCount;
+    }
+    */
+
+    // Search by group
+    if (eggGroup1 != EGG_GROUP_NONE || eggGroup2 != EGG_GROUP_NONE)
+    {
+        if (eggGroup1 == EGG_GROUP_NONE)
+        {
+            eggGroup1 = eggGroup2;
+            eggGroup2 = EGG_GROUP_NONE;
+        }
+
+        if (eggGroup2 == EGG_GROUP_NONE)
+        {
+            for (i = 0, resultsCount = 0; i < sPokedexView->pokemonListCount; i++)
+            {
+                if (sPokedexView->pokedexList[i].owned)
+                {
+                    species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+
+                    groups[0] = gSpeciesInfo[species].eggGroups[0];
+                    groups[1] = gSpeciesInfo[species].eggGroups[1];
+                    if (groups[0] == eggGroup1 || groups[1] == eggGroup1)
+                    {
+                        sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
+                        resultsCount++;
+                    }
+                }
+            }
+        }
+        else
+        {
+            for (i = 0, resultsCount = 0; i < sPokedexView->pokemonListCount; i++)
+            {
+                if (sPokedexView->pokedexList[i].owned)
+                {
+                    species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+
+                    groups[0] = gSpeciesInfo[species].eggGroups[0];
+                    groups[1] = gSpeciesInfo[species].eggGroups[1];
+                    if ((groups[0] == eggGroup1 && groups[1] == eggGroup2) || (groups[0] == eggGroup2 && groups[1] == eggGroup1))
+                    {
+                        sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
+                        resultsCount++;
+                    }
+                }
             }
         }
         sPokedexView->pokemonListCount = resultsCount;
@@ -6009,22 +6197,26 @@ static void ClearSearchMenuRect(u32 x, u32 y, u32 width, u32 height)
 }
 
 // Search task data
-#define tTopBarItem             data[0]
-#define tMenuItem               data[1]
-#define tCursorPos_Mode         data[2]
-#define tScrollOffset_Mode      data[3]
-#define tCursorPos_Order        data[4]
-#define tScrollOffset_Order     data[5]
-#define tCursorPos_Name         data[6]
-#define tScrollOffset_Name      data[7]
-#define tCursorPos_Color        data[8]
-#define tScrollOffset_Color     data[9]
-#define tCursorPos_TypeLeft     data[10]
-#define tScrollOffset_TypeLeft  data[11]
-#define tCursorPos_TypeRight    data[12]
-#define tScrollOffset_TypeRight data[13]
-#define tCursorPos              data[14]
-#define tScrollOffset           data[15]
+#define tTopBarItem              data[0]
+#define tMenuItem                data[1]
+#define tCursorPos_Mode          data[2]
+#define tScrollOffset_Mode       data[3]
+#define tCursorPos_Order         data[4]
+#define tScrollOffset_Order      data[5]
+#define tCursorPos_Name          data[6]
+#define tScrollOffset_Name       data[7]
+//#define tCursorPos_Color        data[8]
+//#define tScrollOffset_Color     data[9]
+#define tCursorPos_GroupLeft     data[8]
+#define tScrollOffset_GroupLeft  data[9]
+#define tCursorPos_GroupRight    data[10]
+#define tScrollOffset_GroupRight data[11]
+#define tCursorPos_TypeLeft      data[12]
+#define tScrollOffset_TypeLeft   data[13]
+#define tCursorPos_TypeRight     data[14]
+#define tScrollOffset_TypeRight  data[15]
+#define tCursorPos               data[16]
+#define tScrollOffset            data[17]
 
 static void Task_LoadSearchMenu(u8 taskId)
 {
@@ -6285,11 +6477,14 @@ static void Task_StartPokedexSearch(u8 taskId)
     u8 dexMode = GetSearchModeSelection(taskId, SEARCH_MODE);
     u8 order = GetSearchModeSelection(taskId, SEARCH_ORDER);
     u8 abcGroup = GetSearchModeSelection(taskId, SEARCH_NAME);
-    u8 bodyColor = GetSearchModeSelection(taskId, SEARCH_COLOR);
+    //u8 bodyColor = GetSearchModeSelection(taskId, SEARCH_COLOR);
+    u8 eggGroup1 = GetSearchModeSelection(taskId, SEARCH_GROUP_LEFT);
+    u8 eggGroup2 = GetSearchModeSelection(taskId, SEARCH_GROUP_RIGHT);
     u8 type1 = GetSearchModeSelection(taskId, SEARCH_TYPE_LEFT);
     u8 type2 = GetSearchModeSelection(taskId, SEARCH_TYPE_RIGHT);
 
-    DoPokedexSearch(dexMode, order, abcGroup, bodyColor, type1, type2);
+    //DoPokedexSearch(dexMode, order, abcGroup, bodyColor, type1, type2);
+    DoPokedexSearch(dexMode, order, abcGroup, eggGroup1, eggGroup2, type1, type2);
     gTasks[taskId].func = Task_WaitAndCompleteSearch;
 }
 
@@ -6483,13 +6678,16 @@ void SetSearchRectHighlight(u8 flags, u8 x, u8 y, u8 width)
 #define SEARCH_BG_SHIFT                 SEARCH_TOPBAR_SHIFT
 #define SEARCH_BG_CANCEL                SEARCH_TOPBAR_CANCEL
 #define SEARCH_BG_NAME                  (SEARCH_NAME + SEARCH_TOPBAR_COUNT)
-#define SEARCH_BG_COLOR                 (SEARCH_COLOR + SEARCH_TOPBAR_COUNT)
+//#define SEARCH_BG_COLOR                 (SEARCH_COLOR + SEARCH_TOPBAR_COUNT)
+#define SEARCH_BG_GROUP_SELECTION_LEFT  (SEARCH_GROUP_LEFT + SEARCH_TOPBAR_COUNT)
+#define SEARCH_BG_GROUP_SELECTION_RIGHT (SEARCH_GROUP_RIGHT + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_TYPE_SELECTION_LEFT   (SEARCH_TYPE_LEFT + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_TYPE_SELECTION_RIGHT  (SEARCH_TYPE_RIGHT + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_ORDER                 (SEARCH_ORDER + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_MODE                  (SEARCH_MODE + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_OK                    (SEARCH_OK + SEARCH_TOPBAR_COUNT)
-#define SEARCH_BG_TYPE_TITLE            (SEARCH_COUNT + SEARCH_TOPBAR_COUNT)
+#define SEARCH_BG_GROUP_TITLE           (SEARCH_COUNT + SEARCH_TOPBAR_COUNT)
+#define SEARCH_BG_TYPE_TITLE            (SEARCH_COUNT + SEARCH_TOPBAR_COUNT + 1)
 
 static void DrawSearchMenuItemBgHighlight(u8 searchBg, bool8 unselected, bool8 disabled)
 {
@@ -6503,14 +6701,19 @@ static void DrawSearchMenuItemBgHighlight(u8 searchBg, bool8 unselected, bool8 d
         SetSearchRectHighlight(highlightFlags, sSearchMenuTopBarItems[searchBg].highlightX, sSearchMenuTopBarItems[searchBg].highlightY, sSearchMenuTopBarItems[searchBg].highlightWidth);
         break;
     case SEARCH_BG_NAME:
-    case SEARCH_BG_COLOR:
+    //case SEARCH_BG_COLOR:
     case SEARCH_BG_ORDER:
     case SEARCH_BG_MODE:
         SetSearchRectHighlight(highlightFlags, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].titleBgX, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].titleBgY, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].titleBgWidth);
         // fall through, draw selectionBg for above
+    case SEARCH_BG_GROUP_SELECTION_LEFT:
+    case SEARCH_BG_GROUP_SELECTION_RIGHT:
     case SEARCH_BG_TYPE_SELECTION_LEFT:
     case SEARCH_BG_TYPE_SELECTION_RIGHT:
         SetSearchRectHighlight(highlightFlags, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].selectionBgX, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].selectionBgY, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].selectionBgWidth);
+        break;
+    case SEARCH_BG_GROUP_TITLE:
+        SetSearchRectHighlight(highlightFlags, sSearchMenuItems[SEARCH_GROUP_LEFT].titleBgX, sSearchMenuItems[SEARCH_GROUP_LEFT].titleBgY, sSearchMenuItems[SEARCH_GROUP_LEFT].titleBgWidth);
         break;
     case SEARCH_BG_TYPE_TITLE:
         SetSearchRectHighlight(highlightFlags, sSearchMenuItems[SEARCH_TYPE_LEFT].titleBgX, sSearchMenuItems[SEARCH_TYPE_LEFT].titleBgY, sSearchMenuItems[SEARCH_TYPE_LEFT].titleBgWidth);
@@ -6533,7 +6736,10 @@ static void SetInitialSearchMenuBgHighlights(u8 topBarItem)
         DrawSearchMenuItemBgHighlight(SEARCH_BG_SHIFT, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_CANCEL, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_NAME, TRUE, FALSE);
-        DrawSearchMenuItemBgHighlight(SEARCH_BG_COLOR, TRUE, FALSE);
+        //DrawSearchMenuItemBgHighlight(SEARCH_BG_COLOR, TRUE, FALSE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_TITLE, TRUE, FALSE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_LEFT, TRUE, FALSE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_RIGHT, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_TYPE_TITLE, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_TYPE_SELECTION_LEFT, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_TYPE_SELECTION_RIGHT, TRUE, FALSE);
@@ -6546,7 +6752,10 @@ static void SetInitialSearchMenuBgHighlights(u8 topBarItem)
         DrawSearchMenuItemBgHighlight(SEARCH_BG_SHIFT, FALSE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_CANCEL, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_NAME, TRUE, TRUE);
-        DrawSearchMenuItemBgHighlight(SEARCH_BG_COLOR, TRUE, TRUE);
+        //DrawSearchMenuItemBgHighlight(SEARCH_BG_COLOR, TRUE, TRUE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_TITLE, TRUE, TRUE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_LEFT, TRUE, TRUE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_RIGHT, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_TYPE_TITLE, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_TYPE_SELECTION_LEFT, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_TYPE_SELECTION_RIGHT, TRUE, TRUE);
@@ -6559,7 +6768,10 @@ static void SetInitialSearchMenuBgHighlights(u8 topBarItem)
         DrawSearchMenuItemBgHighlight(SEARCH_BG_SHIFT, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_CANCEL, FALSE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_NAME, TRUE, TRUE);
-        DrawSearchMenuItemBgHighlight(SEARCH_BG_COLOR, TRUE, TRUE);
+        //DrawSearchMenuItemBgHighlight(SEARCH_BG_COLOR, TRUE, TRUE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_TITLE, TRUE, TRUE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_LEFT, TRUE, TRUE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_RIGHT, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_TYPE_TITLE, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_TYPE_SELECTION_LEFT, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_TYPE_SELECTION_RIGHT, TRUE, TRUE);
@@ -6584,8 +6796,18 @@ static void HighlightSelectedSearchMenuItem(u8 topBarItem, u8 menuItem)
     case SEARCH_NAME:
         DrawSearchMenuItemBgHighlight(SEARCH_BG_NAME, FALSE, FALSE);
         break;
+    /*
     case SEARCH_COLOR:
         DrawSearchMenuItemBgHighlight(SEARCH_BG_COLOR, FALSE, FALSE);
+        break;
+    */
+    case SEARCH_GROUP_LEFT:
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_TITLE, FALSE, FALSE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_LEFT, FALSE, FALSE);
+        break;
+    case SEARCH_GROUP_RIGHT:
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_TITLE, FALSE, FALSE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_RIGHT, FALSE, FALSE);
         break;
     case SEARCH_TYPE_LEFT:
         DrawSearchMenuItemBgHighlight(SEARCH_BG_TYPE_TITLE, FALSE, FALSE);
@@ -6612,14 +6834,40 @@ static void HighlightSelectedSearchMenuItem(u8 topBarItem, u8 menuItem)
 static void PrintSelectedSearchParameters(u8 taskId)
 {
     u16 searchParamId;
+    u8 truncatedGroup[7];
+    u8 i, j;
 
     ClearSearchMenuRect(40, 16, 96, 80);
 
     searchParamId = gTasks[taskId].tCursorPos_Name + gTasks[taskId].tScrollOffset_Name;
     PrintSearchText(sDexSearchNameOptions[searchParamId].title, 0x2D, 0x11);
 
+    /*
     searchParamId = gTasks[taskId].tCursorPos_Color + gTasks[taskId].tScrollOffset_Color;
     PrintSearchText(sDexSearchColorOptions[searchParamId].title, 0x2D, 0x21);
+    */
+
+    searchParamId = gTasks[taskId].tCursorPos_GroupLeft + gTasks[taskId].tScrollOffset_GroupLeft;
+    for (i = 0, j = 0; i < 6 && sDexSearchGroupOptions[searchParamId].title[j] != EOS; i++, j++)
+    {
+        if (sDexSearchGroupOptions[searchParamId].title[j] == CHAR_SPACE)
+            j++;
+
+        truncatedGroup[i] = sDexSearchGroupOptions[searchParamId].title[j];
+    }
+    truncatedGroup[i] = EOS;
+    PrintSearchText(truncatedGroup, 0x2D, 0x21);
+
+    searchParamId = gTasks[taskId].tCursorPos_GroupRight + gTasks[taskId].tScrollOffset_GroupRight;
+    for (i = 0, j = 0; i < 6 && sDexSearchGroupOptions[searchParamId].title[i] != EOS; i++, j++)
+    {
+        if (sDexSearchGroupOptions[searchParamId].title[j] == CHAR_SPACE)
+            j++;
+
+        truncatedGroup[i] = sDexSearchGroupOptions[searchParamId].title[j];
+    }
+    truncatedGroup[i] = EOS;
+    PrintSearchText(truncatedGroup, 0x5D, 0x21);
 
     searchParamId = gTasks[taskId].tCursorPos_TypeLeft + gTasks[taskId].tScrollOffset_TypeLeft;
     PrintSearchText(sDexSearchTypeOptions[searchParamId].title, 0x2D, 0x31);
@@ -6707,11 +6955,16 @@ static u8 GetSearchModeSelection(u8 taskId, u8 option)
             return 0xFF;
         else
             return id;
+    /*
     case SEARCH_COLOR:
         if (id == 0)
             return 0xFF;
         else
             return id - 1;
+    */
+    case SEARCH_GROUP_LEFT:
+    case SEARCH_GROUP_RIGHT:
+        return sDexSearchGroupIds[id];
     case SEARCH_TYPE_LEFT:
     case SEARCH_TYPE_RIGHT:
         return sDexSearchTypeIds[id];
