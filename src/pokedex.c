@@ -85,10 +85,10 @@ enum
 {
    ORDER_NUMERICAL,
    ORDER_ALPHABETICAL,
-   ORDER_HEAVIEST,
-   ORDER_LIGHTEST,
-   ORDER_TALLEST,
-   ORDER_SMALLEST
+   ORDER_WEIGHT,
+   //ORDER_LIGHTEST,
+   ORDER_HEIGHT,
+   //ORDER_SMALLEST
 };
 
 enum
@@ -1675,10 +1675,10 @@ static const struct SearchOptionText sDexOrderOptions[] =
 {
     [ORDER_NUMERICAL]    = {gText_DexSortNumericalDescription, gText_DexSortNumericalTitle},
     [ORDER_ALPHABETICAL] = {gText_DexSortAtoZDescription,      gText_DexSortAtoZTitle},
-    [ORDER_HEAVIEST]     = {gText_DexSortHeaviestDescription,  gText_DexSortHeaviestTitle},
-    [ORDER_LIGHTEST]     = {gText_DexSortLightestDescription,  gText_DexSortLightestTitle},
-    [ORDER_TALLEST]      = {gText_DexSortTallestDescription,   gText_DexSortTallestTitle},
-    [ORDER_SMALLEST]     = {gText_DexSortSmallestDescription,  gText_DexSortSmallestTitle},
+    [ORDER_WEIGHT]       = {gText_DexSortWeightDescription,  gText_DexSortWeightTitle},
+    //[ORDER_LIGHTEST]     = {gText_DexSortLightestDescription,  gText_DexSortLightestTitle},
+    [ORDER_HEIGHT]       = {gText_DexSortHeightDescription,   gText_DexSortHeightTitle},
+    //[ORDER_SMALLEST]     = {gText_DexSortSmallestDescription,  gText_DexSortSmallestTitle},
     {},
 };
 
@@ -1741,10 +1741,10 @@ static const u8 sOrderOptions[] =
 {
     ORDER_NUMERICAL,
     ORDER_ALPHABETICAL,
-    ORDER_HEAVIEST,
-    ORDER_LIGHTEST,
-    ORDER_TALLEST,
-    ORDER_SMALLEST,
+    ORDER_WEIGHT,
+    //ORDER_LIGHTEST,
+    ORDER_HEIGHT,
+    //ORDER_SMALLEST,
 };
 
 static const u8 sDexSearchTypeIds[NUMBER_OF_MON_TYPES] =
@@ -2593,7 +2593,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             }
         }
         break;
-    case ORDER_HEAVIEST:
+    case ORDER_WEIGHT:
         for (i = NATIONAL_DEX_COUNT - 1; i >= 0; i--)
         {
             temp_dexNum = gPokedexOrder_Weight[i];
@@ -2607,6 +2607,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             }
         }
         break;
+    /*
     case ORDER_LIGHTEST:
         for (i = 0; i < NATIONAL_DEX_COUNT; i++)
         {
@@ -2621,7 +2622,8 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             }
         }
         break;
-    case ORDER_TALLEST:
+    */
+    case ORDER_HEIGHT:
         for (i = NATIONAL_DEX_COUNT - 1; i >= 0; i--)
         {
             temp_dexNum = gPokedexOrder_Height[i];
@@ -2635,6 +2637,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             }
         }
         break;
+    /*
     case ORDER_SMALLEST:
         for (i = 0; i < NATIONAL_DEX_COUNT; i++)
         {
@@ -2649,6 +2652,7 @@ static void CreatePokedexList(u8 dexMode, u8 order)
             }
         }
         break;
+    */
     }
 
     for (i = sPokedexView->pokemonListCount; i < NATIONAL_DEX_COUNT; i++)
@@ -6739,18 +6743,18 @@ static void SetDefaultSearchModeAndOrder(u8 taskId)
     case ORDER_ALPHABETICAL:
         selected = ORDER_ALPHABETICAL;
         break;
-    case ORDER_HEAVIEST:
-        selected = ORDER_HEAVIEST;
+    case ORDER_WEIGHT:
+        selected = ORDER_WEIGHT;
         break;
-    case ORDER_LIGHTEST:
-        selected = ORDER_LIGHTEST;
+    //case ORDER_LIGHTEST:
+    //    selected = ORDER_LIGHTEST;
+    //    break;
+    case ORDER_HEIGHT:
+        selected = ORDER_HEIGHT;
         break;
-    case ORDER_TALLEST:
-        selected = ORDER_TALLEST;
-        break;
-    case ORDER_SMALLEST:
-        selected = ORDER_SMALLEST;
-        break;
+    //case ORDER_SMALLEST:
+    //    selected = ORDER_SMALLEST;
+    //    break;
     }
     gTasks[taskId].tCursorPos_Order = selected;
 }
