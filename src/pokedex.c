@@ -1941,6 +1941,7 @@ static const struct SearchOptionText sDexSearchAbilityInitialOptions[] =
     {},
 };
 
+/*
 static const struct SearchOptionText sDexSearchAbilityOptionsABC[] =
 {
     {gText_DexEmptyString, gAbilityNames[ABILITY_AIR_LOCK]},
@@ -2057,6 +2058,16 @@ static const struct SearchOptionText sDexSearchAbilityOptionsVWX[] =
     {gText_DexEmptyString, gAbilityNames[ABILITY_WONDER_GUARD]},
     {},
 };
+*/
+
+static struct SearchOptionText sDexSearchAbilityOptionsABC[12];
+static struct SearchOptionText sDexSearchAbilityOptionsDEF[9];
+static struct SearchOptionText sDexSearchAbilityOptionsGHI[10];
+static struct SearchOptionText sDexSearchAbilityOptionsJKL[6];
+static struct SearchOptionText sDexSearchAbilityOptionsMNO[9];
+static struct SearchOptionText sDexSearchAbilityOptionsPQR[10];
+static struct SearchOptionText sDexSearchAbilityOptionsSTU[22];
+static struct SearchOptionText sDexSearchAbilityOptionsVWX[7];
 
 /*
 static const struct SearchOptionText sDexSearchAbilityOptions[] =
@@ -2496,6 +2507,56 @@ static void CB2_Pokedex(void)
     AnimateSprites();
     BuildOamBuffer();
     UpdatePaletteFade();
+}
+
+void InitDexSearchAbilityOptions(void)
+{
+    u8 i, j;
+    struct SearchOptionText *abilityOptions[] =
+    {
+        sDexSearchAbilityOptionsABC,
+        sDexSearchAbilityOptionsDEF,
+        sDexSearchAbilityOptionsGHI,
+        sDexSearchAbilityOptionsJKL,
+        sDexSearchAbilityOptionsMNO,
+        sDexSearchAbilityOptionsPQR,
+        sDexSearchAbilityOptionsSTU,
+        sDexSearchAbilityOptionsVWX,
+    };
+    const u8 *abilityIds[] =
+    {
+        sDexSearchAbilityIdsABC,
+        sDexSearchAbilityIdsDEF,
+        sDexSearchAbilityIdsGHI,
+        sDexSearchAbilityIdsJKL,
+        sDexSearchAbilityIdsMNO,
+        sDexSearchAbilityIdsPQR,
+        sDexSearchAbilityIdsSTU,
+        sDexSearchAbilityIdsVWX,
+    };
+    const u32 abilitySizes[] =
+    {
+        11,
+        8,
+        9,
+        5,
+        8,
+        9,
+        21,
+        6,
+    };
+
+    for (i = 0; i < ARRAY_COUNT(abilityOptions); i++)
+    {
+        for (j = 0; j < abilitySizes[i]; j++)
+        {
+            abilityOptions[i][j].description = gLongAbilityDescriptions[abilityIds[i][j]];
+            abilityOptions[i][j].title = gAbilityNames[abilityIds[i][j]];
+        }
+        // Add the terminating empty entry
+        abilityOptions[i][abilitySizes[i]].description = NULL;
+        abilityOptions[i][abilitySizes[i]].title = NULL;
+    }
 }
 
 void Task_OpenPokedexMainPage(u8 taskId)
@@ -6741,6 +6802,7 @@ static void Task_LoadSearchMenu(u8 taskId)
             else
                 CopyToBgTilemapBuffer(3, gPokedexSearchMenuNational_Tilemap, 0, 0);
             LoadPalette(gPokedexSearchMenu_Pal + 1, BG_PLTT_ID(0) + 1, PLTT_SIZEOF(4 * 16 - 1));
+            InitDexSearchAbilityOptions();
             gMain.state = 1;
         }
         break;
