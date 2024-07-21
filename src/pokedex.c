@@ -7690,7 +7690,8 @@ static void SetDefaultSearchModeAndOrder(u8 taskId)
     //    selected = ORDER_SMALLEST;
     //    break;
     }
-    gTasks[taskId].tCursorPos_Order = selected;
+    gTasks[taskId].tCursorPos_Order = selected > MAX_SEARCH_PARAM_CURSOR_POS ? MAX_SEARCH_PARAM_CURSOR_POS : selected;
+    gTasks[taskId].tScrollOffset_Order = selected - MAX_SEARCH_PARAM_CURSOR_POS > 0 ? selected - MAX_SEARCH_PARAM_CURSOR_POS : 0;
 }
 
 static bool8 SearchParamCantScrollUp(u8 taskId)
