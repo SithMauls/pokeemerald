@@ -1135,6 +1135,7 @@ extern const u8 gText_ListByFirstLetter[];
 extern const u8 gText_ListByType[];
 extern const u8 gText_ListByGroup[];
 extern const u8 gText_ListByAbility[];
+extern const u8 gText_ListByMove[];
 extern const u8 gText_ExecuteSearchSwitch[];
 extern const u8 gText_DexHoennTitle[];
 extern const u8 gText_DexNatTitle[];

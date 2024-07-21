@@ -1474,7 +1474,7 @@ static const struct SearchMenuItem sSearchMenuItems[SEARCH_COUNT] =
     },
     [SEARCH_MOVE] =
     {
-        .description = gText_ListByGroup,
+        .description = gText_ListByMove,
         .titleBgX = 0,
         .titleBgY = 8,
         .titleBgWidth = 5,
@@ -2100,6 +2100,15 @@ static const struct SearchOptionText sDexSearchTypeOptions[NUMBER_OF_MON_TYPES +
     {},
 };
 
+static const struct SearchOptionText sDexSearchMoveOptions[] =
+{
+    {gText_DexEmptyString, gText_DexSearchTypeNone},
+    {gText_DexEmptyString, gMoveNames[MOVE_PSYCHIC]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SWORDS_DANCE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SPORE]},
+    {},
+};
+
 static const u8 sPokedexModes[] = {DEX_MODE_HOENN, DEX_MODE_NATIONAL};
 static const u8 sOrderOptions[] =
 {
@@ -2158,6 +2167,14 @@ static const u8 sDexSearchGroupIds[EGG_GROUPS_COUNT] =
     EGG_GROUP_WATER_2,
     EGG_GROUP_WATER_3,
     EGG_GROUP_NO_EGGS_DISCOVERED,
+};
+
+static const u8 sDexSearchMoveIds[] =
+{
+    MOVE_NONE,
+    MOVE_PSYCHIC,
+    MOVE_SWORDS_DANCE,
+    MOVE_SPORE,
 };
 
 static const u8 sDexSearchAbilityIdsABC[] =
@@ -2285,17 +2302,17 @@ static const struct SearchOption sSearchOptions[] =
     [SEARCH_GROUP_LEFT]  = {sDexSearchGroupOptions,             10, 11, ARRAY_COUNT(sDexSearchGroupOptions) - 1},
     [SEARCH_GROUP_RIGHT] = {sDexSearchGroupOptions,             12, 13, ARRAY_COUNT(sDexSearchGroupOptions) - 1},
     [SEARCH_ABILITY]     = {sDexSearchAbilityInitialOptions,    14, 15, ARRAY_COUNT(sDexSearchAbilityInitialOptions) - 1},
-    [SEARCH_MOVE]        = {sDexSearchTypeOptions,              16, 17, ARRAY_COUNT(sDexSearchTypeOptions) - 1},
+    [SEARCH_MOVE]        = {sDexSearchMoveOptions,              24, 25, ARRAY_COUNT(sDexSearchMoveOptions) - 1},
     [SEARCH_ORDER]       = {sDexOrderOptions,                    4,  5, ARRAY_COUNT(sDexOrderOptions) - 1},
     [SEARCH_MODE]        = {sDexModeOptions,                     2,  3, ARRAY_COUNT(sDexModeOptions) - 1},
-    [SEARCH_ABILITY_ABC] = {sDexSearchAbilityOptionsABC,        20, 21, ARRAY_COUNT(sDexSearchAbilityOptionsABC) - 1},
-    [SEARCH_ABILITY_DEF] = {sDexSearchAbilityOptionsDEF,        20, 21, ARRAY_COUNT(sDexSearchAbilityOptionsDEF) - 1},
-    [SEARCH_ABILITY_GHI] = {sDexSearchAbilityOptionsGHI,        20, 21, ARRAY_COUNT(sDexSearchAbilityOptionsGHI) - 1},
-    [SEARCH_ABILITY_JKL] = {sDexSearchAbilityOptionsJKL,        20, 21, ARRAY_COUNT(sDexSearchAbilityOptionsJKL) - 1},
-    [SEARCH_ABILITY_MNO] = {sDexSearchAbilityOptionsMNO,        20, 21, ARRAY_COUNT(sDexSearchAbilityOptionsMNO) - 1},
-    [SEARCH_ABILITY_PQR] = {sDexSearchAbilityOptionsPQR,        20, 21, ARRAY_COUNT(sDexSearchAbilityOptionsPQR) - 1},
-    [SEARCH_ABILITY_STU] = {sDexSearchAbilityOptionsSTU,        20, 21, ARRAY_COUNT(sDexSearchAbilityOptionsSTU) - 1},
-    [SEARCH_ABILITY_VWX] = {sDexSearchAbilityOptionsVWX,        20, 21, ARRAY_COUNT(sDexSearchAbilityOptionsVWX) - 1},
+    [SEARCH_ABILITY_ABC] = {sDexSearchAbilityOptionsABC,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsABC) - 1},
+    [SEARCH_ABILITY_DEF] = {sDexSearchAbilityOptionsDEF,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsDEF) - 1},
+    [SEARCH_ABILITY_GHI] = {sDexSearchAbilityOptionsGHI,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsGHI) - 1},
+    [SEARCH_ABILITY_JKL] = {sDexSearchAbilityOptionsJKL,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsJKL) - 1},
+    [SEARCH_ABILITY_MNO] = {sDexSearchAbilityOptionsMNO,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsMNO) - 1},
+    [SEARCH_ABILITY_PQR] = {sDexSearchAbilityOptionsPQR,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsPQR) - 1},
+    [SEARCH_ABILITY_STU] = {sDexSearchAbilityOptionsSTU,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsSTU) - 1},
+    [SEARCH_ABILITY_VWX] = {sDexSearchAbilityOptionsVWX,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsVWX) - 1},
 };
 
 static const struct BgTemplate sSearchMenu_BgTemplate[] =
@@ -6539,14 +6556,15 @@ static u16 CreateSizeScreenTrainerPic(u16 species, s16 x, s16 y, s8 paletteSlot)
     return CreateTrainerPicSprite(species, TRUE, x, y, paletteSlot, TAG_NONE);
 }
 
-static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 eggGroup1, u32 eggGroup2, u32 ability)
+static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 eggGroup1, u32 eggGroup2, u32 ability, u32 move)
 {
-    u32 species;
-    u32 i;
-    u32 resultsCount;
+    u32 species, preSpecies, resultsCount, tutorLearnset;
+    u32 i, j;
     u32 groups[2];
     u32 types[2];
     u32 abilities[2];
+    bool32 moveFound;
+    const u16 *levelUpLearnset;
 
     CreatePokedexList(dexMode, order);
 
@@ -6713,6 +6731,104 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
         sPokedexView->pokemonListCount = resultsCount;
     }
 
+    // Search by move
+    if (move != MOVE_NONE)
+    {
+        for (i = 0, resultsCount = 0; i < sPokedexView->pokemonListCount; i++)
+        {
+            moveFound = FALSE;
+
+            if (sPokedexView->pokedexList[i].owned)
+            {
+                species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+                levelUpLearnset = gLevelUpLearnsets[species];
+
+                // Level up moves and pre-evolution level up moves
+                while (!moveFound && species != SPECIES_NONE)
+                {
+                    for (j = 0; levelUpLearnset[j] != LEVEL_UP_END; j++)
+                    {
+                        if ((levelUpLearnset[j] & LEVEL_UP_MOVE_ID) == move)
+                        {
+                            moveFound = TRUE;
+                            break;
+                        }
+                    }
+
+                    if (!moveFound)
+                    {
+                        species = GetPreEvolution(species);
+                        if (species != SPECIES_NONE)
+                        {
+                            levelUpLearnset = gLevelUpLearnsets[species];
+                        }
+                    }
+                }
+                               
+                // TMs
+                if (!moveFound)
+                {
+                    species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+
+                    for (j = 0; j <= ITEM_HM08 - ITEM_TM01; j++)
+                    {
+                        if (sTMHMMoves[j] == move && CanSpeciesLearnTMHM(species, j))
+                        {
+                            moveFound = TRUE;
+                            break;
+                        }
+                    }
+
+                    // Tutor moves
+                    if (!moveFound)
+                    {
+                        tutorLearnset = sTutorLearnsets[species];
+
+                        for (j = 0; j < TUTOR_MOVE_COUNT; j++)
+                        {
+                            if (gTutorMoves[j] == move && (tutorLearnset & (1 << j)))
+                            {
+                                moveFound = TRUE;
+                                break;
+                            }
+                        }
+                    
+                        // Egg moves
+                        if (!moveFound)
+                        {
+                            while (species != SPECIES_NONE)
+                            {
+                                preSpecies = species;
+                                species = GetPreEvolution(species);
+                            }
+
+                            j = FindSpeciesInEggMoves(preSpecies);
+                            if (j != -1)
+                            {
+                                j++; // Skip the species value
+                                while (gEggMoves[j] <= EGG_MOVES_SPECIES_OFFSET)
+                                {
+                                    if (gEggMoves[j] == move)
+                                    {
+                                        moveFound = TRUE;
+                                        break;
+                                    }
+                                    j++;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (moveFound)
+                {
+                    sPokedexView->pokedexList[resultsCount++] = sPokedexView->pokedexList[i];
+                }
+            }
+        }
+        sPokedexView->pokemonListCount = resultsCount;
+    }
+
     if (sPokedexView->pokemonListCount != 0)
     {
         for (i = sPokedexView->pokemonListCount; i < NATIONAL_DEX_COUNT; i++)
@@ -6767,12 +6883,12 @@ static void ClearSearchMenuRect(u32 x, u32 y, u32 width, u32 height)
 #define tScrollOffset_GroupRight data[13]
 #define tCursorPos_Ability       data[14]
 #define tScrollOffset_Ability    data[15]
-#define tCursorPos_Move          data[16]
-#define tScrollOffset_Move       data[17]
-#define tCursorPos               data[18]
-#define tScrollOffset            data[19]
-#define tCursorPos_Ability_2     data[20]
-#define tScrollOffset_Ability_2  data[21]
+#define tCursorPos_Move          data[24]
+#define tScrollOffset_Move       data[25]
+#define tCursorPos               data[26]
+#define tScrollOffset            data[27]
+#define tCursorPos_Ability_2     data[28]
+#define tScrollOffset_Ability_2  data[29]
 
 static void Task_LoadSearchMenu(u8 taskId)
 {
@@ -7039,10 +7155,11 @@ static void Task_StartPokedexSearch(u8 taskId)
     u32 eggGroup1 = GetSearchModeSelection(taskId, SEARCH_GROUP_LEFT);
     u32 eggGroup2 = GetSearchModeSelection(taskId, SEARCH_GROUP_RIGHT);
     u32 ability = GetSearchModeSelection(taskId, SEARCH_ABILITY);
+    u32 move = GetSearchModeSelection(taskId, SEARCH_MOVE);
     //u8 move = GetSearchModeSelection(taskId, SEARCH_MOVE);
 
     //DoPokedexSearch(dexMode, order, abcGroup, bodyColor, type1, type2);
-    DoPokedexSearch(dexMode, order, type1, type2, eggGroup1, eggGroup2, ability);
+    DoPokedexSearch(dexMode, order, type1, type2, eggGroup1, eggGroup2, ability, move);
     gTasks[taskId].func = Task_WaitAndCompleteSearch;
 }
 
@@ -7500,6 +7617,9 @@ static void PrintSelectedSearchParameters(u8 taskId)
         PrintSearchText(searchParamId2[searchParamId].title, 45, 49);
     }
 
+    searchParamId = gTasks[taskId].tCursorPos_Move + gTasks[taskId].tScrollOffset_Move;
+    PrintSearchText(sDexSearchMoveOptions[searchParamId].title, 45, 65);
+
     searchParamId = gTasks[taskId].tCursorPos_Order + gTasks[taskId].tScrollOffset_Order;
     PrintSearchText(sDexOrderOptions[searchParamId].title, 45, 81);
 
@@ -7628,6 +7748,8 @@ static u8 GetSearchModeSelection(u8 taskId, u8 option)
             default:
                 return sDexSearchAbilityIds[0];
         }
+    case SEARCH_MOVE:
+        return sDexSearchMoveIds[id];
     }
 }
 

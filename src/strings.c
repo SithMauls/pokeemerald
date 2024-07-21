@@ -124,6 +124,7 @@ const u8 gText_ListByFirstLetter[] = _("List by the first letter in the name.\nS
 const u8 gText_ListByType[] = _("List by type.\nOwned POKéMON only.");
 const u8 gText_ListByGroup[] = _("List by group.\nOwned POKéMON only.");
 const u8 gText_ListByAbility[] = _("List by ability.\nOwned POKéMON only.");
+const u8 gText_ListByMove[] = _("List by move.\nOwned POKéMON only.");
 const u8 gText_ExecuteSearchSwitch[] = _("Execute search/switch.");
 const u8 gText_DexHoennTitle[] = _("HOENN DEX");
 const u8 gText_DexNatTitle[] = _("NATIONAL DEX");
