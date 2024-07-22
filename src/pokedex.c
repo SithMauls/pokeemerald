@@ -84,6 +84,15 @@ enum
     SEARCH_ABILITY_PQR,
     SEARCH_ABILITY_STU,
     SEARCH_ABILITY_VWX,
+    SEARCH_MOVE_ABC,
+    SEARCH_MOVE_DEF,
+    SEARCH_MOVE_GHI,
+    SEARCH_MOVE_JKL,
+    SEARCH_MOVE_MNO,
+    SEARCH_MOVE_PQR,
+    SEARCH_MOVE_STU,
+    SEARCH_MOVE_VWX,
+    SEARCH_MOVE_YZ,
 };
 
 enum
@@ -589,7 +598,7 @@ static void HighlightSelectedSearchMenuItem(u8, u8);
 static void PrintSelectedSearchParameters(u8);
 static void DrawOrEraseSearchParameterBox(bool8);
 static void PrintSearchParameterText(u8);
-static u8 GetSearchModeSelection(u8 taskId, u8 option);
+static u16 GetSearchModeSelection(u8 taskId, u8 option);
 static void SetDefaultSearchModeAndOrder(u8);
 static void CreateSearchParameterScrollArrows(u8);
 static void EraseAndPrintSearchTextBox(const u8 *);
@@ -1941,124 +1950,20 @@ static const struct SearchOptionText sDexSearchAbilityInitialOptions[] =
     {},
 };
 
-/*
-static const struct SearchOptionText sDexSearchAbilityOptionsABC[] =
+static const struct SearchOptionText sDexSearchMoveInitialOptions[] =
 {
-    {gText_DexEmptyString, gAbilityNames[ABILITY_AIR_LOCK]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_ARENA_TRAP]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_BATTLE_ARMOR]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_BLAZE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_CACOPHONY]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_CHLOROPHYLL]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_CLEAR_BODY]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_CLOUD_NINE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_COLOR_CHANGE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_COMPOUND_EYES]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_CUTE_CHARM]},
+    {gText_DexEmptyString, gText_DexSearchTypeNone},
+    [NAME_ABC]  = {gText_DexEmptyString, gText_DexSearchAlphaABC},
+    [NAME_DEF]  = {gText_DexEmptyString, gText_DexSearchAlphaDEF},
+    [NAME_GHI]  = {gText_DexEmptyString, gText_DexSearchAlphaGHI},
+    [NAME_JKL]  = {gText_DexEmptyString, gText_DexSearchAlphaJKL},
+    [NAME_MNO]  = {gText_DexEmptyString, gText_DexSearchAlphaMNO},
+    [NAME_PQR]  = {gText_DexEmptyString, gText_DexSearchAlphaPQR},
+    [NAME_STU]  = {gText_DexEmptyString, gText_DexSearchAlphaSTU},
+    [NAME_VWX]  = {gText_DexEmptyString, gText_DexSearchAlphaVWX},
+    [NAME_YZ]   = {gText_DexEmptyString, gText_DexSearchAlphaYZ},
     {},
 };
-
-static const struct SearchOptionText sDexSearchAbilityOptionsDEF[] =
-{
-    {gText_DexEmptyString, gAbilityNames[ABILITY_DAMP]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_DRIZZLE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_DROUGHT]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_EARLY_BIRD]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_EFFECT_SPORE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_FLAME_BODY]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_FLASH_FIRE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_FORECAST]},
-    {},
-};
-
-static const struct SearchOptionText sDexSearchAbilityOptionsGHI[] =
-{
-    {gText_DexEmptyString, gAbilityNames[ABILITY_GUTS]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_HUGE_POWER]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_HUSTLE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_HYPER_CUTTER]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_ILLUMINATE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_IMMUNITY]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_INNER_FOCUS]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_INSOMNIA]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_INTIMIDATE]},
-    {},
-};
-
-static const struct SearchOptionText sDexSearchAbilityOptionsJKL[] =
-{
-    {gText_DexEmptyString, gAbilityNames[ABILITY_KEEN_EYE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_LEVITATE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_LIGHTNING_ROD]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_LIMBER]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_LIQUID_OOZE]},
-    {},
-};
-
-static const struct SearchOptionText sDexSearchAbilityOptionsMNO[] =
-{
-    {gText_DexEmptyString, gAbilityNames[ABILITY_MAGMA_ARMOR]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_MAGNET_PULL]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_MARVEL_SCALE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_MINUS]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_NATURAL_CURE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_OBLIVIOUS]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_OVERGROW]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_OWN_TEMPO]},
-    {},
-};
-
-static const struct SearchOptionText sDexSearchAbilityOptionsPQR[] =
-{
-    {gText_DexEmptyString, gAbilityNames[ABILITY_PICKUP]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_PLUS]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_POISON_POINT]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_PRESSURE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_PURE_POWER]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_RAIN_DISH]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_ROCK_HEAD]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_ROUGH_SKIN]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_RUN_AWAY]},
-    {},
-};
-
-static const struct SearchOptionText sDexSearchAbilityOptionsSTU[] =
-{
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SAND_STREAM]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SAND_VEIL]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SERENE_GRACE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SHADOW_TAG]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SHED_SKIN]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SHELL_ARMOR]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SHIELD_DUST]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SOUNDPROOF]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SPEED_BOOST]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_STATIC]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_STENCH]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_STICKY_HOLD]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_STURDY]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SUCTION_CUPS]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SWARM]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SWIFT_SWIM]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_SYNCHRONIZE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_THICK_FAT]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_TORRENT]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_TRACE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_TRUANT]},
-    {},
-};
-
-static const struct SearchOptionText sDexSearchAbilityOptionsVWX[] =
-{
-    {gText_DexEmptyString, gAbilityNames[ABILITY_VITAL_SPIRIT]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_VOLT_ABSORB]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_WATER_ABSORB]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_WATER_VEIL]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_WHITE_SMOKE]},
-    {gText_DexEmptyString, gAbilityNames[ABILITY_WONDER_GUARD]},
-    {},
-};
-*/
 
 static struct SearchOptionText sDexSearchAbilityOptionsABC[12];
 static struct SearchOptionText sDexSearchAbilityOptionsDEF[9];
@@ -2069,13 +1974,404 @@ static struct SearchOptionText sDexSearchAbilityOptionsPQR[10];
 static struct SearchOptionText sDexSearchAbilityOptionsSTU[22];
 static struct SearchOptionText sDexSearchAbilityOptionsVWX[7];
 
-/*
-static const struct SearchOptionText sDexSearchAbilityOptions[] =
+static const struct SearchOptionText sDexSearchMoveOptionsABC[] =
 {
-    {gText_DexEmptyString, gText_DexSearchTypeNone},
+    {gText_DexEmptyString, gMoveNames[MOVE_ABSORB]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ACID]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ACID_ARMOR]},
+    {gText_DexEmptyString, gMoveNames[MOVE_AERIAL_ACE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_AEROBLAST]},
+    {gText_DexEmptyString, gMoveNames[MOVE_AGILITY]},
+    {gText_DexEmptyString, gMoveNames[MOVE_AIR_CUTTER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_AMNESIA]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ANCIENT_POWER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ARM_THRUST]},
+    {gText_DexEmptyString, gMoveNames[MOVE_AROMATHERAPY]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ASSIST]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ASTONISH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ATTRACT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_AURORA_BEAM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BARRAGE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BARRIER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BATON_PASS]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BEAT_UP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BELLY_DRUM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BIDE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BIND]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BITE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BLAST_BURN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BLAZE_KICK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BLIZZARD]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BLOCK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BODY_SLAM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BONE_CLUB]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BONE_RUSH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BONEMERANG]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BOUNCE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BRICK_BREAK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BUBBLE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BUBBLE_BEAM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BULK_UP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_BULLET_SEED]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CALM_MIND]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CAMOUFLAGE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CHARGE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CHARM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CLAMP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_COMET_PUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CONFUSE_RAY]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CONFUSION]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CONSTRICT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CONVERSION]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CONVERSION_2]},
+    {gText_DexEmptyString, gMoveNames[MOVE_COSMIC_POWER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_COTTON_SPORE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_COUNTER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_COVET]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CRABHAMMER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CROSS_CHOP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CRUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CRUSH_CLAW]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CURSE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_CUT]},
     {},
 };
-*/
+
+static const struct SearchOptionText sDexSearchMoveOptionsDEF[] =
+{
+    {gText_DexEmptyString, gMoveNames[MOVE_DEFENSE_CURL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DESTINY_BOND]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DETECT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DIG]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DISABLE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DIVE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DIZZY_PUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DOOM_DESIRE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DOUBLE_EDGE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DOUBLE_KICK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DOUBLE_SLAP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DOUBLE_TEAM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DRAGON_BREATH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DRAGON_CLAW]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DRAGON_DANCE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DRAGON_RAGE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DREAM_EATER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DRILL_PECK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_DYNAMIC_PUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_EARTHQUAKE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_EGG_BOMB]},
+    {gText_DexEmptyString, gMoveNames[MOVE_EMBER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ENCORE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ENDEAVOR]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ENDURE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ERUPTION]},
+    {gText_DexEmptyString, gMoveNames[MOVE_EXPLOSION]},
+    {gText_DexEmptyString, gMoveNames[MOVE_EXTRASENSORY]},
+    {gText_DexEmptyString, gMoveNames[MOVE_EXTREME_SPEED]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FACADE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FAINT_ATTACK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FAKE_OUT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FAKE_TEARS]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FALSE_SWIPE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FEATHER_DANCE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FIRE_BLAST]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FIRE_PUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FIRE_SPIN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FISSURE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FLAIL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FLAME_WHEEL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FLAMETHROWER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FLASH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FLATTER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FLY]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FOCUS_ENERGY]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FOCUS_PUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FOLLOW_ME]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FORESIGHT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FRENZY_PLANT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FRUSTRATION]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FURY_ATTACK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FURY_CUTTER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FURY_SWIPES]},
+    {gText_DexEmptyString, gMoveNames[MOVE_FUTURE_SIGHT]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchMoveOptionsGHI[] =
+{
+    {gText_DexEmptyString, gMoveNames[MOVE_GIGA_DRAIN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_GLARE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_GRASS_WHISTLE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_GROWL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_GROWTH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_GRUDGE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_GUILLOTINE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_GUST]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HAIL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HARDEN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HAZE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HEADBUTT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HEAL_BELL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HEAT_WAVE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HELPING_HAND]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HI_JUMP_KICK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HIDDEN_POWER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HORN_ATTACK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HORN_DRILL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HOWL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HYDRO_CANNON]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HYDRO_PUMP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HYPER_BEAM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HYPER_FANG]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HYPER_VOICE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_HYPNOSIS]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ICE_BALL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ICE_BEAM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ICE_PUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ICICLE_SPEAR]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ICY_WIND]},
+    {gText_DexEmptyString, gMoveNames[MOVE_IMPRISON]},
+    {gText_DexEmptyString, gMoveNames[MOVE_INGRAIN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_IRON_DEFENSE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_IRON_TAIL]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchMoveOptionsJKL[] =
+{
+    {gText_DexEmptyString, gMoveNames[MOVE_JUMP_KICK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_KARATE_CHOP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_KINESIS]},
+    {gText_DexEmptyString, gMoveNames[MOVE_KNOCK_OFF]},
+    {gText_DexEmptyString, gMoveNames[MOVE_LEAF_BLADE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_LEECH_LIFE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_LEECH_SEED]},
+    {gText_DexEmptyString, gMoveNames[MOVE_LEER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_LICK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_LIGHT_SCREEN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_LOCK_ON]},
+    {gText_DexEmptyString, gMoveNames[MOVE_LOVELY_KISS]},
+    {gText_DexEmptyString, gMoveNames[MOVE_LOW_KICK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_LUSTER_PURGE]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchMoveOptionsMNO[] =
+{
+    {gText_DexEmptyString, gMoveNames[MOVE_MACH_PUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MAGIC_COAT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MAGICAL_LEAF]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MAGNITUDE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MEAN_LOOK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MEDITATE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MEGA_DRAIN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MEGA_KICK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MEGA_PUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MEGAHORN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MEMENTO]},
+    {gText_DexEmptyString, gMoveNames[MOVE_METAL_CLAW]},
+    {gText_DexEmptyString, gMoveNames[MOVE_METAL_SOUND]},
+    {gText_DexEmptyString, gMoveNames[MOVE_METEOR_MASH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_METRONOME]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MILK_DRINK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MIMIC]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MIND_READER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MINIMIZE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MIRROR_COAT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MIRROR_MOVE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MIST]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MIST_BALL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MOONLIGHT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MORNING_SUN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MUD_SHOT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MUD_SLAP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MUD_SPORT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_MUDDY_WATER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_NATURE_POWER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_NEEDLE_ARM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_NIGHT_SHADE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_NIGHTMARE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_OCTAZOOKA]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ODOR_SLEUTH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_OUTRAGE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_OVERHEAT]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchMoveOptionsPQR[] =
+{
+    {gText_DexEmptyString, gMoveNames[MOVE_PAIN_SPLIT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PAY_DAY]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PECK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PERISH_SONG]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PETAL_DANCE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PIN_MISSILE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_POISON_FANG]},
+    {gText_DexEmptyString, gMoveNames[MOVE_POISON_GAS]},
+    {gText_DexEmptyString, gMoveNames[MOVE_POISON_POWDER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_POISON_STING]},
+    {gText_DexEmptyString, gMoveNames[MOVE_POISON_TAIL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_POUND]},
+    {gText_DexEmptyString, gMoveNames[MOVE_POWDER_SNOW]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PRESENT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PROTECT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PSYBEAM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PSYCH_UP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PSYCHIC]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PSYCHO_BOOST]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PSYWAVE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_PURSUIT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_QUICK_ATTACK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_RAGE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_RAIN_DANCE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_RAPID_SPIN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_RAZOR_LEAF]},
+    {gText_DexEmptyString, gMoveNames[MOVE_RAZOR_WIND]},
+    {gText_DexEmptyString, gMoveNames[MOVE_RECOVER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_RECYCLE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_REFLECT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_REFRESH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_REST]},
+    {gText_DexEmptyString, gMoveNames[MOVE_RETURN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_REVENGE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_REVERSAL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ROAR]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ROCK_BLAST]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ROCK_SLIDE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ROCK_SMASH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ROCK_THROW]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ROCK_TOMB]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ROLE_PLAY]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ROLLING_KICK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ROLLOUT]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchMoveOptionsSTU[] =
+{
+    {gText_DexEmptyString, gMoveNames[MOVE_SACRED_FIRE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SAFEGUARD]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SAND_ATTACK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SAND_TOMB]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SANDSTORM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SCARY_FACE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SCRATCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SCREECH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SECRET_POWER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SEISMIC_TOSS]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SELF_DESTRUCT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SHADOW_BALL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SHADOW_PUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SHARPEN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SHEER_COLD]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SHOCK_WAVE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SIGNAL_BEAM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SILVER_WIND]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SING]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SKETCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SKILL_SWAP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SKULL_BASH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SKY_ATTACK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SKY_UPPERCUT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SLACK_OFF]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SLAM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SLASH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SLEEP_POWDER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SLEEP_TALK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SLUDGE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SLUDGE_BOMB]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SMELLING_SALT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SMOG]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SMOKESCREEN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SNATCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SNORE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SOFT_BOILED]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SOLAR_BEAM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SONIC_BOOM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SPARK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SPIDER_WEB]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SPIKE_CANNON]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SPIKES]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SPIT_UP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SPITE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SPLASH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SPORE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_STEEL_WING]},
+    {gText_DexEmptyString, gMoveNames[MOVE_STOCKPILE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_STOMP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_STRENGTH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_STRING_SHOT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_STRUGGLE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_STUN_SPORE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SUBMISSION]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SUBSTITUTE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SUNNY_DAY]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SUPER_FANG]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SUPERPOWER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SUPERSONIC]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SURF]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SWAGGER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SWALLOW]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SWEET_KISS]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SWEET_SCENT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SWIFT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SWORDS_DANCE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_SYNTHESIS]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TACKLE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TAIL_GLOW]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TAIL_WHIP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TAKE_DOWN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TAUNT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TEETER_DANCE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TELEPORT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_THIEF]},
+    {gText_DexEmptyString, gMoveNames[MOVE_THRASH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_THUNDER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_THUNDER_PUNCH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_THUNDER_SHOCK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_THUNDER_WAVE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_THUNDERBOLT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TICKLE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TORMENT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TOXIC]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TRANSFORM]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TRI_ATTACK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TRICK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TRIPLE_KICK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TWINEEDLE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_TWISTER]},
+    {gText_DexEmptyString, gMoveNames[MOVE_UPROAR]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchMoveOptionsVWX[] =
+{
+    {gText_DexEmptyString, gMoveNames[MOVE_VICE_GRIP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_VINE_WHIP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_VITAL_THROW]},
+    {gText_DexEmptyString, gMoveNames[MOVE_VOLT_TACKLE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WATER_GUN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WATER_PULSE]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WATER_SPORT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WATER_SPOUT]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WATERFALL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WEATHER_BALL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WHIRLPOOL]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WHIRLWIND]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WILL_O_WISP]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WING_ATTACK]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WISH]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WITHDRAW]},
+    {gText_DexEmptyString, gMoveNames[MOVE_WRAP]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchMoveOptionsYZ[] =
+{
+    {gText_DexEmptyString, gMoveNames[MOVE_YAWN]},
+    {gText_DexEmptyString, gMoveNames[MOVE_ZAP_CANNON]},
+    {},
+};
 
 static const struct SearchOptionText sDexSearchTypeOptions[NUMBER_OF_MON_TYPES + 1] = // + 2 for "None" and terminator, - 1 for Mystery
 {
@@ -2097,15 +2393,6 @@ static const struct SearchOptionText sDexSearchTypeOptions[NUMBER_OF_MON_TYPES +
     {gText_DexEmptyString, gTypeNames[TYPE_ROCK]},
     {gText_DexEmptyString, gTypeNames[TYPE_STEEL]},
     {gText_DexEmptyString, gTypeNames[TYPE_WATER]},
-    {},
-};
-
-static const struct SearchOptionText sDexSearchMoveOptions[] =
-{
-    {gText_DexEmptyString, gText_DexSearchTypeNone},
-    {gText_DexEmptyString, gMoveNames[MOVE_PSYCHIC]},
-    {gText_DexEmptyString, gMoveNames[MOVE_SWORDS_DANCE]},
-    {gText_DexEmptyString, gMoveNames[MOVE_SPORE]},
     {},
 };
 
@@ -2169,12 +2456,394 @@ static const u8 sDexSearchGroupIds[EGG_GROUPS_COUNT] =
     EGG_GROUP_NO_EGGS_DISCOVERED,
 };
 
-static const u8 sDexSearchMoveIds[] =
+static const u16 sDexSearchMoveIdsABC[] =
 {
-    MOVE_NONE,
+    MOVE_ABSORB,
+    MOVE_ACID,
+    MOVE_ACID_ARMOR,
+    MOVE_AERIAL_ACE,
+    MOVE_AEROBLAST,
+    MOVE_AGILITY,
+    MOVE_AIR_CUTTER,
+    MOVE_AMNESIA,
+    MOVE_ANCIENT_POWER,
+    MOVE_ARM_THRUST,
+    MOVE_AROMATHERAPY,
+    MOVE_ASSIST,
+    MOVE_ASTONISH,
+    MOVE_ATTRACT,
+    MOVE_AURORA_BEAM,
+    MOVE_BARRAGE,
+    MOVE_BARRIER,
+    MOVE_BATON_PASS,
+    MOVE_BEAT_UP,
+    MOVE_BELLY_DRUM,
+    MOVE_BIDE,
+    MOVE_BIND,
+    MOVE_BITE,
+    MOVE_BLAST_BURN,
+    MOVE_BLAZE_KICK,
+    MOVE_BLIZZARD,
+    MOVE_BLOCK,
+    MOVE_BODY_SLAM,
+    MOVE_BONE_CLUB,
+    MOVE_BONE_RUSH,
+    MOVE_BONEMERANG,
+    MOVE_BOUNCE,
+    MOVE_BRICK_BREAK,
+    MOVE_BUBBLE,
+    MOVE_BUBBLE_BEAM,
+    MOVE_BULK_UP,
+    MOVE_BULLET_SEED,
+    MOVE_CALM_MIND,
+    MOVE_CAMOUFLAGE,
+    MOVE_CHARGE,
+    MOVE_CHARM,
+    MOVE_CLAMP,
+    MOVE_COMET_PUNCH,
+    MOVE_CONFUSE_RAY,
+    MOVE_CONFUSION,
+    MOVE_CONSTRICT,
+    MOVE_CONVERSION,
+    MOVE_CONVERSION_2,
+    MOVE_COSMIC_POWER,
+    MOVE_COTTON_SPORE,
+    MOVE_COUNTER,
+    MOVE_COVET,
+    MOVE_CRABHAMMER,
+    MOVE_CROSS_CHOP,
+    MOVE_CRUNCH,
+    MOVE_CRUSH_CLAW,
+    MOVE_CURSE,
+    MOVE_CUT,
+};
+
+static const u16 sDexSearchMoveIdsDEF[] =
+{
+    MOVE_DEFENSE_CURL,
+    MOVE_DESTINY_BOND,
+    MOVE_DETECT,
+    MOVE_DIG,
+    MOVE_DISABLE,
+    MOVE_DIVE,
+    MOVE_DIZZY_PUNCH,
+    MOVE_DOOM_DESIRE,
+    MOVE_DOUBLE_EDGE,
+    MOVE_DOUBLE_KICK,
+    MOVE_DOUBLE_SLAP,
+    MOVE_DOUBLE_TEAM,
+    MOVE_DRAGON_BREATH,
+    MOVE_DRAGON_CLAW,
+    MOVE_DRAGON_DANCE,
+    MOVE_DRAGON_RAGE,
+    MOVE_DREAM_EATER,
+    MOVE_DRILL_PECK,
+    MOVE_DYNAMIC_PUNCH,
+    MOVE_EARTHQUAKE,
+    MOVE_EGG_BOMB,
+    MOVE_EMBER,
+    MOVE_ENCORE,
+    MOVE_ENDEAVOR,
+    MOVE_ENDURE,
+    MOVE_ERUPTION,
+    MOVE_EXPLOSION,
+    MOVE_EXTRASENSORY,
+    MOVE_EXTREME_SPEED,
+    MOVE_FACADE,
+    MOVE_FAINT_ATTACK,
+    MOVE_FAKE_OUT,
+    MOVE_FAKE_TEARS,
+    MOVE_FALSE_SWIPE,
+    MOVE_FEATHER_DANCE,
+    MOVE_FIRE_BLAST,
+    MOVE_FIRE_PUNCH,
+    MOVE_FIRE_SPIN,
+    MOVE_FISSURE,
+    MOVE_FLAIL,
+    MOVE_FLAME_WHEEL,
+    MOVE_FLAMETHROWER,
+    MOVE_FLASH,
+    MOVE_FLATTER,
+    MOVE_FLY,
+    MOVE_FOCUS_ENERGY,
+    MOVE_FOCUS_PUNCH,
+    MOVE_FOLLOW_ME,
+    MOVE_FORESIGHT,
+    MOVE_FRENZY_PLANT,
+    MOVE_FRUSTRATION,
+    MOVE_FURY_ATTACK,
+    MOVE_FURY_CUTTER,
+    MOVE_FURY_SWIPES,
+    MOVE_FUTURE_SIGHT,
+};
+
+static const u16 sDexSearchMoveIdsGHI[] =
+{
+    MOVE_GIGA_DRAIN,
+    MOVE_GLARE,
+    MOVE_GRASS_WHISTLE,
+    MOVE_GROWL,
+    MOVE_GROWTH,
+    MOVE_GRUDGE,
+    MOVE_GUILLOTINE,
+    MOVE_GUST,
+    MOVE_HAIL,
+    MOVE_HARDEN,
+    MOVE_HAZE,
+    MOVE_HEADBUTT,
+    MOVE_HEAL_BELL,
+    MOVE_HEAT_WAVE,
+    MOVE_HELPING_HAND,
+    MOVE_HI_JUMP_KICK,
+    MOVE_HIDDEN_POWER,
+    MOVE_HORN_ATTACK,
+    MOVE_HORN_DRILL,
+    MOVE_HOWL,
+    MOVE_HYDRO_CANNON,
+    MOVE_HYDRO_PUMP,
+    MOVE_HYPER_BEAM,
+    MOVE_HYPER_FANG,
+    MOVE_HYPER_VOICE,
+    MOVE_HYPNOSIS,
+    MOVE_ICE_BALL,
+    MOVE_ICE_BEAM,
+    MOVE_ICE_PUNCH,
+    MOVE_ICICLE_SPEAR,
+    MOVE_ICY_WIND,
+    MOVE_IMPRISON,
+    MOVE_INGRAIN,
+    MOVE_IRON_DEFENSE,
+    MOVE_IRON_TAIL,
+};
+
+static const u16 sDexSearchMoveIdsJKL[] =
+{
+    MOVE_JUMP_KICK,
+    MOVE_KARATE_CHOP,
+    MOVE_KINESIS,
+    MOVE_KNOCK_OFF,
+    MOVE_LEAF_BLADE,
+    MOVE_LEECH_LIFE,
+    MOVE_LEECH_SEED,
+    MOVE_LEER,
+    MOVE_LICK,
+    MOVE_LIGHT_SCREEN,
+    MOVE_LOCK_ON,
+    MOVE_LOVELY_KISS,
+    MOVE_LOW_KICK,
+    MOVE_LUSTER_PURGE,
+};
+
+static const u16 sDexSearchMoveIdsMNO[] =
+{
+    MOVE_MACH_PUNCH,
+    MOVE_MAGIC_COAT,
+    MOVE_MAGICAL_LEAF,
+    MOVE_MAGNITUDE,
+    MOVE_MEAN_LOOK,
+    MOVE_MEDITATE,
+    MOVE_MEGA_DRAIN,
+    MOVE_MEGA_KICK,
+    MOVE_MEGA_PUNCH,
+    MOVE_MEGAHORN,
+    MOVE_MEMENTO,
+    MOVE_METAL_CLAW,
+    MOVE_METAL_SOUND,
+    MOVE_METEOR_MASH,
+    MOVE_METRONOME,
+    MOVE_MILK_DRINK,
+    MOVE_MIMIC,
+    MOVE_MIND_READER,
+    MOVE_MINIMIZE,
+    MOVE_MIRROR_COAT,
+    MOVE_MIRROR_MOVE,
+    MOVE_MIST,
+    MOVE_MIST_BALL,
+    MOVE_MOONLIGHT,
+    MOVE_MORNING_SUN,
+    MOVE_MUD_SHOT,
+    MOVE_MUD_SLAP,
+    MOVE_MUD_SPORT,
+    MOVE_MUDDY_WATER,
+    MOVE_NATURE_POWER,
+    MOVE_NEEDLE_ARM,
+    MOVE_NIGHT_SHADE,
+    MOVE_NIGHTMARE,
+    MOVE_OCTAZOOKA,
+    MOVE_ODOR_SLEUTH,
+    MOVE_OUTRAGE,
+    MOVE_OVERHEAT,
+};
+
+static const u16 sDexSearchMoveIdsPQR[] =
+{
+    MOVE_PAIN_SPLIT,
+    MOVE_PAY_DAY,
+    MOVE_PECK,
+    MOVE_PERISH_SONG,
+    MOVE_PETAL_DANCE,
+    MOVE_PIN_MISSILE,
+    MOVE_POISON_FANG,
+    MOVE_POISON_GAS,
+    MOVE_POISON_POWDER,
+    MOVE_POISON_STING,
+    MOVE_POISON_TAIL,
+    MOVE_POUND,
+    MOVE_POWDER_SNOW,
+    MOVE_PRESENT,
+    MOVE_PROTECT,
+    MOVE_PSYBEAM,
+    MOVE_PSYCH_UP,
     MOVE_PSYCHIC,
-    MOVE_SWORDS_DANCE,
+    MOVE_PSYCHO_BOOST,
+    MOVE_PSYWAVE,
+    MOVE_PURSUIT,
+    MOVE_QUICK_ATTACK,
+    MOVE_RAGE,
+    MOVE_RAIN_DANCE,
+    MOVE_RAPID_SPIN,
+    MOVE_RAZOR_LEAF,
+    MOVE_RAZOR_WIND,
+    MOVE_RECOVER,
+    MOVE_RECYCLE,
+    MOVE_REFLECT,
+    MOVE_REFRESH,
+    MOVE_REST,
+    MOVE_RETURN,
+    MOVE_REVENGE,
+    MOVE_REVERSAL,
+    MOVE_ROAR,
+    MOVE_ROCK_BLAST,
+    MOVE_ROCK_SLIDE,
+    MOVE_ROCK_SMASH,
+    MOVE_ROCK_THROW,
+    MOVE_ROCK_TOMB,
+    MOVE_ROLE_PLAY,
+    MOVE_ROLLING_KICK,
+    MOVE_ROLLOUT,
+};
+
+static const u16 sDexSearchMoveIdsSTU[] =
+{
+    MOVE_SACRED_FIRE,
+    MOVE_SAFEGUARD,
+    MOVE_SAND_ATTACK,
+    MOVE_SAND_TOMB,
+    MOVE_SANDSTORM,
+    MOVE_SCARY_FACE,
+    MOVE_SCRATCH,
+    MOVE_SCREECH,
+    MOVE_SECRET_POWER,
+    MOVE_SEISMIC_TOSS,
+    MOVE_SELF_DESTRUCT,
+    MOVE_SHADOW_BALL,
+    MOVE_SHADOW_PUNCH,
+    MOVE_SHARPEN,
+    MOVE_SHEER_COLD,
+    MOVE_SHOCK_WAVE,
+    MOVE_SIGNAL_BEAM,
+    MOVE_SILVER_WIND,
+    MOVE_SING,
+    MOVE_SKETCH,
+    MOVE_SKILL_SWAP,
+    MOVE_SKULL_BASH,
+    MOVE_SKY_ATTACK,
+    MOVE_SKY_UPPERCUT,
+    MOVE_SLACK_OFF,
+    MOVE_SLAM,
+    MOVE_SLASH,
+    MOVE_SLEEP_POWDER,
+    MOVE_SLEEP_TALK,
+    MOVE_SLUDGE,
+    MOVE_SLUDGE_BOMB,
+    MOVE_SMELLING_SALT,
+    MOVE_SMOG,
+    MOVE_SMOKESCREEN,
+    MOVE_SNATCH,
+    MOVE_SNORE,
+    MOVE_SOFT_BOILED,
+    MOVE_SOLAR_BEAM,
+    MOVE_SONIC_BOOM,
+    MOVE_SPARK,
+    MOVE_SPIDER_WEB,
+    MOVE_SPIKE_CANNON,
+    MOVE_SPIKES,
+    MOVE_SPIT_UP,
+    MOVE_SPITE,
+    MOVE_SPLASH,
     MOVE_SPORE,
+    MOVE_STEEL_WING,
+    MOVE_STOCKPILE,
+    MOVE_STOMP,
+    MOVE_STRENGTH,
+    MOVE_STRING_SHOT,
+    MOVE_STRUGGLE,
+    MOVE_STUN_SPORE,
+    MOVE_SUBMISSION,
+    MOVE_SUBSTITUTE,
+    MOVE_SUNNY_DAY,
+    MOVE_SUPER_FANG,
+    MOVE_SUPERPOWER,
+    MOVE_SUPERSONIC,
+    MOVE_SURF,
+    MOVE_SWAGGER,
+    MOVE_SWALLOW,
+    MOVE_SWEET_KISS,
+    MOVE_SWEET_SCENT,
+    MOVE_SWIFT,
+    MOVE_SWORDS_DANCE,
+    MOVE_SYNTHESIS,
+    MOVE_TACKLE,
+    MOVE_TAIL_GLOW,
+    MOVE_TAIL_WHIP,
+    MOVE_TAKE_DOWN,
+    MOVE_TAUNT,
+    MOVE_TEETER_DANCE,
+    MOVE_TELEPORT,
+    MOVE_THIEF,
+    MOVE_THRASH,
+    MOVE_THUNDER,
+    MOVE_THUNDER_PUNCH,
+    MOVE_THUNDER_SHOCK,
+    MOVE_THUNDER_WAVE,
+    MOVE_THUNDERBOLT,
+    MOVE_TICKLE,
+    MOVE_TORMENT,
+    MOVE_TOXIC,
+    MOVE_TRANSFORM,
+    MOVE_TRI_ATTACK,
+    MOVE_TRICK,
+    MOVE_TRIPLE_KICK,
+    MOVE_TWINEEDLE,
+    MOVE_TWISTER,
+    MOVE_UPROAR,
+};
+
+static const u16 sDexSearchMoveIdsVWX[] =
+{
+    MOVE_VICE_GRIP,
+    MOVE_VINE_WHIP,
+    MOVE_VITAL_THROW,
+    MOVE_VOLT_TACKLE,
+    MOVE_WATER_GUN,
+    MOVE_WATER_PULSE,
+    MOVE_WATER_SPORT,
+    MOVE_WATER_SPOUT,
+    MOVE_WATERFALL,
+    MOVE_WEATHER_BALL,
+    MOVE_WHIRLPOOL,
+    MOVE_WHIRLWIND,
+    MOVE_WILL_O_WISP,
+    MOVE_WING_ATTACK,
+    MOVE_WISH,
+    MOVE_WITHDRAW,
+    MOVE_WRAP,
+};
+
+static const u16 sDexSearchMoveIdsYZ[] =
+{
+    MOVE_YAWN,
+    MOVE_ZAP_CANNON,
 };
 
 static const u8 sDexSearchAbilityIdsABC[] =
@@ -2291,6 +2960,11 @@ static const u8 sDexSearchAbilityIds[ABILITIES_COUNT] =
     ABILITY_NONE,
 };
 
+static const u8 sDexSearchMoveIds[MOVES_COUNT] =
+{
+    MOVE_NONE,
+};
+
 // Number pairs are the task data for tracking the cursor pos and scroll offset of each option list
 // See task data defines above Task_LoadSearchMenu
 static const struct SearchOption sSearchOptions[] =
@@ -2302,7 +2976,7 @@ static const struct SearchOption sSearchOptions[] =
     [SEARCH_GROUP_LEFT]  = {sDexSearchGroupOptions,             10, 11, ARRAY_COUNT(sDexSearchGroupOptions) - 1},
     [SEARCH_GROUP_RIGHT] = {sDexSearchGroupOptions,             12, 13, ARRAY_COUNT(sDexSearchGroupOptions) - 1},
     [SEARCH_ABILITY]     = {sDexSearchAbilityInitialOptions,    14, 15, ARRAY_COUNT(sDexSearchAbilityInitialOptions) - 1},
-    [SEARCH_MOVE]        = {sDexSearchMoveOptions,              24, 25, ARRAY_COUNT(sDexSearchMoveOptions) - 1},
+    [SEARCH_MOVE]        = {sDexSearchMoveInitialOptions,       24, 25, ARRAY_COUNT(sDexSearchMoveInitialOptions) - 1},
     [SEARCH_ORDER]       = {sDexOrderOptions,                    4,  5, ARRAY_COUNT(sDexOrderOptions) - 1},
     [SEARCH_MODE]        = {sDexModeOptions,                     2,  3, ARRAY_COUNT(sDexModeOptions) - 1},
     [SEARCH_ABILITY_ABC] = {sDexSearchAbilityOptionsABC,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsABC) - 1},
@@ -2313,6 +2987,15 @@ static const struct SearchOption sSearchOptions[] =
     [SEARCH_ABILITY_PQR] = {sDexSearchAbilityOptionsPQR,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsPQR) - 1},
     [SEARCH_ABILITY_STU] = {sDexSearchAbilityOptionsSTU,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsSTU) - 1},
     [SEARCH_ABILITY_VWX] = {sDexSearchAbilityOptionsVWX,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsVWX) - 1},
+    [SEARCH_MOVE_ABC]    = {sDexSearchMoveOptionsABC,           30, 31, ARRAY_COUNT(sDexSearchMoveOptionsABC) - 1},
+    [SEARCH_MOVE_DEF]    = {sDexSearchMoveOptionsDEF,           30, 31, ARRAY_COUNT(sDexSearchMoveOptionsDEF) - 1},
+    [SEARCH_MOVE_GHI]    = {sDexSearchMoveOptionsGHI,           30, 31, ARRAY_COUNT(sDexSearchMoveOptionsGHI) - 1},
+    [SEARCH_MOVE_JKL]    = {sDexSearchMoveOptionsJKL,           30, 31, ARRAY_COUNT(sDexSearchMoveOptionsJKL) - 1},
+    [SEARCH_MOVE_MNO]    = {sDexSearchMoveOptionsMNO,           30, 31, ARRAY_COUNT(sDexSearchMoveOptionsMNO) - 1},
+    [SEARCH_MOVE_PQR]    = {sDexSearchMoveOptionsPQR,           30, 31, ARRAY_COUNT(sDexSearchMoveOptionsPQR) - 1},
+    [SEARCH_MOVE_STU]    = {sDexSearchMoveOptionsSTU,           30, 31, ARRAY_COUNT(sDexSearchMoveOptionsSTU) - 1},
+    [SEARCH_MOVE_VWX]    = {sDexSearchMoveOptionsVWX,           30, 31, ARRAY_COUNT(sDexSearchMoveOptionsVWX) - 1},
+    [SEARCH_MOVE_YZ]     = {sDexSearchMoveOptionsYZ,            30, 31, ARRAY_COUNT(sDexSearchMoveOptionsYZ) - 1},
 };
 
 static const struct BgTemplate sSearchMenu_BgTemplate[] =
@@ -2575,6 +3258,61 @@ void InitDexSearchAbilityOptions(void)
         abilityOptions[i][abilitySizes[i]].title = NULL;
     }
 }
+/*
+void InitDexSearchMoveOptions(void)
+{
+    u8 i, j;
+    struct SearchOptionText *moveOptions[] =
+    {
+        sDexSearchMoveOptionsABC,
+        sDexSearchMoveOptionsDEF,
+        sDexSearchMoveOptionsGHI,
+        sDexSearchMoveOptionsJKL,
+        sDexSearchMoveOptionsMNO,
+        sDexSearchMoveOptionsPQR,
+        sDexSearchMoveOptionsSTU,
+        sDexSearchMoveOptionsVWX,
+        sDexSearchMoveOptionsYZ,
+    };
+    const u8 *moveIds[] =
+    {
+        sDexSearchMoveIdsABC,
+        sDexSearchMoveIdsDEF,
+        sDexSearchMoveIdsGHI,
+        sDexSearchMoveIdsJKL,
+        sDexSearchMoveIdsMNO,
+        sDexSearchMoveIdsPQR,
+        sDexSearchMoveIdsSTU,
+        sDexSearchMoveIdsVWX,
+        sDexSearchMoveIdsYZ,
+    };
+    const u32 moveSizes[] =
+    {
+        58,
+        55,
+        35,
+        14,
+        38,
+        44,
+        92,
+        17,
+        2,
+    };
+
+    for (i = 0; i < ARRAY_COUNT(moveOptions); i++)
+    {
+        for (j = 0; j < moveSizes[i]; j++)
+        {
+            //moveOptions[i][j].description = gLongMoveDescriptions[moveIds[i][j]];
+            moveOptions[i][j].description = gText_DexEmptyString;
+            moveOptions[i][j].title = gMoveNames[moveIds[i][j]];
+        }
+        // Add the terminating empty entry
+        moveOptions[i][moveSizes[i]].description = NULL;
+        moveOptions[i][moveSizes[i]].title = NULL;
+    }
+}
+*/
 
 void Task_OpenPokedexMainPage(u8 taskId)
 {
@@ -6563,8 +7301,9 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
     u32 groups[2];
     u32 types[2];
     u32 abilities[2];
-    bool32 moveFound;
+    bool32 moveFound, isTM;
     const u16 *levelUpLearnset;
+    s32 tmId = -1;
 
     CreatePokedexList(dexMode, order);
 
@@ -6734,6 +7473,17 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
     // Search by move
     if (move != MOVE_NONE)
     {
+        // Is move TM?
+        for (j = 0; j <= ITEM_HM08 - ITEM_TM01; j++)
+        {
+            if (sTMHMMoves[j] == move)
+            {
+                isTM = TRUE;
+                tmId = j;
+                break;
+            }
+        }
+
         for (i = 0, resultsCount = 0; i < sPokedexView->pokemonListCount; i++)
         {
             moveFound = FALSE;
@@ -6742,6 +7492,12 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
             {
                 species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
                 levelUpLearnset = gLevelUpLearnsets[species];
+
+                // TM/HM moves
+                if (isTM && CanSpeciesLearnTMHM(species, tmId))
+                {
+                    moveFound = TRUE;
+                }
 
                 // Level up moves and pre-evolution level up moves
                 while (!moveFound && species != SPECIES_NONE)
@@ -6764,57 +7520,44 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
                         }
                     }
                 }
-                               
-                // TMs
+
+                // Tutor moves
                 if (!moveFound)
                 {
                     species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
 
-                    for (j = 0; j <= ITEM_HM08 - ITEM_TM01; j++)
+                    tutorLearnset = sTutorLearnsets[species];
+
+                    for (j = 0; j < TUTOR_MOVE_COUNT; j++)
                     {
-                        if (sTMHMMoves[j] == move && CanSpeciesLearnTMHM(species, j))
+                        if (gTutorMoves[j] == move && (tutorLearnset & (1 << j)))
                         {
                             moveFound = TRUE;
                             break;
                         }
                     }
 
-                    // Tutor moves
+                    // Egg moves
                     if (!moveFound)
                     {
-                        tutorLearnset = sTutorLearnsets[species];
-
-                        for (j = 0; j < TUTOR_MOVE_COUNT; j++)
+                        while (species != SPECIES_NONE)
                         {
-                            if (gTutorMoves[j] == move && (tutorLearnset & (1 << j)))
-                            {
-                                moveFound = TRUE;
-                                break;
-                            }
+                            preSpecies = species;
+                            species = GetPreEvolution(species);
                         }
-                    
-                        // Egg moves
-                        if (!moveFound)
-                        {
-                            while (species != SPECIES_NONE)
-                            {
-                                preSpecies = species;
-                                species = GetPreEvolution(species);
-                            }
 
-                            j = FindSpeciesInEggMoves(preSpecies);
-                            if (j != -1)
+                        j = FindSpeciesInEggMoves(preSpecies);
+                        if (j != -1)
+                        {
+                            j++; // Skip the species value
+                            while (gEggMoves[j] <= EGG_MOVES_SPECIES_OFFSET)
                             {
-                                j++; // Skip the species value
-                                while (gEggMoves[j] <= EGG_MOVES_SPECIES_OFFSET)
+                                if (gEggMoves[j] == move)
                                 {
-                                    if (gEggMoves[j] == move)
-                                    {
-                                        moveFound = TRUE;
-                                        break;
-                                    }
-                                    j++;
+                                    moveFound = TRUE;
+                                    break;
                                 }
+                                j++;
                             }
                         }
                     }
@@ -6889,6 +7632,8 @@ static void ClearSearchMenuRect(u32 x, u32 y, u32 width, u32 height)
 #define tScrollOffset            data[27]
 #define tCursorPos_Ability_2     data[28]
 #define tScrollOffset_Ability_2  data[29]
+#define tCursorPos_Move_2        data[30]
+#define tScrollOffset_Move_2     data[31]
 
 static void Task_LoadSearchMenu(u8 taskId)
 {
@@ -6919,6 +7664,7 @@ static void Task_LoadSearchMenu(u8 taskId)
                 CopyToBgTilemapBuffer(3, gPokedexSearchMenuNational_Tilemap, 0, 0);
             LoadPalette(gPokedexSearchMenu_Pal + 1, BG_PLTT_ID(0) + 1, PLTT_SIZEOF(4 * 16 - 1));
             InitDexSearchAbilityOptions();
+            //InitDexSearchMoveOptions();
             gMain.state = 1;
         }
         break;
@@ -7156,9 +7902,7 @@ static void Task_StartPokedexSearch(u8 taskId)
     u32 eggGroup2 = GetSearchModeSelection(taskId, SEARCH_GROUP_RIGHT);
     u32 ability = GetSearchModeSelection(taskId, SEARCH_ABILITY);
     u32 move = GetSearchModeSelection(taskId, SEARCH_MOVE);
-    //u8 move = GetSearchModeSelection(taskId, SEARCH_MOVE);
 
-    //DoPokedexSearch(dexMode, order, abcGroup, bodyColor, type1, type2);
     DoPokedexSearch(dexMode, order, type1, type2, eggGroup1, eggGroup2, ability, move);
     gTasks[taskId].func = Task_WaitAndCompleteSearch;
 }
@@ -7239,10 +7983,12 @@ static void Task_HandleSearchParameterInput(u8 taskId)
     maxOption = sSearchOptions[menuItem].numOptions - 1;
     if (JOY_NEW(A_BUTTON))
     {
-        if (menuItem == SEARCH_ABILITY && *cursorPos + *scrollOffset != 0)
+        if ((menuItem == SEARCH_ABILITY || menuItem == SEARCH_MOVE) && *cursorPos + *scrollOffset != 0)
         {
             PlaySE(SE_PIN);
             gTasks[taskId].tMenuItem = *cursorPos + *scrollOffset + SEARCH_COUNT;
+            if (menuItem == SEARCH_MOVE)
+                gTasks[taskId].tMenuItem += SEARCH_MOVE_ABC - SEARCH_ABILITY_ABC;
             menuItem = gTasks[taskId].tMenuItem;
             gTasks[taskId].data[sSearchOptions[menuItem].taskDataCursorPos] = 0;
             gTasks[taskId].data[sSearchOptions[menuItem].taskDataScrollOffset] = 0;
@@ -7253,8 +7999,10 @@ static void Task_HandleSearchParameterInput(u8 taskId)
         }
         else
         {
-            if (menuItem > SEARCH_COUNT)
+            if (menuItem > SEARCH_COUNT && menuItem < SEARCH_MOVE_ABC)
                 gTasks[taskId].tMenuItem = SEARCH_ABILITY;
+            else if (menuItem >= SEARCH_MOVE_ABC)
+                gTasks[taskId].tMenuItem = SEARCH_MOVE;
             PlaySE(SE_PIN);
             ClearSearchParameterBoxText();
             DrawOrEraseSearchParameterBox(TRUE);
@@ -7271,7 +8019,10 @@ static void Task_HandleSearchParameterInput(u8 taskId)
             PlaySE(SE_BALL);
             *cursorPos = gTasks[taskId].tCursorPos;
             *scrollOffset = gTasks[taskId].tScrollOffset;
-            gTasks[taskId].tMenuItem = SEARCH_ABILITY;
+            if (menuItem < SEARCH_MOVE_ABC)
+                gTasks[taskId].tMenuItem = SEARCH_ABILITY;
+            else
+                gTasks[taskId].tMenuItem = SEARCH_MOVE;
             gTasks[taskId].func = Task_SelectSearchMenuItem;
             CopyWindowToVram(0, COPYWIN_GFX);
             CopyBgTilemapBufferToVram(3);
@@ -7282,7 +8033,7 @@ static void Task_HandleSearchParameterInput(u8 taskId)
             PlaySE(SE_BALL);
             ClearSearchParameterBoxText();
             DrawOrEraseSearchParameterBox(TRUE);
-            if (menuItem == SEARCH_ABILITY)
+            if (menuItem == SEARCH_ABILITY || menuItem == SEARCH_MOVE)
             {
                 gTasks[taskId].data[sSearchOptions[menuItem].taskDataCursorPos] = 0;
                 gTasks[taskId].data[sSearchOptions[menuItem].taskDataScrollOffset] = 0;
@@ -7578,12 +8329,15 @@ static void PrintSelectedSearchParameters(u8 taskId)
     PrintSearchText(sDexSearchColorOptions[searchParamId].title, 0x2D, 0x21); 45, 33
     */
    
+    // Type left
     searchParamId = gTasks[taskId].tCursorPos_TypeLeft + gTasks[taskId].tScrollOffset_TypeLeft;
     PrintSearchText(sDexSearchTypeOptions[searchParamId].title, 45, 17);
 
+    // Type right
     searchParamId = gTasks[taskId].tCursorPos_TypeRight + gTasks[taskId].tScrollOffset_TypeRight;
     PrintSearchText(sDexSearchTypeOptions[searchParamId].title, 93, 17);
 
+    // Group left
     searchParamId = gTasks[taskId].tCursorPos_GroupLeft + gTasks[taskId].tScrollOffset_GroupLeft;
     for (i = 0, j = 0; i < 6 && sDexSearchGroupOptions[searchParamId].title[j] != EOS; i++, j++)
     {
@@ -7595,6 +8349,7 @@ static void PrintSelectedSearchParameters(u8 taskId)
     truncatedParameter[i] = EOS;
     PrintSearchText(truncatedParameter, 45, 33);
 
+    // Group right
     searchParamId = gTasks[taskId].tCursorPos_GroupRight + gTasks[taskId].tScrollOffset_GroupRight;
     for (i = 0, j = 0; i < 6 && sDexSearchGroupOptions[searchParamId].title[i] != EOS; i++, j++)
     {
@@ -7606,6 +8361,7 @@ static void PrintSelectedSearchParameters(u8 taskId)
     truncatedParameter[i] = EOS;
     PrintSearchText(truncatedParameter, 93, 33);
 
+    // Ability
     if (gTasks[taskId].tCursorPos_Ability + gTasks[taskId].tScrollOffset_Ability == 0)
     {
         PrintSearchText(sDexSearchAbilityInitialOptions[0].title, 45, 49);
@@ -7617,12 +8373,23 @@ static void PrintSelectedSearchParameters(u8 taskId)
         PrintSearchText(searchParamId2[searchParamId].title, 45, 49);
     }
 
-    searchParamId = gTasks[taskId].tCursorPos_Move + gTasks[taskId].tScrollOffset_Move;
-    PrintSearchText(sDexSearchMoveOptions[searchParamId].title, 45, 65);
+    // Move
+    if (gTasks[taskId].tCursorPos_Move + gTasks[taskId].tScrollOffset_Move == 0)
+    {
+        PrintSearchText(sDexSearchMoveInitialOptions[0].title, 45, 65);
+    }
+    else
+    {
+        searchParamId2 = sSearchOptions[SEARCH_ABILITY_VWX + gTasks[taskId].tCursorPos_Move + gTasks[taskId].tScrollOffset_Move].texts;
+        searchParamId = gTasks[taskId].tCursorPos_Move_2 + gTasks[taskId].tScrollOffset_Move_2;
+        PrintSearchText(searchParamId2[searchParamId].title, 45, 65);
+    }
 
+    // Order
     searchParamId = gTasks[taskId].tCursorPos_Order + gTasks[taskId].tScrollOffset_Order;
     PrintSearchText(sDexOrderOptions[searchParamId].title, 45, 81);
 
+    // Mode
     if (IsNationalPokedexEnabled())
     {
         searchParamId = gTasks[taskId].tCursorPos_Mode + gTasks[taskId].tScrollOffset_Mode;
@@ -7685,7 +8452,7 @@ static void PrintSearchParameterText(u8 taskId)
     EraseAndPrintSearchTextBox(texts[*cursorPos + *scrollOffset].description);
 }
 
-static u8 GetSearchModeSelection(u8 taskId, u8 option)
+static u16 GetSearchModeSelection(u8 taskId, u8 option)
 {
     const u16 *cursorPos = &gTasks[taskId].data[sSearchOptions[option].taskDataCursorPos];
     const u16 *scrollOffset = &gTasks[taskId].data[sSearchOptions[option].taskDataScrollOffset];
@@ -7749,7 +8516,34 @@ static u8 GetSearchModeSelection(u8 taskId, u8 option)
                 return sDexSearchAbilityIds[0];
         }
     case SEARCH_MOVE:
-        return sDexSearchMoveIds[id];
+        option2 = SEARCH_ABILITY_VWX + id;
+        cursorPos2 = &gTasks[taskId].data[sSearchOptions[option2].taskDataCursorPos];
+        scrollOffset2 = &gTasks[taskId].data[sSearchOptions[option2].taskDataScrollOffset];
+        id2 = *cursorPos2 + *scrollOffset2;
+
+        switch (option2)
+        {
+            case SEARCH_MOVE_ABC:
+                return sDexSearchMoveIdsABC[id2];
+            case SEARCH_MOVE_DEF:
+                return sDexSearchMoveIdsDEF[id2];
+            case SEARCH_MOVE_GHI:
+                return sDexSearchMoveIdsGHI[id2];
+            case SEARCH_MOVE_JKL:
+                return sDexSearchMoveIdsJKL[id2];
+            case SEARCH_MOVE_MNO:
+                return sDexSearchMoveIdsMNO[id2];
+            case SEARCH_MOVE_PQR:
+                return sDexSearchMoveIdsPQR[id2];
+            case SEARCH_MOVE_STU:
+                return sDexSearchMoveIdsSTU[id2];
+            case SEARCH_MOVE_VWX:
+                return sDexSearchMoveIdsVWX[id2];
+            case SEARCH_MOVE_YZ:
+                return sDexSearchMoveIdsYZ[id2];
+            default:
+                return sDexSearchMoveIds[0];
+        }
     }
 }
 
