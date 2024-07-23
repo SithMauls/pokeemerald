@@ -7468,7 +7468,8 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
     u32 groups[2];
     u32 types[2];
     u32 abilities[2];
-    bool32 moveFound, isTM;
+    bool32 moveFound;
+    bool32 isTM = FALSE;
     const u16 *levelUpLearnset;
     s32 tmId = -1;
 
