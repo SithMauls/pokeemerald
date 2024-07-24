@@ -38,6 +38,7 @@
 #include "data/text/egg_groups.h"
 #include "item_icon.h"
 #include "constants/abilities.h"
+#include "pokedex_strings.h"
 
 enum
 {
@@ -2014,14 +2015,122 @@ static const struct SearchOptionText sDexSearchMoveInitialOptions[] =
     {},
 };
 
-static struct SearchOptionText sDexSearchAbilityOptionsABC[12];
-static struct SearchOptionText sDexSearchAbilityOptionsDEF[9];
-static struct SearchOptionText sDexSearchAbilityOptionsGHI[10];
-static struct SearchOptionText sDexSearchAbilityOptionsJKL[6];
-static struct SearchOptionText sDexSearchAbilityOptionsMNO[9];
-static struct SearchOptionText sDexSearchAbilityOptionsPQR[10];
-static struct SearchOptionText sDexSearchAbilityOptionsSTU[22];
-static struct SearchOptionText sDexSearchAbilityOptionsVWX[7];
+static const struct SearchOptionText sDexSearchAbilityOptionsABC[] =
+{
+    {sText_AbilityDescription_AirLock,      gAbilityNames[ABILITY_AIR_LOCK]},
+    {sText_AbilityDescription_ArenaTrap,    gAbilityNames[ABILITY_ARENA_TRAP]},
+    {sText_AbilityDescription_BattleArmor,  gAbilityNames[ABILITY_BATTLE_ARMOR]},
+    {sText_AbilityDescription_Blaze,        gAbilityNames[ABILITY_BLAZE]},
+    {sText_AbilityDescription_Cacophony,    gAbilityNames[ABILITY_CACOPHONY]},
+    {sText_AbilityDescription_Chlorophyll,  gAbilityNames[ABILITY_CHLOROPHYLL]},
+    {sText_AbilityDescription_ClearBody,    gAbilityNames[ABILITY_CLEAR_BODY]},
+    {sText_AbilityDescription_CloudNine,    gAbilityNames[ABILITY_CLOUD_NINE]},
+    {sText_AbilityDescription_ColorChange,  gAbilityNames[ABILITY_COLOR_CHANGE]},
+    {sText_AbilityDescription_CompoundEyes, gAbilityNames[ABILITY_COMPOUND_EYES]},
+    {sText_AbilityDescription_CuteCharm,    gAbilityNames[ABILITY_CUTE_CHARM]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchAbilityOptionsDEF[] =
+{
+    {sText_AbilityDescription_Damp,         gAbilityNames[ABILITY_DAMP]},
+    {sText_AbilityDescription_Drizzle,      gAbilityNames[ABILITY_DRIZZLE]},
+    {sText_AbilityDescription_Drought,      gAbilityNames[ABILITY_DROUGHT]},
+    {sText_AbilityDescription_EarlyBird,    gAbilityNames[ABILITY_EARLY_BIRD]},
+    {sText_AbilityDescription_EffectSpore,  gAbilityNames[ABILITY_EFFECT_SPORE]},
+    {sText_AbilityDescription_FlameBody,    gAbilityNames[ABILITY_FLAME_BODY]},
+    {sText_AbilityDescription_FlashFire,    gAbilityNames[ABILITY_FLASH_FIRE]},
+    {sText_AbilityDescription_Forecast,     gAbilityNames[ABILITY_FORECAST]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchAbilityOptionsGHI[] =
+{
+    {sText_AbilityDescription_Guts,         gAbilityNames[ABILITY_GUTS]},
+    {sText_AbilityDescription_HugePower,    gAbilityNames[ABILITY_HUGE_POWER]},
+    {sText_AbilityDescription_Hustle,       gAbilityNames[ABILITY_HUSTLE]},
+    {sText_AbilityDescription_HyperCutter,  gAbilityNames[ABILITY_HYPER_CUTTER]},
+    {sText_AbilityDescription_Illuminate,   gAbilityNames[ABILITY_ILLUMINATE]},
+    {sText_AbilityDescription_Immunity,     gAbilityNames[ABILITY_IMMUNITY]},
+    {sText_AbilityDescription_InnerFocus,   gAbilityNames[ABILITY_INNER_FOCUS]},
+    {sText_AbilityDescription_Insomnia,     gAbilityNames[ABILITY_INSOMNIA]},
+    {sText_AbilityDescription_Intimidate,   gAbilityNames[ABILITY_INTIMIDATE]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchAbilityOptionsJKL[] =
+{
+    {sText_AbilityDescription_KeenEye,      gAbilityNames[ABILITY_KEEN_EYE]},
+    {sText_AbilityDescription_Levitate,     gAbilityNames[ABILITY_LEVITATE]},
+    {sText_AbilityDescription_LightningRod, gAbilityNames[ABILITY_LIGHTNING_ROD]},
+    {sText_AbilityDescription_Limber,       gAbilityNames[ABILITY_LIMBER]},
+    {sText_AbilityDescription_LiquidOoze,   gAbilityNames[ABILITY_LIQUID_OOZE]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchAbilityOptionsMNO[] =
+{
+    {sText_AbilityDescription_MagmaArmor,   gAbilityNames[ABILITY_MAGMA_ARMOR]},
+    {sText_AbilityDescription_MagnetPull,   gAbilityNames[ABILITY_MAGNET_PULL]},
+    {sText_AbilityDescription_MarvelScale,  gAbilityNames[ABILITY_MARVEL_SCALE]},
+    {sText_AbilityDescription_Minus,        gAbilityNames[ABILITY_MINUS]},
+    {sText_AbilityDescription_NaturalCure,  gAbilityNames[ABILITY_NATURAL_CURE]},
+    {sText_AbilityDescription_Oblivious,    gAbilityNames[ABILITY_OBLIVIOUS]},
+    {sText_AbilityDescription_Overgrow,     gAbilityNames[ABILITY_OVERGROW]},
+    {sText_AbilityDescription_OwnTempo,     gAbilityNames[ABILITY_OWN_TEMPO]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchAbilityOptionsPQR[] =
+{
+    {sText_AbilityDescription_Pickup,       gAbilityNames[ABILITY_PICKUP]},
+    {sText_AbilityDescription_Plus,         gAbilityNames[ABILITY_PLUS]},
+    {sText_AbilityDescription_PoisonPoint,  gAbilityNames[ABILITY_POISON_POINT]},
+    {sText_AbilityDescription_Pressure,     gAbilityNames[ABILITY_PRESSURE]},
+    {sText_AbilityDescription_PurePower,    gAbilityNames[ABILITY_PURE_POWER]},
+    {sText_AbilityDescription_RainDish,     gAbilityNames[ABILITY_RAIN_DISH]},
+    {sText_AbilityDescription_RockHead,     gAbilityNames[ABILITY_ROCK_HEAD]},
+    {sText_AbilityDescription_RoughSkin,    gAbilityNames[ABILITY_ROUGH_SKIN]},
+    {sText_AbilityDescription_RunAway,      gAbilityNames[ABILITY_RUN_AWAY]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchAbilityOptionsSTU[] =
+{
+    {sText_AbilityDescription_SandStream,   gAbilityNames[ABILITY_SAND_STREAM]},
+    {sText_AbilityDescription_SandVeil,     gAbilityNames[ABILITY_SAND_VEIL]},
+    {sText_AbilityDescription_SereneGrace,  gAbilityNames[ABILITY_SERENE_GRACE]},
+    {sText_AbilityDescription_ShadowTag,    gAbilityNames[ABILITY_SHADOW_TAG]},
+    {sText_AbilityDescription_ShedSkin,     gAbilityNames[ABILITY_SHED_SKIN]},
+    {sText_AbilityDescription_ShellArmor,   gAbilityNames[ABILITY_SHELL_ARMOR]},
+    {sText_AbilityDescription_ShieldDust,   gAbilityNames[ABILITY_SHIELD_DUST]},
+    {sText_AbilityDescription_Soundproof,   gAbilityNames[ABILITY_SOUNDPROOF]},
+    {sText_AbilityDescription_SpeedBoost,   gAbilityNames[ABILITY_SPEED_BOOST]},
+    {sText_AbilityDescription_Static,       gAbilityNames[ABILITY_STATIC]},
+    {sText_AbilityDescription_Stench,       gAbilityNames[ABILITY_STENCH]},
+    {sText_AbilityDescription_StickyHold,   gAbilityNames[ABILITY_STICKY_HOLD]},
+    {sText_AbilityDescription_Sturdy,       gAbilityNames[ABILITY_STURDY]},
+    {sText_AbilityDescription_SuctionCups,  gAbilityNames[ABILITY_SUCTION_CUPS]},
+    {sText_AbilityDescription_Swarm,        gAbilityNames[ABILITY_SWARM]},
+    {sText_AbilityDescription_SwiftSwim,    gAbilityNames[ABILITY_SWIFT_SWIM]},
+    {sText_AbilityDescription_Synchronize,  gAbilityNames[ABILITY_SYNCHRONIZE]},
+    {sText_AbilityDescription_ThickFat,     gAbilityNames[ABILITY_THICK_FAT]},
+    {sText_AbilityDescription_Torrent,      gAbilityNames[ABILITY_TORRENT]},
+    {sText_AbilityDescription_Trace,        gAbilityNames[ABILITY_TRACE]},
+    {sText_AbilityDescription_Truant,       gAbilityNames[ABILITY_TRUANT]},
+    {},
+};
+
+static const struct SearchOptionText sDexSearchAbilityOptionsVWX[] =
+{
+    {sText_AbilityDescription_VitalSpirit,  gAbilityNames[ABILITY_VITAL_SPIRIT]},
+    {sText_AbilityDescription_VoltAbsorb,   gAbilityNames[ABILITY_VOLT_ABSORB]},
+    {sText_AbilityDescription_WaterAbsorb,  gAbilityNames[ABILITY_WATER_ABSORB]},
+    {sText_AbilityDescription_WaterVeil,    gAbilityNames[ABILITY_WATER_VEIL]},
+    {sText_AbilityDescription_WhiteSmoke,   gAbilityNames[ABILITY_WHITE_SMOKE]},
+    {sText_AbilityDescription_WonderGuard,  gAbilityNames[ABILITY_WONDER_GUARD]},
+    {},
+};
 
 static const struct SearchOptionText sDexSearchMoveOptionsBug[] =
 {
@@ -3375,111 +3484,6 @@ static void CB2_Pokedex(void)
     BuildOamBuffer();
     UpdatePaletteFade();
 }
-
-void InitDexSearchAbilityOptions(void)
-{
-    u8 i, j;
-    struct SearchOptionText *abilityOptions[] =
-    {
-        sDexSearchAbilityOptionsABC,
-        sDexSearchAbilityOptionsDEF,
-        sDexSearchAbilityOptionsGHI,
-        sDexSearchAbilityOptionsJKL,
-        sDexSearchAbilityOptionsMNO,
-        sDexSearchAbilityOptionsPQR,
-        sDexSearchAbilityOptionsSTU,
-        sDexSearchAbilityOptionsVWX,
-    };
-    const u8 *abilityIds[] =
-    {
-        sDexSearchAbilityIdsABC,
-        sDexSearchAbilityIdsDEF,
-        sDexSearchAbilityIdsGHI,
-        sDexSearchAbilityIdsJKL,
-        sDexSearchAbilityIdsMNO,
-        sDexSearchAbilityIdsPQR,
-        sDexSearchAbilityIdsSTU,
-        sDexSearchAbilityIdsVWX,
-    };
-    const u32 abilitySizes[] =
-    {
-        11,
-        8,
-        9,
-        5,
-        8,
-        9,
-        21,
-        6,
-    };
-
-    for (i = 0; i < ARRAY_COUNT(abilityOptions); i++)
-    {
-        for (j = 0; j < abilitySizes[i]; j++)
-        {
-            abilityOptions[i][j].description = gLongAbilityDescriptions[abilityIds[i][j]];
-            abilityOptions[i][j].title = gAbilityNames[abilityIds[i][j]];
-        }
-        // Add the terminating empty entry
-        abilityOptions[i][abilitySizes[i]].description = NULL;
-        abilityOptions[i][abilitySizes[i]].title = NULL;
-    }
-}
-/*
-void InitDexSearchMoveOptions(void)
-{
-    u8 i, j;
-    struct SearchOptionText *moveOptions[] =
-    {
-        sDexSearchMoveOptionsABC,
-        sDexSearchMoveOptionsDEF,
-        sDexSearchMoveOptionsGHI,
-        sDexSearchMoveOptionsJKL,
-        sDexSearchMoveOptionsMNO,
-        sDexSearchMoveOptionsPQR,
-        sDexSearchMoveOptionsSTU,
-        sDexSearchMoveOptionsVWX,
-        sDexSearchMoveOptionsYZ,
-    };
-    const u8 *moveIds[] =
-    {
-        sDexSearchMoveIdsABC,
-        sDexSearchMoveIdsDEF,
-        sDexSearchMoveIdsGHI,
-        sDexSearchMoveIdsJKL,
-        sDexSearchMoveIdsMNO,
-        sDexSearchMoveIdsPQR,
-        sDexSearchMoveIdsSTU,
-        sDexSearchMoveIdsVWX,
-        sDexSearchMoveIdsYZ,
-    };
-    const u32 moveSizes[] =
-    {
-        58,
-        55,
-        35,
-        14,
-        38,
-        44,
-        92,
-        17,
-        2,
-    };
-
-    for (i = 0; i < ARRAY_COUNT(moveOptions); i++)
-    {
-        for (j = 0; j < moveSizes[i]; j++)
-        {
-            //moveOptions[i][j].description = gLongMoveDescriptions[moveIds[i][j]];
-            moveOptions[i][j].description = gText_DexEmptyString;
-            moveOptions[i][j].title = gMoveNames[moveIds[i][j]];
-        }
-        // Add the terminating empty entry
-        moveOptions[i][moveSizes[i]].description = NULL;
-        moveOptions[i][moveSizes[i]].title = NULL;
-    }
-}
-*/
 
 void Task_OpenPokedexMainPage(u8 taskId)
 {
@@ -7831,8 +7835,6 @@ static void Task_LoadSearchMenu(u8 taskId)
             else
                 CopyToBgTilemapBuffer(3, gPokedexSearchMenuNational_Tilemap, 0, 0);
             LoadPalette(gPokedexSearchMenu_Pal + 1, BG_PLTT_ID(0) + 1, PLTT_SIZEOF(4 * 16 - 1));
-            InitDexSearchAbilityOptions();
-            //InitDexSearchMoveOptions();
             gMain.state = 1;
         }
         break;
@@ -8356,7 +8358,8 @@ static void DrawSearchMenuItemBgHighlight(u8 searchBg, bool8 unselected, bool8 d
         SetSearchRectHighlight(highlightFlags, sSearchMenuItems[SEARCH_GROUP_LEFT].titleBgX, sSearchMenuItems[SEARCH_GROUP_LEFT].titleBgY, sSearchMenuItems[SEARCH_GROUP_LEFT].titleBgWidth);
         break;
     case SEARCH_BG_OK:
-        /*if (!IsNationalPokedexEnabled())
+        /*
+        if (!IsNationalPokedexEnabled())
             SetSearchRectHighlight(highlightFlags, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].titleBgX, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].titleBgY - 2, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].titleBgWidth);
         else
         */
