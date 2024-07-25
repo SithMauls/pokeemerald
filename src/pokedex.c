@@ -2596,7 +2596,7 @@ static const struct SearchOptionText sDexSearchTypeOptions[NUMBER_OF_MON_TYPES +
     {gText_DexEmptyString, gTypeNames[TYPE_BUG]},
     {gText_DexEmptyString, gTypeNames[TYPE_DARK]},
     {gText_DexEmptyString, gTypeNames[TYPE_DRAGON]},
-    {gText_DexEmptyString, gTypeNames[TYPE_ELECTRIC]},
+    {gText_DexEmptyString, gText_DexSearchTypeElectric},
     {gText_DexEmptyString, gTypeNames[TYPE_FIGHTING]},
     {gText_DexEmptyString, gTypeNames[TYPE_FIRE]},
     {gText_DexEmptyString, gTypeNames[TYPE_FLYING]},
@@ -2606,7 +2606,7 @@ static const struct SearchOptionText sDexSearchTypeOptions[NUMBER_OF_MON_TYPES +
     {gText_DexEmptyString, gTypeNames[TYPE_ICE]},
     {gText_DexEmptyString, gTypeNames[TYPE_NORMAL]},
     {gText_DexEmptyString, gTypeNames[TYPE_POISON]},
-    {gText_DexEmptyString, gTypeNames[TYPE_PSYCHIC]},
+    {gText_DexEmptyString, gText_DexSearchTypePsychic},
     {gText_DexEmptyString, gTypeNames[TYPE_ROCK]},
     {gText_DexEmptyString, gTypeNames[TYPE_STEEL]},
     {gText_DexEmptyString, gTypeNames[TYPE_WATER]},
@@ -7465,10 +7465,10 @@ static u16 CreateSizeScreenTrainerPic(u16 species, s16 x, s16 y, s8 paletteSlot)
     return CreateTrainerPicSprite(species, TRUE, x, y, paletteSlot, TAG_NONE);
 }
 
-static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 eggGroup1, u32 eggGroup2, u32 ability, u32 move)
+static u32 DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 eggGroup1, u32 eggGroup2, u32 ability, u32 move)
 {
-    u32 species, preSpecies, resultsCount, tutorLearnset;
-    u32 i, j;
+    u32 species, speciesCopy, resultsCount, tutorLearnset;
+    u32 i, j, k;
     u32 groups[2];
     u32 types[2];
     u32 abilities[2];
@@ -7481,11 +7481,8 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
 
     for (i = 0, resultsCount = 0; i < NATIONAL_DEX_COUNT; i++)
     {
-        if (sPokedexView->pokedexList[i].seen)
-        {
-            sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
-            resultsCount++;
-        }
+        sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
+        resultsCount++;
     }
     sPokedexView->pokemonListCount = resultsCount;
 
@@ -7538,17 +7535,14 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
         {
             for (i = 0, resultsCount = 0; i < sPokedexView->pokemonListCount; i++)
             {
-                if (sPokedexView->pokedexList[i].owned)
-                {
-                    species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+                species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
 
-                    types[0] = gSpeciesInfo[species].types[0];
-                    types[1] = gSpeciesInfo[species].types[1];
-                    if (types[0] == type1 || types[1] == type1)
-                    {
-                        sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
-                        resultsCount++;
-                    }
+                types[0] = gSpeciesInfo[species].types[0];
+                types[1] = gSpeciesInfo[species].types[1];
+                if (types[0] == type1 || types[1] == type1)
+                {
+                    sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
+                    resultsCount++;
                 }
             }
         }
@@ -7556,17 +7550,14 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
         {
             for (i = 0, resultsCount = 0; i < sPokedexView->pokemonListCount; i++)
             {
-                if (sPokedexView->pokedexList[i].owned)
-                {
-                    species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+                species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
 
-                    types[0] = gSpeciesInfo[species].types[0];
-                    types[1] = gSpeciesInfo[species].types[1];
-                    if ((types[0] == type1 && types[1] == type2) || (types[0] == type2 && types[1] == type1))
-                    {
-                        sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
-                        resultsCount++;
-                    }
+                types[0] = gSpeciesInfo[species].types[0];
+                types[1] = gSpeciesInfo[species].types[1];
+                if ((types[0] == type1 && types[1] == type2) || (types[0] == type2 && types[1] == type1))
+                {
+                    sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
+                    resultsCount++;
                 }
             }
         }
@@ -7586,17 +7577,14 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
         {
             for (i = 0, resultsCount = 0; i < sPokedexView->pokemonListCount; i++)
             {
-                if (sPokedexView->pokedexList[i].owned)
-                {
-                    species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+                species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
 
-                    groups[0] = gSpeciesInfo[species].eggGroups[0];
-                    groups[1] = gSpeciesInfo[species].eggGroups[1];
-                    if (groups[0] == eggGroup1 || groups[1] == eggGroup1)
-                    {
-                        sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
-                        resultsCount++;
-                    }
+                groups[0] = gSpeciesInfo[species].eggGroups[0];
+                groups[1] = gSpeciesInfo[species].eggGroups[1];
+                if (groups[0] == eggGroup1 || groups[1] == eggGroup1)
+                {
+                    sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
+                    resultsCount++;
                 }
             }
         }
@@ -7604,17 +7592,14 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
         {
             for (i = 0, resultsCount = 0; i < sPokedexView->pokemonListCount; i++)
             {
-                if (sPokedexView->pokedexList[i].owned)
-                {
-                    species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+                species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
 
-                    groups[0] = gSpeciesInfo[species].eggGroups[0];
-                    groups[1] = gSpeciesInfo[species].eggGroups[1];
-                    if ((groups[0] == eggGroup1 && groups[1] == eggGroup2) || (groups[0] == eggGroup2 && groups[1] == eggGroup1))
-                    {
-                        sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
-                        resultsCount++;
-                    }
+                groups[0] = gSpeciesInfo[species].eggGroups[0];
+                groups[1] = gSpeciesInfo[species].eggGroups[1];
+                if ((groups[0] == eggGroup1 && groups[1] == eggGroup2) || (groups[0] == eggGroup2 && groups[1] == eggGroup1))
+                {
+                    sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
+                    resultsCount++;
                 }
             }
         }
@@ -7626,17 +7611,14 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
     {
         for (i = 0, resultsCount = 0; i < sPokedexView->pokemonListCount; i++)
         {
-            if (sPokedexView->pokedexList[i].owned)
-            {
-                species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+            species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
 
-                abilities[0] = gSpeciesInfo[species].abilities[0];
-                abilities[1] = gSpeciesInfo[species].abilities[1];
-                if (abilities[0] == ability || abilities[1] == ability)
-                {
-                    sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
-                    resultsCount++;
-                }
+            abilities[0] = gSpeciesInfo[species].abilities[0];
+            abilities[1] = gSpeciesInfo[species].abilities[1];
+            if (abilities[0] == ability || abilities[1] == ability)
+            {
+                sPokedexView->pokedexList[resultsCount] = sPokedexView->pokedexList[i];
+                resultsCount++;
             }
         }
         sPokedexView->pokemonListCount = resultsCount;
@@ -7659,86 +7641,76 @@ static int DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
         for (i = 0, resultsCount = 0; i < sPokedexView->pokemonListCount; i++)
         {
             moveFound = FALSE;
+            species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+            speciesCopy = species;
 
-            if (sPokedexView->pokedexList[i].owned)
+            // TM/HM moves
+            if (isTM && CanSpeciesLearnTMHM(species, tmId))
             {
-                species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+                moveFound = TRUE;
+            }
+
+            // Level up moves and pre-evolution level up moves
+            while (!moveFound && species != SPECIES_NONE)
+            {
                 levelUpLearnset = gLevelUpLearnsets[species];
-
-                // TM/HM moves
-                if (isTM && CanSpeciesLearnTMHM(species, tmId))
+                for (j = 0; levelUpLearnset[j] != LEVEL_UP_END; j++)
                 {
-                    moveFound = TRUE;
-                }
-
-                // Level up moves and pre-evolution level up moves
-                while (!moveFound && species != SPECIES_NONE)
-                {
-                    for (j = 0; levelUpLearnset[j] != LEVEL_UP_END; j++)
+                    if ((levelUpLearnset[j] & LEVEL_UP_MOVE_ID) == move)
                     {
-                        if ((levelUpLearnset[j] & LEVEL_UP_MOVE_ID) == move)
-                        {
-                            moveFound = TRUE;
-                            break;
-                        }
-                    }
-
-                    if (!moveFound)
-                    {
-                        species = GetPreEvolution(species);
-                        if (species != SPECIES_NONE)
-                        {
-                            levelUpLearnset = gLevelUpLearnsets[species];
-                        }
+                        moveFound = TRUE;
+                        break;
                     }
                 }
 
-                // Tutor moves
                 if (!moveFound)
                 {
-                    species = NationalPokedexNumToSpecies(sPokedexView->pokedexList[i].dexNum);
+                    species = GetPreEvolution(species);
+                }
+            }
 
-                    tutorLearnset = sTutorLearnsets[species];
+            // Tutor moves
+            if (!moveFound)
+            {
+                species = speciesCopy;
+                tutorLearnset = sTutorLearnsets[species];
 
-                    for (j = 0; j < TUTOR_MOVE_COUNT; j++)
+                for (j = 0; j < TUTOR_MOVE_COUNT; j++)
+                {
+                    if (gTutorMoves[j] == move && (tutorLearnset & (1 << j)))
                     {
-                        if (gTutorMoves[j] == move && (tutorLearnset & (1 << j)))
-                        {
-                            moveFound = TRUE;
-                            break;
-                        }
+                        moveFound = TRUE;
+                        break;
+                    }
+                }
+
+                // Egg moves
+                if (!moveFound)
+                {
+                    while (species != SPECIES_NONE)
+                    {
+                        speciesCopy = species;
+                        species = GetPreEvolution(species);
                     }
 
-                    // Egg moves
-                    if (!moveFound)
+                    j = FindSpeciesInEggMoves(speciesCopy);
+                    if (j != -1)
                     {
-                        while (species != SPECIES_NONE)
+                        for (k = 1; k <= 8; k++)
                         {
-                            preSpecies = species;
-                            species = GetPreEvolution(species);
-                        }
-
-                        j = FindSpeciesInEggMoves(preSpecies);
-                        if (j != -1)
-                        {
-                            j++; // Skip the species value
-                            while (gEggMoves[j] <= EGG_MOVES_SPECIES_OFFSET)
+                            if (gEggMoves[k + j] == move)
                             {
-                                if (gEggMoves[j] == move)
-                                {
-                                    moveFound = TRUE;
-                                    break;
-                                }
-                                j++;
+                                moveFound = TRUE;
+                                break;
                             }
                         }
                     }
                 }
+            }
 
-                if (moveFound)
-                {
-                    sPokedexView->pokedexList[resultsCount++] = sPokedexView->pokedexList[i];
-                }
+            if (moveFound)
+            {
+                sPokedexView->pokedexList[resultsCount++] = sPokedexView->pokedexList[i];
             }
         }
         sPokedexView->pokemonListCount = resultsCount;
@@ -8503,11 +8475,19 @@ static void PrintSelectedSearchParameters(u8 taskId)
    
     // Type left
     searchParamId = gTasks[taskId].tCursorPos_TypeLeft + gTasks[taskId].tScrollOffset_TypeLeft;
-    PrintSearchText(sDexSearchTypeOptions[searchParamId].title, 45, 17);
+    for (i = 0; i < 6; i++)
+        truncatedParameter[i] = sDexSearchTypeOptions[searchParamId].title[i];
+    truncatedParameter[i] = EOS;
+    PrintSearchText(truncatedParameter, 45, 17);
+    //PrintSearchText(sDexSearchTypeOptions[searchParamId].title, 45, 17);
 
     // Type right
     searchParamId = gTasks[taskId].tCursorPos_TypeRight + gTasks[taskId].tScrollOffset_TypeRight;
-    PrintSearchText(sDexSearchTypeOptions[searchParamId].title, 93, 17);
+    for (i = 0; i < 6; i++)
+        truncatedParameter[i] = sDexSearchTypeOptions[searchParamId].title[i];
+    truncatedParameter[i] = EOS;
+    PrintSearchText(truncatedParameter, 93, 17);
+    //PrintSearchText(sDexSearchTypeOptions[searchParamId].title, 93, 17);
 
     // Group left
     searchParamId = gTasks[taskId].tCursorPos_GroupLeft + gTasks[taskId].tScrollOffset_GroupLeft;
