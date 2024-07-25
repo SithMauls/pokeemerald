@@ -681,6 +681,12 @@ static void Task_HandlePokedexAreaScreenInput(u8 taskId)
             gTasks[taskId].data[1] = 3;
             PlaySE(SE_DEX_PAGE);
         }
+        else if (TryDoInfoScreenScroll())
+        {
+            BeginNormalPaletteFade(PALETTES_ALL & ~(0x14), 0, 0, 0x10, RGB_BLACK);
+            gTasks[taskId].data[1] = 4;
+            PlaySE(SE_DEX_SCROLL);
+        }
         else
             return;
         break;

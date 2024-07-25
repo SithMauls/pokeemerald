@@ -336,7 +336,6 @@ struct MovesView
     s32 bg3VOffsetBuffer;
     u8 categorySpriteId;
     bool8 inMenu;
-    u8 scrollStartBuffer;
 };
 
 #define TAG_MOVE_TYPES 30002
@@ -570,7 +569,6 @@ static void CreateMonSpritesAtPos(u16, u16);
 static bool8 UpdateDexListScroll(u8, u8, u8);
 static u16 TryDoPokedexScroll(u16, u16);
 static void UpdateSelectedMonSpriteId(void);
-static bool8 TryDoInfoScreenScroll(void);
 static u8 ClearMonSprites(void);
 static u16 GetPokemonSpriteToDisplay(u16);
 static u32 CreatePokedexMonSprite(u16, s16, s16);
@@ -4918,13 +4916,6 @@ static u16 TryDoMovesScroll(u16 selectedMove, u16 ignored, u8 taskId)
             CreateMoveListEntry(1, selectedMove, ignored);
             PlaySE(SE_DEX_SCROLL);
         }
-        else
-        {
-            HighlightSubmenuScreenSelectBarItem(MOVES_SCREEN, 0xD);
-            gTasks[taskId].func = Task_HandleMovesScreenInput;
-            sMovesView->inMenu = FALSE;
-            PlaySE(SE_DEX_PAGE);
-        }
     }
     else if (JOY_HELD(DPAD_DOWN) && (selectedMove < sMovesView->movesListCount - 1))
     {
@@ -5035,7 +5026,7 @@ static void UpdateSelectedMonSpriteId(void)
     }
 }
 
-static bool8 TryDoInfoScreenScroll(void)
+bool8 TryDoInfoScreenScroll(void)
 {
     u16 nextPokemon;
     u16 selectedPokemon = sPokedexView->selectedPokemon;
@@ -5911,7 +5902,12 @@ static void Task_LoadAreaScreen(u8 taskId)
 static void Task_WaitForAreaScreenInput(u8 taskId)
 {
 // See Task_HandlePokedexAreaScreenInput() in pokedex_area_screen.c
-    if (sPokedexView->screenSwitchState != 0)
+    if (sPokedexView->screenSwitchState == 4)
+    {
+        sPokedexListItem = &sPokedexView->pokedexList[sPokedexView->selectedPokemon];
+        gTasks[taskId].func = Task_SwitchScreensFromAreaScreen;
+    }
+    else if (sPokedexView->screenSwitchState != 0)
         gTasks[taskId].func = Task_SwitchScreensFromAreaScreen;
 }
 
@@ -5930,6 +5926,9 @@ static void Task_SwitchScreensFromAreaScreen(u8 taskId)
             break;
         case 3:
             gTasks[taskId].func = Task_LoadCryScreen;
+            break;
+        case 4:
+            gTasks[taskId].func = Task_LoadAreaScreen;
             break;
         }
     }
@@ -6065,25 +6064,28 @@ static void Task_HandleMovesScreenInput(u8 taskId)
         PlaySE(SE_DEX_PAGE);
         return;
     }
-    if (JOY_NEW(DPAD_DOWN) || JOY_NEW(A_BUTTON))
+    if (JOY_NEW(A_BUTTON))
     {
         LoadScreenSelectBarSubmenu(0xD);
         HighlightSubmenuScreenSelectBarItem(5, 0xD);
-        sMovesView->scrollStartBuffer = 8;
         gTasks[taskId].func = Task_HandleMovesScreenInput2;
         PlaySE(SE_DEX_PAGE);
         return;
     }
+    else if (TryDoInfoScreenScroll())
+    {
+        BeginNormalPaletteFade(PALETTES_ALL & ~(0x14), 0, 0, 0x10, RGB_BLACK);
+        sPokedexView->screenSwitchState = 4;
+        sPokedexListItem = &sPokedexView->pokedexList[sPokedexView->selectedPokemon];
+        gTasks[taskId].func = Task_SwitchScreensFromMovesScreen;
+        PlaySE(SE_DEX_SCROLL);
+    }
+
 }
 
 static void Task_HandleMovesScreenInput2(u8 taskId)
 {
-    if (JOY_HELD(DPAD_ANY) && sMovesView->scrollStartBuffer > 0)
-    {
-        sMovesView->scrollStartBuffer--;
-        return;
-    }
-    else if (JOY_NEW(B_BUTTON))
+    if (JOY_NEW(B_BUTTON))
     {
         HighlightSubmenuScreenSelectBarItem(MOVES_SCREEN, 0xD);
         gTasks[taskId].func = Task_HandleMovesScreenInput;
@@ -6108,7 +6110,6 @@ static void Task_HandleMovesScreenInput2(u8 taskId)
     }
     else
     {
-        sMovesView->scrollStartBuffer = 0;
         sMovesView->selectedMove = TryDoMovesScroll(sMovesView->selectedMove, 0xE, taskId);
         if (sMovesView->scrollTimer)
             gTasks[taskId].func = Task_WaitForMovesScroll;
@@ -6143,6 +6144,9 @@ static void Task_SwitchScreensFromMovesScreen(u8 taskId)
             break;
         case 3:
             gTasks[taskId].func = Task_LoadAreaScreen;
+            break;
+        case 4:
+            gTasks[taskId].func = Task_LoadMovesScreen;
             break;
         }
     }
@@ -6420,6 +6424,14 @@ static void Task_HandleCryScreenInput(u8 taskId)
             PlaySE(SE_DEX_PAGE);
             return;
         }
+        else if (TryDoInfoScreenScroll())
+        {
+            BeginNormalPaletteFade(PALETTES_ALL & ~(0x14), 0, 0, 0x10, RGB_BLACK);
+            sPokedexView->screenSwitchState = 3;
+            sPokedexListItem = &sPokedexView->pokedexList[sPokedexView->selectedPokemon];
+            gTasks[taskId].func = Task_SwitchScreensFromCryScreen;
+            PlaySE(SE_DEX_SCROLL);
+        }
     }
 }
 
@@ -6437,6 +6449,9 @@ static void Task_SwitchScreensFromCryScreen(u8 taskId)
             break;
         case 2:
             gTasks[taskId].func = Task_LoadAreaScreen;
+            break;
+        case 3:
+            gTasks[taskId].func = Task_LoadCryScreen;
             break;
         }
     }
@@ -6621,6 +6636,14 @@ static void Task_HandleSizeScreenInput(u8 taskId)
         gTasks[taskId].func = Task_SwitchScreensFromSizeScreen;
         PlaySE(SE_DEX_PAGE);
     }
+    else if (TryDoInfoScreenScroll())
+    {
+        BeginNormalPaletteFade(PALETTES_ALL & ~(0x14), 0, 0, 0x10, RGB_BLACK);
+        sPokedexView->screenSwitchState = 3;
+        sPokedexListItem = &sPokedexView->pokedexList[sPokedexView->selectedPokemon];
+        gTasks[taskId].func = Task_SwitchScreensFromSizeScreen;
+        PlaySE(SE_DEX_SCROLL);
+    }
 }
 
 static void Task_SwitchScreensFromSizeScreen(u8 taskId)
@@ -6637,6 +6660,9 @@ static void Task_SwitchScreensFromSizeScreen(u8 taskId)
             break;
         case 2:
             gTasks[taskId].func = Task_LoadMovesScreen;
+            break;
+        case 3:
+            gTasks[taskId].func = Task_LoadSizeScreen;
             break;
         }
     }
