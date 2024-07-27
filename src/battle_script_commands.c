@@ -326,6 +326,32 @@ static void Cmd_finishaction(void);
 static void Cmd_finishturn(void);
 static void Cmd_trainerslideout(void);
 
+const u16 sLevelCapFlags[NUM_CAPS] =
+{
+    FLAG_BADGE01_GET,
+    FLAG_BADGE02_GET,
+    FLAG_BADGE03_GET,
+    FLAG_BADGE04_GET,
+    FLAG_BADGE05_GET,
+    FLAG_BADGE06_GET,
+    FLAG_BADGE07_GET,
+    FLAG_BADGE08_GET,
+    FLAG_IS_CHAMPION,
+};
+
+const u16 sLevelCaps[NUM_CAPS] =
+{
+    15,
+    20,
+    25,
+    30,
+    35,
+    40,
+    45,
+    50,
+    100,
+};
+
 void (* const gBattleScriptingCommandsTable[])(void) =
 {
     Cmd_attackcanceler,                          //0x0
@@ -3238,6 +3264,31 @@ static void Cmd_jumpiftype(void)
         gBattlescriptCurrInstr += 7;
 }
 
+static u32 GetPkmnExpMultiplier(u8 level)
+{
+    s32 i;
+    bool32 flagSet = FALSE;
+
+    // multiply the usual exp yield by the soft cap multiplier
+    for (i = NUM_CAPS - 1; i >= 0; i--)
+    {
+        if (FlagGet(sLevelCapFlags[i]))
+        {
+            flagSet = TRUE;
+
+            if (level < sLevelCaps[i])
+                return 1;
+
+            return 0;
+        }
+    }
+
+    if (!flagSet && level >= 10)
+        return 0;
+
+    return 1;
+}
+
 static void Cmd_getexp(void)
 {
     u16 item;
@@ -3355,13 +3406,15 @@ static void Cmd_getexp(void)
 
                 if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_HP))
                 {
+                    double expMultiplier = GetPkmnExpMultiplier(gPlayerParty[gBattleStruct->expGetterMonId].level);
+
                     if (gBattleStruct->sentInPokes & 1)
-                        gBattleMoveDamage = *exp;
+                        gBattleMoveDamage = *exp * expMultiplier;
                     else
                         gBattleMoveDamage = 0;
 
                     if (holdEffect == HOLD_EFFECT_EXP_SHARE)
-                        gBattleMoveDamage += gExpShareExp;
+                        gBattleMoveDamage += gExpShareExp * expMultiplier;
                     if (holdEffect == HOLD_EFFECT_LUCKY_EGG)
                         gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
                     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)

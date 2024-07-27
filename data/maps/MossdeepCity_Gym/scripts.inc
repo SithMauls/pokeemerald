@@ -574,7 +574,9 @@ MossdeepCity_Gym_Text_ExplainMindBadgeTakeThis:
 	.string "SP. ATK and SP. DEF of POKéMON.\p"
 	.string "LIZA: It also lets you use the HM move\n"
 	.string "DIVE outside of battle.\p"
-	.string "TATE: You should also take this, too.$"
+	.string "TATE: And you can train POKéMON up to\n"
+	.string "Level 45.\p"
+	.string "LIZA: You should also take this, too.$"
 
 MossdeepCity_Gym_Text_ExplainCalmMind:
 	.string "TATE: That TM04 contains…\n"

@@ -360,6 +360,8 @@ MauvilleCity_Gym_Text_ExplainDynamoBadgeTakeThis:
 	.string "use ROCK SMASH out of battle.\p"
 	.string "And, it will make your POKéMON a little\n"
 	.string "bit faster, too.\p"
+	.string "They will also be able to grow up to\n"
+	.string "Level 25 now.\p"
 	.string "Hmm…\n"
 	.string "You should take this, too!$"
 

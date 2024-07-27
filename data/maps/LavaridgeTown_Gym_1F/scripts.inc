@@ -339,6 +339,8 @@ LavaridgeTown_Gym_1F_Text_ExplainHeatBadgeTakeThis:
 	.string "up to Level 50, even those you get in\l"
 	.string "trades from other people, will obey\l"
 	.string "you completely.\p"
+	.string "The POKéMON you train will also be\n"
+	.string "able to reach Level 30.\p"
 	.string "And, it lets POKéMON use the HM move\n"
 	.string "STRENGTH outside of battle.\p"
 	.string "This is a token of my appreciation.\n"

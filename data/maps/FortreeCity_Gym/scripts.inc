@@ -258,6 +258,8 @@ FortreeCity_Gym_Text_ExplainFeatherBadgeTakeThis:
 	.string "trades, will obey your every command.\p"
 	.string "You will also be able to use\n"
 	.string "the HM move FLY outside of battle.\p"
+	.string "And you have been granted permission\n"
+	.string "to train POKéMON up to Level 40.\p"
 	.string "And this…\n"
 	.string "This is a gift from me.$"
 
