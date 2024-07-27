@@ -1201,16 +1201,7 @@ static const struct WindowTemplate sPokemonList_WindowTemplate[] =
     DUMMY_WIN_TEMPLATE
 };
 
-static const u8 sText_No000[] = _("{NO}000");
-static const u8 sText_Lv00[] = _("{LV_2}  ");
-static const u8 sText_Egg[] = _("EGG");
-static const u8 sText_TM00[] = _("TM00");
-static const u8 sText_Tutor[] = _("TUTOR");
-static const u8 sText_Pre[] = _("PRE");
 static const u8 sCaughtBall_Gfx[] = INCBIN_U8("graphics/pokedex/caught_ball.4bpp");
-static const u8 sText_TenDashes[] = _("----------");
-
-ALIGNED(4) static const u8 sExpandedPlaceholder_PokedexDescription[] = _("");
 
 #include "data/pokemon/pokedex_text.h"
 #include "data/pokemon/pokedex_entries.h"
@@ -1388,8 +1379,6 @@ static const struct WindowTemplate sNewEntryInfoScreen_WindowTemplates[] =
     },
     DUMMY_WIN_TEMPLATE
 };
-
-static const u8 sText_TenDashes2[] = _("----------");
 
 #include "data/pokemon_graphics/footprint_table.h"
 
