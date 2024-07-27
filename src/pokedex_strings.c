@@ -10,6 +10,15 @@ const u8 sText_TM00[] = _("TM00");
 const u8 sText_Tutor[] = _("TUTOR");
 const u8 sText_Egg[] = _("EGG");
 
+const u8 sText_Any[] = _("ANY");
+const u8 sText_LevelUp[] = _("LEVEL UP");
+const u8 sText_TMHM[] = _("TM/HM");
+const u8 sText_EggMove[] = _("EGG MOVE");
+
+const u8 sText_Lvl[] = _("LVL");
+const u8 sText_TM[] = _("TM");
+const u8 sText_Tut[] = _("TUT");
+
 ALIGNED(4) const u8 sExpandedPlaceholder_PokedexDescription[] = _("");
 
 const u8 sText_AbilityDescription_None[] = _("-------");

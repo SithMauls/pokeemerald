@@ -73,6 +73,7 @@ enum
     SEARCH_GROUP_RIGHT,
     SEARCH_ABILITY,
     SEARCH_MOVE,
+    SEARCH_MOVETYPE,
     SEARCH_ORDER,
     SEARCH_MODE,
     SEARCH_OK,
@@ -114,6 +115,15 @@ enum
     SEARCH_TOPBAR_SHIFT,
     SEARCH_TOPBAR_CANCEL,
     SEARCH_TOPBAR_COUNT
+};
+
+enum
+{
+    MOVETYPE_ANY,
+    MOVETYPE_LEVEL_UP,
+    MOVETYPE_TMHM,
+    MOVETYPE_TUTOR,
+    MOVETYPE_EGG_MOVE,
 };
 
 enum
@@ -1514,7 +1524,17 @@ static const struct SearchMenuItem sSearchMenuItems[SEARCH_COUNT] =
         .titleBgWidth = 5,
         .selectionBgX = 5,
         .selectionBgY = 8,
-        .selectionBgWidth = 12,
+        .selectionBgWidth = 8,
+    },
+    [SEARCH_MOVETYPE] =
+    {
+        .description = gText_ListByMove,
+        .titleBgX = 0,
+        .titleBgY = 8,
+        .titleBgWidth = 5,
+        .selectionBgX = 13,
+        .selectionBgY = 8,
+        .selectionBgWidth = 4,
     },
     [SEARCH_ORDER] =
     {
@@ -1601,9 +1621,16 @@ static const u8 sSearchMovementMap_SearchNatDex[SEARCH_COUNT][4] =
         SEARCH_GROUP_LEFT,
         SEARCH_MOVE
     },
-    [SEARCH_MOVE]
+    [SEARCH_MOVE] =
     {
         0xFF,
+        SEARCH_MOVETYPE,
+        SEARCH_ABILITY,
+        SEARCH_ORDER
+    },
+    [SEARCH_MOVETYPE] =
+    {
+        SEARCH_MOVE,
         0xFF,
         SEARCH_ABILITY,
         SEARCH_ORDER
@@ -1686,6 +1713,13 @@ static const u8 sSearchMovementMap_ShiftNatDex[SEARCH_COUNT][4] =
         0xFF
     },
     [SEARCH_MOVE] =
+    {
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF
+    },
+    [SEARCH_MOVETYPE] =
     {
         0xFF,
         0xFF,
@@ -1775,6 +1809,13 @@ static const u8 sSearchMovementMap_SearchHoennDex[SEARCH_COUNT][4] =
         SEARCH_ABILITY,
         SEARCH_ORDER
     },
+    [SEARCH_MOVETYPE] =
+    {
+        SEARCH_MOVE,
+        0xFF,
+        SEARCH_ABILITY,
+        SEARCH_ORDER
+    },
     [SEARCH_ORDER] =
     {
         0xFF,
@@ -1853,6 +1894,13 @@ static const u8 sSearchMovementMap_ShiftHoennDex[SEARCH_COUNT][4] =
         0xFF
     },
     [SEARCH_MOVE] =
+    {
+        0xFF,
+        0xFF,
+        0xFF,
+        0xFF
+    },
+        [SEARCH_MOVETYPE] =
     {
         0xFF,
         0xFF,
@@ -2577,6 +2625,16 @@ static const struct SearchOptionText sDexSearchMoveOptionsWater[] =
     {},
 };
 
+static const struct SearchOptionText sDexSearchMoveTypeOptions[] = 
+{
+    {gText_DexEmptyString, sText_Any},
+    {gText_DexEmptyString, sText_LevelUp},
+    {gText_DexEmptyString, sText_TMHM},
+    {gText_DexEmptyString, sText_Tutor},
+    {gText_DexEmptyString, sText_EggMove},
+    {},
+};
+
 static const struct SearchOptionText sDexSearchTypeOptions[NUMBER_OF_MON_TYPES + 1] = // + 2 for "None" and terminator, - 1 for Mystery
 {
     {gText_DexEmptyString, gText_DexSearchTypeNone},
@@ -3097,6 +3155,15 @@ static const u16 sDexSearchMoveIdsWater[] =
     MOVE_WITHDRAW,
 };
 
+static const u8 sDexSearchMoveTypeIds[] =
+{
+    MOVETYPE_ANY,
+    MOVETYPE_LEVEL_UP,
+    MOVETYPE_TMHM,
+    MOVETYPE_TUTOR,
+    MOVETYPE_EGG_MOVE,
+};
+
 static const u8 sDexSearchAbilityIdsABC[] =
 {
     ABILITY_AIR_LOCK,
@@ -3228,6 +3295,7 @@ static const struct SearchOption sSearchOptions[] =
     [SEARCH_GROUP_RIGHT]    = {sDexSearchGroupOptions,             12, 13, ARRAY_COUNT(sDexSearchGroupOptions) - 1},
     [SEARCH_ABILITY]        = {sDexSearchAbilityInitialOptions,    14, 15, ARRAY_COUNT(sDexSearchAbilityInitialOptions) - 1},
     [SEARCH_MOVE]           = {sDexSearchMoveInitialOptions,       24, 25, ARRAY_COUNT(sDexSearchMoveInitialOptions) - 1},
+    [SEARCH_MOVETYPE]       = {sDexSearchMoveTypeOptions,          32, 33, ARRAY_COUNT(sDexSearchMoveTypeOptions) - 1},
     [SEARCH_ORDER]          = {sDexOrderOptions,                    4,  5, ARRAY_COUNT(sDexOrderOptions) - 1},
     [SEARCH_MODE]           = {sDexModeOptions,                     2,  3, ARRAY_COUNT(sDexModeOptions) - 1},
     [SEARCH_ABILITY_ABC]    = {sDexSearchAbilityOptionsABC,        28, 29, ARRAY_COUNT(sDexSearchAbilityOptionsABC) - 1},
@@ -7480,7 +7548,7 @@ static u16 CreateSizeScreenTrainerPic(u16 species, s16 x, s16 y, s8 paletteSlot)
     return CreateTrainerPicSprite(species, TRUE, x, y, paletteSlot, TAG_NONE);
 }
 
-static u32 DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 eggGroup1, u32 eggGroup2, u32 ability, u32 move)
+static u32 DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 eggGroup1, u32 eggGroup2, u32 ability, u32 move, u32 moveType)
 {
     u32 species, speciesCopy, resultsCount, tutorLearnset;
     u32 i, j, k;
@@ -7643,13 +7711,16 @@ static u32 DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
     if (move != MOVE_NONE)
     {
         // Is move TM?
-        for (j = 0; j <= ITEM_HM08 - ITEM_TM01; j++)
+        if (moveType == MOVETYPE_ANY || moveType == MOVETYPE_TMHM)
         {
-            if (sTMHMMoves[j] == move)
+            for (j = 0; j <= ITEM_HM08 - ITEM_TM01; j++)
             {
-                isTM = TRUE;
-                tmId = j;
-                break;
+                if (sTMHMMoves[j] == move)
+                {
+                    isTM = TRUE;
+                    tmId = j;
+                    break;
+                }
             }
         }
 
@@ -7660,70 +7731,86 @@ static u32 DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
             speciesCopy = species;
 
             // TM/HM moves
-            if (isTM && CanSpeciesLearnTMHM(species, tmId))
+            if (isTM && (moveType == MOVETYPE_ANY || moveType == MOVETYPE_TMHM) && CanSpeciesLearnTMHM(species, tmId))
             {
-                DebugPrintf("Found move %S in TM moves for species %S", gMoveNames[move], gSpeciesNames[species]);
                 moveFound = TRUE;
             }
 
-            // Level up moves and pre-evolution level up moves
-            while (!moveFound && species != SPECIES_NONE)
+            // Level up moves
+            if (!moveFound && (moveType == MOVETYPE_ANY || moveType == MOVETYPE_LEVEL_UP))
             {
                 levelUpLearnset = gLevelUpLearnsets[species];
                 for (j = 0; levelUpLearnset[j] != LEVEL_UP_END; j++)
                 {
                     if ((levelUpLearnset[j] & LEVEL_UP_MOVE_ID) == move)
                     {
-                        DebugPrintf("Found move %S in level up moves for species %S", gMoveNames[move], gSpeciesNames[species]);
                         moveFound = TRUE;
                         break;
                     }
                 }
+            }
 
-                if (!moveFound)
+            // Pre-evolution level up moves
+            if (!moveFound && moveType == MOVETYPE_ANY)
+            {
+                species = GetPreEvolution(species);
+
+                while (!moveFound && species != SPECIES_NONE)
                 {
+                    levelUpLearnset = gLevelUpLearnsets[species];
+                    for (j = 0; levelUpLearnset[j] != LEVEL_UP_END; j++)
+                    {
+                        if ((levelUpLearnset[j] & LEVEL_UP_MOVE_ID) == move)
+                        {
+                            moveFound = TRUE;
+                            break;
+                        }
+                    }
+
+                    if (moveFound)
+                        break;
+
                     species = GetPreEvolution(species);
                 }
+
+                species = speciesCopy;
             }
 
             // Tutor moves
-            if (!moveFound)
+            if (!moveFound && (moveType == MOVETYPE_ANY || moveType == MOVETYPE_TUTOR))
             {
-                species = speciesCopy;
                 tutorLearnset = sTutorLearnsets[species];
 
                 for (j = 0; j < TUTOR_MOVE_COUNT; j++)
                 {
                     if (gTutorMoves[j] == move && (tutorLearnset & (1 << j)))
                     {
-                        DebugPrintf("Found move %S in tutor moves for species %S", gMoveNames[move], gSpeciesNames[species]);
                         moveFound = TRUE;
                         break;
                     }
                 }
+            }
 
-                // Egg moves
-                if (!moveFound)
+            // Egg moves
+            if (!moveFound  && (moveType == MOVETYPE_ANY || moveType == MOVETYPE_EGG_MOVE))
+            {
+                while (species != SPECIES_NONE)
                 {
-                    while (species != SPECIES_NONE)
-                    {
-                        speciesCopy = species;
-                        species = GetPreEvolution(species);
-                    }
+                    speciesCopy = species;
+                    species = GetPreEvolution(species);
+                }
 
-                    j = FindSpeciesInEggMoves(speciesCopy);
-                    if (j != -1)
+                j = FindSpeciesInEggMoves(speciesCopy);
+                if (j != -1)
+                {
+                    for (k = 1; k <= 8; k++)
                     {
-                        for (k = 1; k <= 8; k++)
+                        if (gEggMoves[j + k] > EGG_MOVES_SPECIES_OFFSET)
+                            break;
+                        if (gEggMoves[k + j] == move)
                         {
-                            if (gEggMoves[j + k] > EGG_MOVES_SPECIES_OFFSET)
-                                break;
-                            if (gEggMoves[k + j] == move)
-                            {
-                                DebugPrintf("Found move %S in egg moves for species %S", gMoveNames[move], gSpeciesNames[speciesCopy]);
-                                moveFound = TRUE;
-                                break;
-                            }
+                            moveFound = TRUE;
+                            break;
                         }
                     }
                 }
@@ -7799,6 +7886,8 @@ static void ClearSearchMenuRect(u32 x, u32 y, u32 width, u32 height)
 #define tScrollOffset_Ability_2  data[29]
 #define tCursorPos_Move_2        data[30]
 #define tScrollOffset_Move_2     data[31]
+#define tCursorPos_MoveType   	 data[32]
+#define tScrollOffset_MoveType   data[33]
 
 static void Task_LoadSearchMenu(u8 taskId)
 {
@@ -8065,8 +8154,9 @@ static void Task_StartPokedexSearch(u8 taskId)
     u32 eggGroup2 = GetSearchModeSelection(taskId, SEARCH_GROUP_RIGHT);
     u32 ability = GetSearchModeSelection(taskId, SEARCH_ABILITY);
     u32 move = GetSearchModeSelection(taskId, SEARCH_MOVE);
+    u32 moveType = GetSearchModeSelection(taskId, SEARCH_MOVETYPE);
 
-    DoPokedexSearch(dexMode, order, type1, type2, eggGroup1, eggGroup2, ability, move);
+    DoPokedexSearch(dexMode, order, type1, type2, eggGroup1, eggGroup2, ability, move, moveType);
     gTasks[taskId].func = Task_WaitAndCompleteSearch;
 }
 
@@ -8313,11 +8403,13 @@ void SetSearchRectHighlight(u8 flags, u8 x, u8 y, u8 width)
 #define SEARCH_BG_TYPE_SELECTION_RIGHT  (SEARCH_TYPE_RIGHT + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_ABILITY               (SEARCH_ABILITY + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_MOVE                  (SEARCH_MOVE + SEARCH_TOPBAR_COUNT)
+#define SEARCH_BG_MOVETYPE              (SEARCH_MOVETYPE + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_ORDER                 (SEARCH_ORDER + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_MODE                  (SEARCH_MODE + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_OK                    (SEARCH_OK + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_GROUP_TITLE           (SEARCH_COUNT + SEARCH_TOPBAR_COUNT)
 #define SEARCH_BG_TYPE_TITLE            (SEARCH_COUNT + SEARCH_TOPBAR_COUNT + 1)
+#define SEARCH_BG_MOVE_TITLE            (SEARCH_COUNT + SEARCH_TOPBAR_COUNT + 2)
 
 static void DrawSearchMenuItemBgHighlight(u8 searchBg, bool8 unselected, bool8 disabled)
 {
@@ -8333,7 +8425,6 @@ static void DrawSearchMenuItemBgHighlight(u8 searchBg, bool8 unselected, bool8 d
     //case SEARCH_BG_NAME:
     //case SEARCH_BG_COLOR:
     case SEARCH_BG_ABILITY:
-    case SEARCH_BG_MOVE:
     case SEARCH_BG_ORDER:
     case SEARCH_BG_MODE:
         SetSearchRectHighlight(highlightFlags, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].titleBgX, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].titleBgY, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].titleBgWidth);
@@ -8342,6 +8433,8 @@ static void DrawSearchMenuItemBgHighlight(u8 searchBg, bool8 unselected, bool8 d
     case SEARCH_BG_TYPE_SELECTION_RIGHT:
     case SEARCH_BG_GROUP_SELECTION_LEFT:
     case SEARCH_BG_GROUP_SELECTION_RIGHT:
+    case SEARCH_BG_MOVE:
+    case SEARCH_BG_MOVETYPE:
         SetSearchRectHighlight(highlightFlags, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].selectionBgX, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].selectionBgY, sSearchMenuItems[searchBg - SEARCH_TOPBAR_COUNT].selectionBgWidth);
         break;
     case SEARCH_BG_TYPE_TITLE:
@@ -8349,6 +8442,9 @@ static void DrawSearchMenuItemBgHighlight(u8 searchBg, bool8 unselected, bool8 d
         break;
     case SEARCH_BG_GROUP_TITLE:
         SetSearchRectHighlight(highlightFlags, sSearchMenuItems[SEARCH_GROUP_LEFT].titleBgX, sSearchMenuItems[SEARCH_GROUP_LEFT].titleBgY, sSearchMenuItems[SEARCH_GROUP_LEFT].titleBgWidth);
+        break;
+    case SEARCH_BG_MOVE_TITLE:
+        SetSearchRectHighlight(highlightFlags, sSearchMenuItems[SEARCH_MOVE].titleBgX, sSearchMenuItems[SEARCH_MOVE].titleBgY, sSearchMenuItems[SEARCH_MOVE].titleBgWidth);
         break;
     case SEARCH_BG_OK:
         /*
@@ -8378,7 +8474,9 @@ static void SetInitialSearchMenuBgHighlights(u8 topBarItem)
         DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_LEFT, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_RIGHT, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_ABILITY, TRUE, FALSE);
-        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE, TRUE, FALSE);        
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE_TITLE, TRUE, FALSE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE, TRUE, FALSE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVETYPE, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_ORDER, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_MODE, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_OK, TRUE, FALSE);
@@ -8396,7 +8494,9 @@ static void SetInitialSearchMenuBgHighlights(u8 topBarItem)
         DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_LEFT, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_RIGHT, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_ABILITY, TRUE, TRUE);
-        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE, TRUE, TRUE); 
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE_TITLE, TRUE, TRUE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE, TRUE, TRUE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVETYPE, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_ORDER, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_MODE, TRUE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_OK, TRUE, FALSE);
@@ -8414,7 +8514,9 @@ static void SetInitialSearchMenuBgHighlights(u8 topBarItem)
         DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_LEFT, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_GROUP_SELECTION_RIGHT, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_ABILITY, TRUE, TRUE);
-        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE, TRUE, TRUE); 
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE_TITLE, TRUE, TRUE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE, TRUE, TRUE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVETYPE, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_ORDER, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_MODE, TRUE, TRUE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_OK, TRUE, TRUE);
@@ -8461,7 +8563,12 @@ static void HighlightSelectedSearchMenuItem(u8 topBarItem, u8 menuItem)
         DrawSearchMenuItemBgHighlight(SEARCH_BG_ABILITY, FALSE, FALSE);
         break;
     case SEARCH_MOVE:
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE_TITLE, FALSE, FALSE);
         DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE, FALSE, FALSE);
+        break;
+    case SEARCH_MOVETYPE:
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVE_TITLE, FALSE, FALSE);
+        DrawSearchMenuItemBgHighlight(SEARCH_BG_MOVETYPE, FALSE, FALSE);
         break;
     case SEARCH_ORDER:
         DrawSearchMenuItemBgHighlight(SEARCH_BG_ORDER, FALSE, FALSE);
@@ -8481,7 +8588,7 @@ static void PrintSelectedSearchParameters(u8 taskId)
 {
     u16 searchParamId;
     const struct SearchOptionText *searchParamId2;
-    u8 truncatedParameter[7];
+    u8 truncatedParameter[10];
     u8 i, j;
 
     ClearSearchMenuRect(40, 16, 96, 96);
@@ -8555,7 +8662,32 @@ static void PrintSelectedSearchParameters(u8 taskId)
     {
         searchParamId2 = sSearchOptions[SEARCH_ABILITY_VWX + gTasks[taskId].tCursorPos_Move + gTasks[taskId].tScrollOffset_Move].texts;
         searchParamId = gTasks[taskId].tCursorPos_Move_2 + gTasks[taskId].tScrollOffset_Move_2;
-        PrintSearchText(searchParamId2[searchParamId].title, 45, 65);
+
+        for (i = 0; i < 9 && searchParamId2[searchParamId].title[i] != EOS; i++)
+            truncatedParameter[i] = searchParamId2[searchParamId].title[i];
+        truncatedParameter[i] = EOS;
+        PrintSearchText(truncatedParameter, 45, 65);
+    }
+
+    // Movetype
+    searchParamId = gTasks[taskId].tCursorPos_MoveType + gTasks[taskId].tScrollOffset_MoveType;
+    switch(searchParamId)
+    {
+        case MOVETYPE_ANY:
+            PrintSearchText(sDexSearchMoveTypeOptions[searchParamId].title, 109, 65);
+            break;
+        case MOVETYPE_LEVEL_UP:
+            PrintSearchText(sText_Lvl, 109, 65);
+            break;
+        case MOVETYPE_TMHM:
+            PrintSearchText(sText_TM, 109, 65);
+            break;
+        case MOVETYPE_TUTOR:
+            PrintSearchText(sText_Tut, 109, 65);
+            break;
+        case MOVETYPE_EGG_MOVE:
+            PrintSearchText(sText_Egg, 109, 65);
+            break;
     }
 
     // Order
@@ -8568,7 +8700,6 @@ static void PrintSelectedSearchParameters(u8 taskId)
         searchParamId = gTasks[taskId].tCursorPos_Mode + gTasks[taskId].tScrollOffset_Mode;
         for (i = 0, j = 0; i < 7 && sDexModeOptions[searchParamId].title[j] != CHAR_SPACE; i++, j++)
             truncatedParameter[i] = sDexModeOptions[searchParamId].title[j];
-
         truncatedParameter[i] = EOS;
         PrintSearchText(truncatedParameter, 45, 97);
     }
@@ -8741,6 +8872,8 @@ static u16 GetSearchModeSelection(u8 taskId, u8 option)
             default:
                 return sDexSearchMoveIds[0];
         }
+    case SEARCH_MOVETYPE:
+        return sDexSearchMoveTypeIds[id];
     }
 }
 
