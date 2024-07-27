@@ -7673,6 +7673,7 @@ static u32 DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
             // TM/HM moves
             if (isTM && CanSpeciesLearnTMHM(species, tmId))
             {
+                DebugPrintf("Found move %S in TM moves for species %S", gMoveNames[move], gSpeciesNames[species]);
                 moveFound = TRUE;
             }
 
@@ -7684,6 +7685,7 @@ static u32 DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
                 {
                     if ((levelUpLearnset[j] & LEVEL_UP_MOVE_ID) == move)
                     {
+                        DebugPrintf("Found move %S in level up moves for species %S", gMoveNames[move], gSpeciesNames[species]);
                         moveFound = TRUE;
                         break;
                     }
@@ -7705,6 +7707,7 @@ static u32 DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
                 {
                     if (gTutorMoves[j] == move && (tutorLearnset & (1 << j)))
                     {
+                        DebugPrintf("Found move %S in tutor moves for species %S", gMoveNames[move], gSpeciesNames[species]);
                         moveFound = TRUE;
                         break;
                     }
@@ -7724,8 +7727,11 @@ static u32 DoPokedexSearch(u32 dexMode, u32 order, u32 type1, u32 type2, u32 egg
                     {
                         for (k = 1; k <= 8; k++)
                         {
+                            if (gEggMoves[j + k] > EGG_MOVES_SPECIES_OFFSET)
+                                break;
                             if (gEggMoves[k + j] == move)
                             {
+                                DebugPrintf("Found move %S in egg moves for species %S", gMoveNames[move], gSpeciesNames[speciesCopy]);
                                 moveFound = TRUE;
                                 break;
                             }
