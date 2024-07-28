@@ -23,6 +23,7 @@
 #include "window.h"
 #include "constants/songs.h"
 #include "constants/rgb.h"
+#include "random.h"
 
 #define STARTER_MON_COUNT   3
 
@@ -50,6 +51,7 @@ static void SpriteCB_Pokeball(struct Sprite *sprite);
 static void SpriteCB_StarterPokemon(struct Sprite *sprite);
 
 static u16 sStarterLabelWindowId;
+static u16 sStarterMon[STARTER_MON_COUNT];
 
 const u16 gBirchBagGrass_Pal[] = INCBIN_U16("graphics/starter_choose/tiles.gbapal");
 static const u16 sPokeballSelection_Pal[] = INCBIN_U16("graphics/starter_choose/pokeball_selection.gbapal");
@@ -110,12 +112,48 @@ static const u8 sStarterLabelCoords[STARTER_MON_COUNT][2] =
     {8, 4},
 };
 
+static const u16 sTorchicGroup[] = {
+    SPECIES_BELDUM,
+    SPECIES_IGGLYBUFF,
+    SPECIES_ODDISH,
+    SPECIES_SEEDOT,
+    SPECIES_SLAKOTH,
+    SPECIES_TREECKO,
+    SPECIES_WHISMUR,
+    SPECIES_WURMPLE,
+};
+
+static const u16 sMudkipGroup[] =
+{
+    SPECIES_ABRA,
+    SPECIES_ARON,
+    SPECIES_BAGON,
+    SPECIES_MACHOP,
+    SPECIES_RALTS,
+    SPECIES_TORCHIC,
+    SPECIES_TRAPINCH,
+    SPECIES_ZUBAT,
+};
+
+static const u16 sTreeckoGroup[] =
+{
+    SPECIES_AZURILL,
+    SPECIES_GEODUDE,
+    SPECIES_HORSEA,
+    SPECIES_LOTAD,
+    SPECIES_MUDKIP,
+    SPECIES_PICHU,
+    SPECIES_SPHEAL,
+};
+
+/*
 static const u16 sStarterMon[STARTER_MON_COUNT] =
 {
     SPECIES_TREECKO,
     SPECIES_TORCHIC,
     SPECIES_MUDKIP,
 };
+*/
 
 static const struct BgTemplate sBgTemplates[3] =
 {
@@ -348,6 +386,22 @@ static const struct SpriteTemplate sSpriteTemplate_StarterCircle =
 };
 
 // .text
+
+void RandomiseStarterMon(void)
+{
+    u8 i;
+    u16 randomIndex;
+    const u16 *starterGroups[STARTER_MON_COUNT] = {sTorchicGroup, sMudkipGroup, sTreeckoGroup};
+    const u8 groupSizes[STARTER_MON_COUNT] = {ARRAY_COUNT(sTorchicGroup), ARRAY_COUNT(sMudkipGroup), ARRAY_COUNT(sTreeckoGroup)};
+
+    for (i = 0; i < STARTER_MON_COUNT; i++)
+    {
+        // Select a random species from the corresponding group
+        randomIndex = Random() % groupSizes[i];
+        sStarterMon[i] = starterGroups[i][randomIndex];
+    }
+}
+
 u16 GetStarterPokemon(u16 chosenStarterId)
 {
     if (chosenStarterId > STARTER_MON_COUNT)
@@ -438,6 +492,8 @@ void CB2_ChooseStarter(void)
     ShowBg(0);
     ShowBg(2);
     ShowBg(3);
+
+    RandomiseStarterMon();
 
     taskId = CreateTask(Task_StarterChoose, 0);
     gTasks[taskId].tStarterSelection = 1;
