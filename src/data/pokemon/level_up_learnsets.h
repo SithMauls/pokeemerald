@@ -826,6 +826,7 @@ static const u16 sPoliwrathLevelUpLearnset[] = {
 
 static const u16 sAbraLevelUpLearnset[] = {
     LEVEL_UP_MOVE( 1, MOVE_TELEPORT),
+    LEVEL_UP_MOVE( 1, MOVE_HIDDEN_POWER),
     LEVEL_UP_END
 };
 
@@ -2412,6 +2413,7 @@ static const u16 sIgglybuffLevelUpLearnset[] = {
     LEVEL_UP_MOVE( 1, MOVE_SING),
     LEVEL_UP_MOVE( 1, MOVE_CHARM),
     LEVEL_UP_MOVE( 4, MOVE_DEFENSE_CURL),
+    LEVEL_UP_MOVE( 5, MOVE_POUND),
     LEVEL_UP_MOVE( 9, MOVE_POUND),
     LEVEL_UP_MOVE(14, MOVE_SWEET_KISS),
     LEVEL_UP_END
@@ -3879,6 +3881,7 @@ static const u16 sLudicoloLevelUpLearnset[] = {
 static const u16 sSeedotLevelUpLearnset[] = {
     LEVEL_UP_MOVE( 1, MOVE_BIDE),
     LEVEL_UP_MOVE( 3, MOVE_HARDEN),
+    LEVEL_UP_MOVE( 5, MOVE_NATURE_POWER),
     LEVEL_UP_MOVE( 7, MOVE_GROWTH),
     LEVEL_UP_MOVE(13, MOVE_NATURE_POWER),
     LEVEL_UP_MOVE(21, MOVE_SYNTHESIS),
@@ -4672,6 +4675,7 @@ static const u16 sSolrockLevelUpLearnset[] = {
 static const u16 sAzurillLevelUpLearnset[] = {
     LEVEL_UP_MOVE( 1, MOVE_SPLASH),
     LEVEL_UP_MOVE( 3, MOVE_CHARM),
+    LEVEL_UP_MOVE( 5, MOVE_BUBBLE),
     LEVEL_UP_MOVE( 6, MOVE_TAIL_WHIP),
     LEVEL_UP_MOVE(10, MOVE_BUBBLE),
     LEVEL_UP_MOVE(15, MOVE_SLAM),
@@ -5317,7 +5321,7 @@ static const u16 sArmaldoLevelUpLearnset[] = {
 
 static const u16 sRaltsLevelUpLearnset[] = {
     LEVEL_UP_MOVE( 1, MOVE_GROWL),
-    LEVEL_UP_MOVE( 6, MOVE_CONFUSION),
+    LEVEL_UP_MOVE( 5, MOVE_CONFUSION),
     LEVEL_UP_MOVE(11, MOVE_DOUBLE_TEAM),
     LEVEL_UP_MOVE(16, MOVE_TELEPORT),
     LEVEL_UP_MOVE(21, MOVE_CALM_MIND),
