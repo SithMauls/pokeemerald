@@ -1528,7 +1528,7 @@ static const struct SearchMenuItem sSearchMenuItems[SEARCH_COUNT] =
     },
     [SEARCH_MOVETYPE] =
     {
-        .description = gText_ListByMove,
+        .description = gText_ListByMoveType,
         .titleBgX = 0,
         .titleBgY = 8,
         .titleBgWidth = 5,
