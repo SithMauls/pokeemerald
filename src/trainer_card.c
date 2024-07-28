@@ -131,6 +131,7 @@ static void PrintNameOnCardFront(void);
 static void PrintIdOnCard(void);
 static void PrintMoneyOnCard(void);
 static void PrintPokedexOnCard(void);
+static void PrintLevelCapOnCard(void);
 static void PrintProfilePhraseOnCard(void);
 static bool8 PrintAllOnCardBack(void);
 static void PrintNameOnCardBack(void);
@@ -935,9 +936,12 @@ static bool8 PrintAllOnCardFront(void)
         PrintPokedexOnCard();
         break;
     case 4:
-        PrintTimeOnCard();
+        PrintLevelCapOnCard();
         break;
     case 5:
+        PrintTimeOnCard();
+        break;
+    case 6:
         PrintProfilePhraseOnCard();
         break;
     default:
@@ -1077,7 +1081,7 @@ static void PrintPokedexOnCard(void)
         if (!sData->isHoenn)
             AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 20, 72, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardPokedex);
         else
-            AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 16, 73, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardPokedex);
+            AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 16, 73, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardDex);
         StringCopy(ConvertIntToDecimalStringN(gStringVar4, sData->trainerCard.caughtMonsCount, STR_CONV_MODE_LEFT_ALIGN, 3), gText_EmptyString6);
         if (!sData->isHoenn)
         {
@@ -1086,12 +1090,43 @@ static void PrintPokedexOnCard(void)
         }
         else
         {
-            xOffset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar4, 128);
+            xOffset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar4, 64);
             top = 73;
         }
         AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, xOffset, top, sTrainerCardTextColors, TEXT_SKIP_DRAW, gStringVar4);
     }
 }
+
+static void PrintLevelCapOnCard(void)
+{
+    s32 xOffset, i;
+    u8 top;
+    if (sData->isHoenn)
+    {
+        AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, 80, 73, sTrainerCardTextColors, TEXT_SKIP_DRAW, gText_TrainerCardLvl);
+        
+        StringCopy(ConvertIntToDecimalStringN(gStringVar4, 10, STR_CONV_MODE_LEFT_ALIGN, 3), gText_EmptyString6);
+        if (!FlagGet(FLAG_IS_CHAMPION))
+        {
+            for (i = NUM_BADGES - 1; i >= 0; i--)
+            {
+                if (sData->badgeCount[i] == TRUE)
+                {
+                    StringCopy(ConvertIntToDecimalStringN(gStringVar4, sLevelCaps[i], STR_CONV_MODE_LEFT_ALIGN, 3), gText_EmptyString6);
+                    break;
+                }
+            }
+        }
+        else
+        {
+            StringCopy(ConvertIntToDecimalStringN(gStringVar4, sLevelCaps[8], STR_CONV_MODE_LEFT_ALIGN, 3), gText_EmptyString6);
+        }
+
+        xOffset = GetStringRightAlignXOffset(FONT_NORMAL, gStringVar4, 128);
+        top = 73;
+    }
+    AddTextPrinterParameterized3(WIN_CARD_TEXT, FONT_NORMAL, xOffset, top, sTrainerCardTextColors, TEXT_SKIP_DRAW, gStringVar4);
+};
 
 static const u8 *const sTimeColonTextColors[] = {sTrainerCardTextColors, sTimeColonInvisibleTextColors};
 
