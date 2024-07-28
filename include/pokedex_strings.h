@@ -1,3 +1,23 @@
+extern const u8 sText_No000[];
+extern const u8 sText_TenDashes[];
+extern const u8 sText_TenDashes2[];
+extern const u8 sText_Lv00[];
+extern const u8 sText_Pre[];
+extern const u8 sText_TM00[];
+extern const u8 sText_Tutor[];
+extern const u8 sText_Egg[];
+
+extern const u8 sText_Any[];
+extern const u8 sText_LevelUp[];
+extern const u8 sText_TMHM[];
+extern const u8 sText_EggMove[];
+
+extern const u8 sText_Lvl[];
+extern const u8 sText_TM[];
+extern const u8 sText_Tut[];
+
+ALIGNED(4) extern const u8 sExpandedPlaceholder_PokedexDescription[];
+
 extern const u8 sText_AbilityDescription_None[];
 extern const u8 sText_AbilityDescription_Stench[];
 extern const u8 sText_AbilityDescription_Drizzle[];

@@ -1,6 +1,26 @@
 #include "global.h"
 #include "pokedex_strings.h"
 
+const u8 sText_No000[] = _("{NO}000");
+const u8 sText_TenDashes[] = _("----------");
+const u8 sText_TenDashes2[] = _("----------");
+const u8 sText_Lv00[] = _("{LV_2}  ");
+const u8 sText_Pre[] = _("PRE");
+const u8 sText_TM00[] = _("TM00");
+const u8 sText_Tutor[] = _("TUTOR");
+const u8 sText_Egg[] = _("EGG");
+
+const u8 sText_Any[] = _("ANY");
+const u8 sText_LevelUp[] = _("LEVEL UP");
+const u8 sText_TMHM[] = _("TM/HM");
+const u8 sText_EggMove[] = _("EGG MOVE");
+
+const u8 sText_Lvl[] = _("LVL");
+const u8 sText_TM[] = _("TM");
+const u8 sText_Tut[] = _("TUT");
+
+ALIGNED(4) const u8 sExpandedPlaceholder_PokedexDescription[] = _("");
+
 const u8 sText_AbilityDescription_None[] = _("-------");
 const u8 sText_AbilityDescription_Stench[] = _("No effect in battle.\nLEADER: -50% encounters.");
 const u8 sText_AbilityDescription_Drizzle[] = _("Summons rain until the weather is\nchanged.");
