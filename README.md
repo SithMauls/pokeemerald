@@ -18,6 +18,8 @@
   - Bottle Caps and Rusted Caps can be purchased from the Battle Frontier Vitamin Vendor for 1BP each
   - Gold Caps can also be purchased from the Battle Frontier Vitamin Vendor for 5BP each
 
+  ![pokeemerald-11](https://github.com/user-attachments/assets/7fd10b0c-5b64-4054-a7ab-de71b480415a)
+
 - Added NPC - **Mr. Hyper**
   - Mr. Hyper can be found in the Battle Tents in Slateport City, Verdanturf Town, and Fallarbor Town
   - Mr. Hyper offers to Hyper Train Pokémon in the player's party in return for a Bottle Cap, Rusted Cap, or Gold Cap
@@ -25,6 +27,9 @@
     - Exchanging a Bottle Cap allows the player to maximise the IVs of one stat of a Pokémon to 31
     - Exchanging a Rusted Cap allows the player to minimise the IVs of one stat of a Pokémon to 0
     - Exchanging a Gold Cap allows the player to maximise the IVs of all stats of a Pokémon to 31
+
+  ![pokeemerald-10](https://github.com/user-attachments/assets/272eb8fc-da47-4434-8da8-223d309bb0d8) ![pokeemerald-12](https://github.com/user-attachments/assets/5c547eda-a511-4934-9014-3596584a7399) ![pokeemerald-13](https://github.com/user-attachments/assets/ee871992-19bb-4fef-ba82-483399d5c0b7)
+
 
 ### Link Stone
 
@@ -40,16 +45,30 @@
 - Added a new page: **Pokémon Stats**
   - The Pokémon Stats page displays the Pokémon's base stats, IVs, and EVs, as well as the sum total of each
   - Additionally, a gauge of hearts indicates the Pokémon's Friendship level with the player
+
+   ![pokeemerald-15](https://github.com/user-attachments/assets/fad0d8c5-02cf-4576-b729-c79a5bfbd4cf)
+
 - Added Nature-based stat colours
   - In the Pokémon Skills page, the stat boosted by the Pokémon's nature will be displayed in red, whilst the stat reduced by the Pokémon's nature will be displayed in blue
+
+   ![pokeemerald-16](https://github.com/user-attachments/assets/6f1f2190-143f-4269-be70-686773fc573c)
+
+
+### Pokémon
+
+- If a wild Pokémon is holding an item when defeated, that item will be automatically added to the Bag
+- Wild Pokémon Held Item modifications:
+  - Wild Wailmer have a 5% chance to be encountered holding a Gray Shard
+  - Wild Gyarados have a 5% chance to be encountered holding a DeepSeaScale
+  - Wild Sharpedo have a 5% chance to be encountered holding a DeepSeaTooth
 
 ### Miscellaneous
 
 - The player can now run indoors
+- HM field move interactions have been shortened to only play the interacting Pokémon's animation
 - When the criteria for surfing is fulfilled, walking into a surfable tile will immediately trigger overworld surfing
 - EVs for a single stat are now capped at 252 (down from 255)
 - Vitamins can now be used to increase a stat to the maximum of 252 EVs (up from 100)
-- HM field move interactions have been shortened to only play the interacting Pokémon's animation
 - Party Pokémon positions can be swapped by pressing the SELECT button whilst highlighting a Pokémon in the Party menu
 - The Move Tutor in Fallarbor Town now teaches pre-evolution moves
   - The Pokémon must meet the same level requirement as their pre-evolution to learn the move
