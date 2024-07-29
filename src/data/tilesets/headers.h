@@ -7,6 +7,7 @@ const struct Tileset gTileset_General =
     .metatiles = gMetatiles_General,
     .metatileAttributes = gMetatileAttributes_General,
     .callback = InitTilesetAnim_General,
+    .paletteOverrides = gTilesetPalOverrides_General,
 };
 
 const struct Tileset gTileset_Petalburg =
@@ -18,6 +19,7 @@ const struct Tileset gTileset_Petalburg =
     .metatiles = gMetatiles_Petalburg,
     .metatileAttributes = gMetatileAttributes_Petalburg,
     .callback = InitTilesetAnim_Petalburg,
+    .paletteOverrides = gTilesetPalOverrides_Petalburg,
 };
 
 const struct Tileset gTileset_Rustboro =
@@ -29,6 +31,7 @@ const struct Tileset gTileset_Rustboro =
     .metatiles = gMetatiles_Rustboro,
     .metatileAttributes = gMetatileAttributes_Rustboro,
     .callback = InitTilesetAnim_Rustboro,
+    .paletteOverrides = gTilesetPalOverrides_Rustboro,
 };
 
 const struct Tileset gTileset_Dewford =
@@ -40,6 +43,7 @@ const struct Tileset gTileset_Dewford =
     .metatiles = gMetatiles_Dewford,
     .metatileAttributes = gMetatileAttributes_Dewford,
     .callback = InitTilesetAnim_Dewford,
+    .paletteOverrides = gTilesetPalOverrides_Dewford,
 };
 
 const struct Tileset gTileset_Slateport =
@@ -51,6 +55,7 @@ const struct Tileset gTileset_Slateport =
     .metatiles = gMetatiles_Slateport,
     .metatileAttributes = gMetatileAttributes_Slateport,
     .callback = InitTilesetAnim_Slateport,
+    .paletteOverrides = gTilesetPalOverrides_Slateport,
 };
 
 const struct Tileset gTileset_Mauville =
@@ -62,6 +67,7 @@ const struct Tileset gTileset_Mauville =
     .metatiles = gMetatiles_Mauville,
     .metatileAttributes = gMetatileAttributes_Mauville,
     .callback = InitTilesetAnim_Mauville,
+    .paletteOverrides = gTilesetPalOverrides_Mauville,
 };
 
 const struct Tileset gTileset_Lavaridge =
@@ -73,6 +79,7 @@ const struct Tileset gTileset_Lavaridge =
     .metatiles = gMetatiles_Lavaridge,
     .metatileAttributes = gMetatileAttributes_Lavaridge,
     .callback = InitTilesetAnim_Lavaridge,
+    .paletteOverrides = gTilesetPalOverrides_Lavaridge,
 };
 
 const struct Tileset gTileset_Fallarbor =
@@ -84,6 +91,7 @@ const struct Tileset gTileset_Fallarbor =
     .metatiles = gMetatiles_Fallarbor,
     .metatileAttributes = gMetatileAttributes_Fallarbor,
     .callback = InitTilesetAnim_Fallarbor,
+    .paletteOverrides = gTilesetPalOverrides_Fallarbor,
 };
 
 const struct Tileset gTileset_Fortree =
@@ -95,6 +103,7 @@ const struct Tileset gTileset_Fortree =
     .metatiles = gMetatiles_Fortree,
     .metatileAttributes = gMetatileAttributes_Fortree,
     .callback = InitTilesetAnim_Fortree,
+    .paletteOverrides = gTilesetPalOverrides_Fortree,
 };
 
 const struct Tileset gTileset_Lilycove =
@@ -106,6 +115,7 @@ const struct Tileset gTileset_Lilycove =
     .metatiles = gMetatiles_Lilycove,
     .metatileAttributes = gMetatileAttributes_Lilycove,
     .callback = InitTilesetAnim_Lilycove,
+    .paletteOverrides = gTilesetPalOverrides_Lilycove,
 };
 
 const struct Tileset gTileset_Mossdeep =
@@ -117,6 +127,7 @@ const struct Tileset gTileset_Mossdeep =
     .metatiles = gMetatiles_Mossdeep,
     .metatileAttributes = gMetatileAttributes_Mossdeep,
     .callback = InitTilesetAnim_Mossdeep,
+    .paletteOverrides = gTilesetPalOverrides_Mossdeep,
 };
 
 const struct Tileset gTileset_EverGrande =
@@ -128,6 +139,7 @@ const struct Tileset gTileset_EverGrande =
     .metatiles = gMetatiles_EverGrande,
     .metatileAttributes = gMetatileAttributes_EverGrande,
     .callback = InitTilesetAnim_EverGrande,
+    .paletteOverrides = gTilesetPalOverrides_EverGrande,
 };
 
 const struct Tileset gTileset_Pacifidlog =
@@ -139,6 +151,7 @@ const struct Tileset gTileset_Pacifidlog =
     .metatiles = gMetatiles_Pacifidlog,
     .metatileAttributes = gMetatileAttributes_Pacifidlog,
     .callback = InitTilesetAnim_Pacifidlog,
+    .paletteOverrides = gTilesetPalOverrides_Pacifidlog,
 };
 
 const struct Tileset gTileset_Sootopolis =
@@ -150,6 +163,7 @@ const struct Tileset gTileset_Sootopolis =
     .metatiles = gMetatiles_Sootopolis,
     .metatileAttributes = gMetatileAttributes_Sootopolis,
     .callback = InitTilesetAnim_Sootopolis,
+    .paletteOverrides = gTilesetPalOverrides_Sootopolis,
 };
 
 const struct Tileset gTileset_BattleFrontierOutsideWest =
@@ -161,6 +175,7 @@ const struct Tileset gTileset_BattleFrontierOutsideWest =
     .metatiles = gMetatiles_BattleFrontierOutsideWest,
     .metatileAttributes = gMetatileAttributes_BattleFrontierOutsideWest,
     .callback = InitTilesetAnim_BattleFrontierOutsideWest,
+    .paletteOverrides = gTilesetPalOverrides_BattleFrontierOutsideWest,
 };
 
 const struct Tileset gTileset_BattleFrontierOutsideEast =
@@ -172,6 +187,7 @@ const struct Tileset gTileset_BattleFrontierOutsideEast =
     .metatiles = gMetatiles_BattleFrontierOutsideEast,
     .metatileAttributes = gMetatileAttributes_BattleFrontierOutsideEast,
     .callback = InitTilesetAnim_BattleFrontierOutsideEast,
+    .paletteOverrides = gTilesetPalOverrides_BattleFrontierOutsideEast,
 };
 
 const struct Tileset gTileset_Building =

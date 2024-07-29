@@ -179,6 +179,7 @@ extern const u8 gText_RecordMixingComplete[];
 extern const u8 gText_EmptyString2[];
 extern const u8 gText_Confirm3[];
 extern const u8 gText_Cancel4[];
+extern const u8 gText_SetTime[];
 extern const u8 gText_IsThisTheCorrectTime[];
 extern const u8 gText_PkmnFainted_FldPsn[];
 extern const u8 gText_Coins[];
