@@ -6864,11 +6864,33 @@ static void Task_DisplayCaughtMonDexPage(u8 taskId)
         gTasks[taskId].tState++;
         break;
     case 3:
-        PrintMonInfo(dexNum, IsNationalPokedexEnabled(), 1, 1);
-        CopyWindowToVram(WIN_INFO, COPYWIN_FULL);
-        CopyBgTilemapBufferToVram(2);
-        CopyBgTilemapBufferToVram(3);
-        gTasks[taskId].tState++;
+        {
+            struct SpeciesInfo species = gSpeciesInfo[NationalPokedexNumToSpecies(dexNum)];
+            u8 types[2];
+            types[0] = species.types[0];
+            types[1] = species.types[1];
+
+            PrintMonInfo(dexNum, IsNationalPokedexEnabled(), 1, 1);
+
+            LoadCompressedSpriteSheet(&sSpriteSheet_MoveTypes);                         // Load spritesheet for move type sprites
+            LoadCompressedPalette(gMoveTypes_Pal, OBJ_PLTT_ID(12), 4 * PLTT_SIZE_4BPP); // Load palettes for move type sprites
+            spriteId = CreateSprite(&sSpriteTemplate_MoveTypes, 0, 0, 2);
+            SetTypeSpritePosAndPal(types[0], 96, 57, spriteId);
+            if (types[1] == types[0])
+            {
+                SetTypeSpritePosAndPal(types[0], 96, 65, spriteId);
+            }
+            else
+            {
+                spriteId = CreateSprite(&sSpriteTemplate_MoveTypes, 0, 0, 2);
+                SetTypeSpritePosAndPal(types[1], 96, 73, spriteId);
+            }
+
+            CopyWindowToVram(WIN_INFO, COPYWIN_FULL);
+            CopyBgTilemapBufferToVram(2);
+            CopyBgTilemapBufferToVram(3);
+            gTasks[taskId].tState++;
+        }
         break;
     case 4:
         spriteId = CreateMonSpriteFromNationalDexNumber(dexNum, MON_PAGE_X, MON_PAGE_Y, 0);
@@ -6902,7 +6924,8 @@ static void Task_HandleCaughtMonPageInput(u8 taskId)
 {
     if (JOY_NEW(A_BUTTON | B_BUTTON))
     {
-        BeginNormalPaletteFade(PALETTES_BG, 0, 0, 16, RGB_BLACK);
+        //BeginNormalPaletteFade(PALETTES_BG, 0, 0, 16, RGB_BLACK);
+        BeginNormalPaletteFade(~(1 << (gSprites[gTasks[taskId].tMonSpriteId].oam.paletteNum + 16)), 0, 0, 0x10, RGB_BLACK);
         gSprites[gTasks[taskId].tMonSpriteId].callback = SpriteCB_SlideCaughtMonToCenter;
         gTasks[taskId].func = Task_ExitCaughtMonPage;
     }
@@ -6932,7 +6955,16 @@ static void Task_ExitCaughtMonPage(u8 taskId)
         FreeAllWindowBuffers();
         buffer = GetBgTilemapBuffer(2);
         if (buffer)
+        {
             Free(buffer);
+            if (gTasks[taskId].tMonSpriteId == 1)
+                DestroySprite(&gSprites[0]);
+            else
+            {
+                DestroySprite(&gSprites[0]);
+                DestroySprite(&gSprites[1]);
+            }
+        }
         buffer = GetBgTilemapBuffer(3);
         if (buffer)
             Free(buffer);
