@@ -202,22 +202,22 @@ static const struct {
         .location = MAP_NUM(ROUTE102)
     },
     {
-        .species = SPECIES_NUZLEAF,
-        .moves = {MOVE_HARDEN, MOVE_GROWTH, MOVE_NATURE_POWER, MOVE_LEECH_SEED},
+        .species = SPECIES_SURSKIT,
+        .moves = {MOVE_BUBBLE, MOVE_QUICK_ATTACK, MOVE_SWEET_SCENT},
         .level = 15,
         .location = MAP_NUM(ROUTE114),
     },
     {
-        .species = SPECIES_SEEDOT,
-        .moves = {MOVE_HARDEN, MOVE_GROWTH, MOVE_NATURE_POWER, MOVE_LEECH_SEED},
-        .level = 13,
-        .location = MAP_NUM(ROUTE117),
-    },
-    {
-        .species = SPECIES_SEEDOT,
-        .moves = {MOVE_GIGA_DRAIN, MOVE_FRUSTRATION, MOVE_SOLAR_BEAM, MOVE_LEECH_SEED},
+        .species = SPECIES_KECLEON,
+        .moves = {MOVE_FAINT_ATTACK, MOVE_FURY_SWIPES, MOVE_PSYBEAM, MOVE_SCREECH},
         .level = 25,
         .location = MAP_NUM(ROUTE120),
+    },
+    {
+        .species = SPECIES_VOLBEAT,
+        .moves = {MOVE_TACKLE, MOVE_CONFUSE_RAY, MOVE_DOUBLE_TEAM, MOVE_MOONLIGHT},
+        .level = 13,
+        .location = MAP_NUM(ROUTE117),
     },
     {
         .species = SPECIES_SKITTY,
@@ -1687,6 +1687,13 @@ static void TryStartRandomMassOutbreak(void)
 
 void EndMassOutbreak(void)
 {
+    u8 i;
+
+    for (i = 0; i < LAST_TVSHOW_IDX; i++)
+    {
+        if (gSaveBlock1Ptr->tvShows[i].common.kind == TVSHOW_MASS_OUTBREAK)
+            gSaveBlock1Ptr->tvShows[i].common.kind = TVSHOW_OFF_AIR;
+    }
     gSaveBlock1Ptr->outbreakPokemonSpecies = SPECIES_NONE;
     gSaveBlock1Ptr->outbreakLocationMapNum = 0;
     gSaveBlock1Ptr->outbreakLocationMapGroup = 0;
