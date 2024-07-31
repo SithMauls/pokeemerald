@@ -481,6 +481,8 @@ extern const u8 gText_PkmnBecameHealthy[];
 extern const u8 gText_HP3[];
 extern const u8 gText_SpAtk3[];
 extern const u8 gText_SpDef3[];
+extern const u8 gText_50Percent[];
+extern const u8 gText_5Percent[];
 extern const u8 gText_PkmnBaseVar2StatIncreased[];
 extern const u8 gText_MovesPPIncreased[];
 extern const u8 gText_PPWasRestored[];

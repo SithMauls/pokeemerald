@@ -674,6 +674,7 @@ static void SetTypeSpritePosAndPal(u8 typeId, u8 x, u8 y, u8 spriteArrayId);
 static void ResetSpriteIds(void);
 static void SyncBg3VOffset();
 static void PrintMoveInfo(u16 moveIndex);
+static void DrawEVYield(struct SpeciesInfo species, u16 *tilemapBuffer);
 
 // const rom data
 #include "data/pokemon/pokedex_orders.h"
@@ -6563,10 +6564,16 @@ static void Task_LoadSizeScreen(u8 taskId)
         {
             struct SpeciesInfo species = gSpeciesInfo[NationalPokedexNumToSpecies(sPokedexListItem->dexNum)];
             u8 abilities[2], eggGroups[2];
+
+            DrawEVYield(species, GetBgTilemapBuffer(3));
+
             abilities[0] = species.abilities[0];
             abilities[1] = species.abilities[1];
             eggGroups[0] = species.eggGroups[0];
             eggGroups[1] = species.eggGroups[1];
+
+            AddTextPrinterParameterized4(0, FONT_SMALL_NARROW, 120, 109, 0, 0, (u8[]){TEXT_COLOR_TRANSPARENT, TEXT_DYNAMIC_COLOR_6, TEXT_COLOR_LIGHT_GRAY}, TEXT_SKIP_DRAW, gText_50Percent);
+            AddTextPrinterParameterized4(0, FONT_SMALL_NARROW, 152, 109, 0, 0, (u8[]){TEXT_COLOR_TRANSPARENT, TEXT_DYNAMIC_COLOR_6, TEXT_COLOR_LIGHT_GRAY}, TEXT_SKIP_DRAW, gText_5Percent);
 
             PrintInfoScreenText(gText_HP3, 25, 24);
             PrintInfoScreenText(gText_Attack3, 13, 40);
@@ -6673,6 +6680,29 @@ static void Task_LoadSizeScreen(u8 taskId)
             gTasks[taskId].func = Task_HandleSizeScreenInput;
         }
         break;
+    }
+}
+
+static void DrawEVYield(struct SpeciesInfo species, u16 *tilemapBuffer)
+{
+    u32 i, j;
+    u16 evYields[] = 
+    {
+        species.evYield_HP,
+        species.evYield_Attack,
+        species.evYield_Defense,
+        species.evYield_SpAttack,
+        species.evYield_SpDefense,
+        species.evYield_Speed
+    };
+
+    for (i = 0; i < 6; i++)
+    {
+        for (j = 0; j < evYields[i]; j++)
+        {
+            tilemapBuffer[103 + (64 * i) + j] = 0x502F;
+            tilemapBuffer[135 + (64 * i) + j] = 0x503F;
+        }
     }
 }
 
