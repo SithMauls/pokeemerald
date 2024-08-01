@@ -1293,7 +1293,7 @@ static void LinkOpponentHandleDrawTrainerPic(void)
                                                GetBattlerSpriteSubpriority(gActiveBattler));
 
     gSprites[gBattlerSpriteIds[gActiveBattler]].x2 = -DISPLAY_WIDTH;
-    gSprites[gBattlerSpriteIds[gActiveBattler]].sSpeedX = 2;
+    gSprites[gBattlerSpriteIds[gActiveBattler]].sSpeedX = 4;
     gSprites[gBattlerSpriteIds[gActiveBattler]].oam.paletteNum = IndexOfSpritePaletteTag(gTrainerFrontPicPaletteTable[trainerPicId].tag);
     gSprites[gBattlerSpriteIds[gActiveBattler]].oam.affineParam = trainerPicId;
     gSprites[gBattlerSpriteIds[gActiveBattler]].callback = SpriteCB_TrainerSlideIn;
@@ -1316,7 +1316,7 @@ static void LinkOpponentHandleTrainerSlide(void)
 
     gSprites[gBattlerSpriteIds[gActiveBattler]].x2 = 96;
     gSprites[gBattlerSpriteIds[gActiveBattler]].x += 32;
-    gSprites[gBattlerSpriteIds[gActiveBattler]].sSpeedX = -2;
+    gSprites[gBattlerSpriteIds[gActiveBattler]].sSpeedX = -4;
     gSprites[gBattlerSpriteIds[gActiveBattler]].oam.paletteNum = IndexOfSpritePaletteTag(gTrainerFrontPicPaletteTable[trainerPicId].tag);
     gSprites[gBattlerSpriteIds[gActiveBattler]].oam.affineParam = trainerPicId;
     gSprites[gBattlerSpriteIds[gActiveBattler]].callback = SpriteCB_TrainerSlideIn;
