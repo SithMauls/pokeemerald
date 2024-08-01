@@ -59,12 +59,7 @@ BerryTree_EventScript_CheckBerryStage3::
 	goto BerryTree_EventScript_WantToWater
 
 BerryTree_EventScript_CheckBerryStage4::
-	call BerryTree_EventScript_GetCareAdverb
 	lockall
-	special ObjectEventInteractionGetBerryName
-	message BerryTree_Text_BerryGrowthStage4
-	waitmessage
-	waitbuttonpress
 	goto BerryTree_EventScript_WantToWater
 
 @ VAR_0x8005 here is the number of times watered
@@ -89,9 +84,7 @@ BerryTree_EventScript_CheckBerryFullyGrown::
 	lock
 	faceplayer
 	special ObjectEventInteractionGetBerryCountString
-	msgbox BerryTree_Text_WantToPick, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, YES, BerryTree_EventScript_PickBerry
-	goto_if_eq VAR_RESULT, NO, BerryTree_EventScript_CancelPickingBerry
+	goto BerryTree_EventScript_PickBerry
 
 BerryTree_EventScript_PickBerry::
 	special ObjectEventInteractionPickBerryTree
@@ -102,7 +95,6 @@ BerryTree_EventScript_PickBerry::
 	playfanfare MUS_OBTAIN_BERRY
 	waitmessage
 	waitfanfare
-	waitbuttonpress
 	message BerryTree_Text_PutAwayBerry
 	waitmessage
 	waitbuttonpress
@@ -205,9 +197,7 @@ BerryTree_Text_PickedTheBerry:
 
 BerryTree_Text_PutAwayBerry:
 	.string "{PLAYER} put away the {STR_VAR_1}\n"
-	.string "in the BAG's BERRIES POCKET.\p"
-	.string "The soil returned to its soft and\n"
-	.string "loamy state.$"
+	.string "in the BAG's BERRIES POCKET.$"
 
 BerryTree_Text_BerryPocketFull:
 	.string "The BAG's BERRIES POCKET is full.\p"
