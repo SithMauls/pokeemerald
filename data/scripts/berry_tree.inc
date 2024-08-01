@@ -157,6 +157,9 @@ BerryTree_EventScript_PlantBerry::
 	incrementgamestat GAME_STAT_PLANTED_BERRIES
 	special IncrementDailyPlantedBerries
 	special ObjectEventInteractionGetBerryCountString
+	message BerryTree_Text_PlantedOneBerry
+	waitmessage
+	waitbuttonpress
 	return
 
 BerryTree_Text_ItsSoftLoamySoil:
