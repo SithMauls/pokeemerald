@@ -30,9 +30,7 @@ BerryTree_EventScript_CheckSoil::
 	end
 
 BerryTree_EventScript_WantToPlant::
-	msgbox BerryTree_Text_WantToPlant, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, YES, BerryTree_EventScript_ChooseBerryToPlant
-	goto_if_eq VAR_RESULT, NO, BerryTree_EventScript_CancelPlanting
+	goto BerryTree_EventScript_ChooseBerryToPlant
 	end
 
 BerryTree_EventScript_ChooseBerryToPlant::
@@ -50,26 +48,14 @@ BerryTree_EventScript_CancelPlanting::
 
 BerryTree_EventScript_CheckBerryStage1::
 	lockall
-	special ObjectEventInteractionGetBerryCountString
-	message BerryTree_Text_BerryGrowthStage1
-	waitmessage
-	waitbuttonpress
 	goto BerryTree_EventScript_WantToWater
 
 BerryTree_EventScript_CheckBerryStage2::
 	lockall
-	special ObjectEventInteractionGetBerryName
-	message BerryTree_Text_BerryGrowthStage2
-	waitmessage
-	waitbuttonpress
 	goto BerryTree_EventScript_WantToWater
 
 BerryTree_EventScript_CheckBerryStage3::
 	lockall
-	special ObjectEventInteractionGetBerryName
-	message BerryTree_Text_BerryGrowthStage3
-	waitmessage
-	waitbuttonpress
 	goto BerryTree_EventScript_WantToWater
 
 BerryTree_EventScript_CheckBerryStage4::
@@ -147,10 +133,7 @@ BerryTree_EventScript_ItemUsePlantBerry::
 BerryTree_EventScript_WantToWater::
 	checkitem ITEM_WAILMER_PAIL
 	goto_if_eq VAR_RESULT, FALSE, BerryTree_EventScript_DontWater
-	special ObjectEventInteractionGetBerryName
-	msgbox BerryTree_Text_WantToWater, MSGBOX_YESNO
-	goto_if_eq VAR_RESULT, YES, BerryTree_EventScript_WaterBerry
-	goto_if_eq VAR_RESULT, NO, BerryTree_EventScript_DontWater
+	goto BerryTree_EventScript_WaterBerry
 
 BerryTree_EventScript_DontWater::
 	releaseall
@@ -166,9 +149,6 @@ BerryTree_EventScript_WaterBerry::
 	special ObjectEventInteractionWaterBerryTree
 	special DoWateringBerryTreeAnim
 	waitstate
-	message BerryTree_Text_PlantIsDelighted
-	waitmessage
-	waitbuttonpress
 	releaseall
 	end
 
@@ -177,9 +157,6 @@ BerryTree_EventScript_PlantBerry::
 	incrementgamestat GAME_STAT_PLANTED_BERRIES
 	special IncrementDailyPlantedBerries
 	special ObjectEventInteractionGetBerryCountString
-	message BerryTree_Text_PlantedOneBerry
-	waitmessage
-	waitbuttonpress
 	return
 
 BerryTree_Text_ItsSoftLoamySoil:
