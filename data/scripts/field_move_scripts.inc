@@ -204,7 +204,7 @@ Text_WantToWaterfall:
 	.string "Would you like to use WATERFALL?$"
 
 Text_MonUsedWaterfall:
-	.string "{STR_VAR_1} used WATERFALL.$"
+	.string "{STR_VAR_1} used WATERFALL!$"
 
 EventScript_UseDive::
 	lockall
@@ -262,7 +262,7 @@ Text_WantToDive:
 	.string "Would you like to use DIVE?$"
 
 Text_MonUsedDive:
-	.string "{STR_VAR_1} used DIVE.$"
+	.string "{STR_VAR_1} used DIVE!$"
 
 Text_CantSurface:
 	.string "Light is filtering down from above.\n"
