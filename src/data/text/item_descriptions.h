@@ -258,28 +258,24 @@ static const u8 sGrayShardDesc[] = _(
 
 // Vitamins
 static const u8 sHPUpDesc[] = _(
-    "Raises the base HP\n"
+    "Raises the HP EVs\n"
     "of one POKéMON.");
 
 static const u8 sProteinDesc[] = _(
-    "Raises the base\n"
-    "ATTACK stat of one\n"
-    "POKéMON.");
+    "Raises the ATTACK\n"
+    "EVs of one POKéMON.");
 
 static const u8 sIronDesc[] = _(
-    "Raises the base\n"
-    "DEFENSE stat of\n"
-    "one POKéMON.");
+    "Raises the DEFENSE\n"
+    "EVs of one POKéMON.");
 
 static const u8 sCarbosDesc[] = _(
-    "Raises the base\n"
-    "SPEED stat of one\n"
-    "POKéMON.");
+    "Raises the SPEED\n"
+    "EVs of one POKéMON.");
 
 static const u8 sCalciumDesc[] = _(
-    "Raises the base\n"
-    "SP. ATK stat of one\n"
-    "POKéMON.");
+    "Raises the SP. ATK\n"
+    "EVs of one POKéMON.");
 
 static const u8 sRareCandyDesc[] = _(
     "Raises the level\n"
@@ -292,9 +288,8 @@ static const u8 sPPUpDesc[] = _(
     "move.");
 
 static const u8 sZincDesc[] = _(
-    "Raises the base\n"
-    "SP. DEF stat of one\n"
-    "POKéMON.");
+    "Raises the SP. DEF\n"
+    "EVs of one POKéMON.");
 
 static const u8 sPPMaxDesc[] = _(
     "Raises the PP of a\n"
@@ -625,32 +620,32 @@ static const u8 sPinapBerryDesc[] = _(
 static const u8 sPomegBerryDesc[] = _(
     "Makes a POKéMON\n"
     "friendly but lowers\n"
-    "base HP.");
+    "HP EVs.");
 
 static const u8 sKelpsyBerryDesc[] = _(
     "Makes a POKéMON\n"
     "friendly but lowers\n"
-    "base ATTACK.");
+    "ATTACK EVs.");
 
 static const u8 sQualotBerryDesc[] = _(
     "Makes a POKéMON\n"
     "friendly but lowers\n"
-    "base DEFENSE.");
+    "DEFENSE EVs.");
 
 static const u8 sHondewBerryDesc[] = _(
     "Makes a POKéMON\n"
     "friendly but lowers\n"
-    "base SP. ATK.");
+    "SP. ATK EVs.");
 
 static const u8 sGrepaBerryDesc[] = _(
     "Makes a POKéMON\n"
     "friendly but lowers\n"
-    "base SP. DEF.");
+    "SP. DEF. EVs");
 
 static const u8 sTamatoBerryDesc[] = _(
     "Makes a POKéMON\n"
     "friendly but lowers\n"
-    "base SPEED.");
+    "SPEED EVs.");
 
 static const u8 sCornnBerryDesc[] = _(
     "{POKEBLOCK} ingredient.\n"
