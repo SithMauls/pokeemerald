@@ -1806,7 +1806,7 @@ static const u8 sSearchMovementMap_SearchHoennDex[SEARCH_COUNT][4] =
     [SEARCH_MOVE]
     {
         0xFF,
-        0xFF,
+        SEARCH_MOVETYPE,
         SEARCH_ABILITY,
         SEARCH_ORDER
     },
