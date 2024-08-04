@@ -1756,8 +1756,16 @@ static void DecompressGlyph_Narrow(u16 glyphId, bool32 isJapanese)
     }
     else
     {
-        glyphs = gFontNarrowLatinGlyphs + (0x20 * glyphId);
-        gCurGlyph.width = gFontNarrowLatinGlyphWidths[glyphId];
+        if (gSaveBlock2Ptr->optionsFont == 0)
+        {
+            glyphs = gFontNarrowLatinGlyphs + (0x20 * glyphId);
+            gCurGlyph.width = gFontNarrowLatinGlyphWidths[glyphId];
+        }
+        else
+        {
+            glyphs = gFontSmallNarrowLatinGlyphs + (0x20 * glyphId);
+            gCurGlyph.width = gFontSmallNarrowLatinGlyphWidths[glyphId];
+        }
 
         if (gCurGlyph.width <= 8)
         {
@@ -1780,8 +1788,12 @@ static u32 GetGlyphWidth_Narrow(u16 glyphId, bool32 isJapanese)
 {
     if (isJapanese == TRUE)
         return 8;
-    else
-        return gFontNarrowLatinGlyphWidths[glyphId];
+    else {
+        if (gSaveBlock2Ptr->optionsFont == 0)
+            return gFontNarrowLatinGlyphWidths[glyphId];
+        else
+            return gFontSmallNarrowLatinGlyphWidths[glyphId];
+    }
 }
 
 static void DecompressGlyph_SmallNarrow(u16 glyphId, bool32 isJapanese)
@@ -1884,8 +1896,16 @@ static void DecompressGlyph_Normal(u16 glyphId, bool32 isJapanese)
     }
     else
     {
-        glyphs = gFontNormalLatinGlyphs + (0x20 * glyphId);
-        gCurGlyph.width = gFontNormalLatinGlyphWidths[glyphId];
+        if (gSaveBlock2Ptr->optionsFont == 0)
+        {
+            glyphs = gFontNormalLatinGlyphs + (0x20 * glyphId);
+            gCurGlyph.width = gFontNormalLatinGlyphWidths[glyphId];
+        }
+        else
+        {
+            glyphs = gFontShortLatinGlyphs + (0x20 * glyphId);
+            gCurGlyph.width = gFontShortLatinGlyphWidths[glyphId];
+        }
 
         if (gCurGlyph.width <= 8)
         {
@@ -1908,8 +1928,12 @@ static u32 GetGlyphWidth_Normal(u16 glyphId, bool32 isJapanese)
 {
     if (isJapanese == TRUE)
         return 8;
-    else
-        return gFontNormalLatinGlyphWidths[glyphId];
+    else {
+        if (gSaveBlock2Ptr->optionsFont == 0)
+            return gFontNormalLatinGlyphWidths[glyphId];
+        else
+            return gFontShortLatinGlyphWidths[glyphId];
+    }
 }
 
 static void DecompressGlyph_Bold(u16 glyphId)
