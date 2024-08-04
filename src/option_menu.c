@@ -16,6 +16,7 @@
 #include "gba/m4a_internal.h"
 #include "constants/rgb.h"
 #include "string_util.h"
+#include "event_data.h"
 
 #define tMenuSelection data[0]
 #define tTextSpeed data[1]
@@ -26,6 +27,7 @@
 #define tWindowFrameType data[6]
 
 #define tFont data[7]
+#define tAutoRun data[8]
 
 enum
 {
@@ -42,6 +44,7 @@ enum
 enum
 {
     MENUITEM_FONT,
+    MENUITEM_AUTORUN,
     MENUITEM_CANCEL2,
     MENUITEM_COUNT2,
 };
@@ -60,6 +63,7 @@ enum
 #define YPOS_FRAMETYPE    (MENUITEM_FRAMETYPE * 16)
 
 #define YPOS_FONT         (MENUITEM_FONT * 16)
+#define YPOS_AUTORUN      (MENUITEM_AUTORUN * 16)
 
 #define PAGE_COUNT 2
 
@@ -78,6 +82,8 @@ static u8 BattleStyle_ProcessInput(u8 selection);
 static void BattleStyle_DrawChoices(u8 selection);
 static u8 Font_ProcessInput(u8 selection);
 static void Font_DrawChoices(u8 selection);
+static u8 AutoRun_ProcessInput(u8 selection);
+static void AutoRun_DrawChoices(u8 selection);
 static u8 Sound_ProcessInput(u8 selection);
 static void Sound_DrawChoices(u8 selection);
 static u8 FrameType_ProcessInput(u8 selection);
@@ -108,8 +114,9 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
 
 static const u8 *const sOptionMenuItemsNames_Pg2[MENUITEM_COUNT2] =
 {
-    [MENUITEM_FONT]        = gText_Font,
-    [MENUITEM_CANCEL2]      = gText_OptionMenuCancel,
+    [MENUITEM_FONT]     = gText_Font,
+    [MENUITEM_AUTORUN]  = gText_AutoRun,
+    [MENUITEM_CANCEL2]  = gText_OptionMenuCancel,
 };
 
 static const struct WindowTemplate sOptionMenuWinTemplates[] =
@@ -184,6 +191,7 @@ static void ReadAllCurrentSettings(u8 taskId)
     gTasks[taskId].tButtonMode = gSaveBlock2Ptr->optionsButtonMode;
     gTasks[taskId].tWindowFrameType = gSaveBlock2Ptr->optionsWindowFrameType;
     gTasks[taskId].tFont = gSaveBlock2Ptr->optionsFont;
+    gTasks[taskId].tAutoRun = FlagGet(FLAG_AUTORUN);
 }
 
 static void DrawOptionsPg1(u8 taskId)
@@ -203,6 +211,7 @@ static void DrawOptionsPg2(u8 taskId)
 {
     ReadAllCurrentSettings(taskId);
     Font_DrawChoices(gTasks[taskId].tFont);
+    AutoRun_DrawChoices(gTasks[taskId].tAutoRun);
     HighlightOptionMenuItem(gTasks[taskId].tMenuSelection);
     CopyWindowToVram(WIN_OPTIONS, COPYWIN_FULL);
 }
@@ -497,6 +506,13 @@ static void Task_OptionMenuProcessInput_Pg2(u8 taskId)
             if (previousOption != gTasks[taskId].tFont)
                 Font_DrawChoices(gTasks[taskId].tFont);
             break;
+        case MENUITEM_AUTORUN:
+            previousOption = gTasks[taskId].tAutoRun;
+            gTasks[taskId].tAutoRun = AutoRun_ProcessInput(gTasks[taskId].tAutoRun);
+
+            if (previousOption != gTasks[taskId].tAutoRun)
+                AutoRun_DrawChoices(gTasks[taskId].tAutoRun);
+            break;
         default:
             return;
         }
@@ -518,6 +534,7 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsButtonMode = gTasks[taskId].tButtonMode;
     gSaveBlock2Ptr->optionsWindowFrameType = gTasks[taskId].tWindowFrameType;
     gSaveBlock2Ptr->optionsFont = gTasks[taskId].tFont;
+    gTasks[taskId].tAutoRun ? FlagSet(FLAG_AUTORUN) : FlagClear(FLAG_AUTORUN);
 
     BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
     gTasks[taskId].func = Task_OptionMenuFadeOut;
@@ -645,6 +662,27 @@ static void Font_DrawChoices(u8 selection)
     styles[selection] = 1;
     DrawOptionMenuChoice(gText_FontRSE, 104, YPOS_FONT, styles[0]);
     DrawOptionMenuChoice(gText_FontFRLG, GetStringRightAlignXOffset(FONT_NORMAL, gText_FontFRLG, 198), YPOS_FONT, styles[1]);
+}
+
+static u8 AutoRun_ProcessInput(u8 selection)
+{
+    if (JOY_NEW(DPAD_LEFT | DPAD_RIGHT))
+    {
+        selection ^= 1;
+        sArrowPressed = TRUE;
+    }
+
+    return selection;
+}
+
+static void AutoRun_DrawChoices(u8 selection)
+{
+    u8 styles[2];
+    styles[0] = 0;
+    styles[1] = 0;
+    styles[selection] = 1;
+    DrawOptionMenuChoice(gText_BattleSceneOff, 104, YPOS_AUTORUN, styles[0]);
+    DrawOptionMenuChoice(gText_BattleSceneOn, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOn, 198), YPOS_AUTORUN, styles[1]);
 }
 
 static u8 BattleStyle_ProcessInput(u8 selection)
