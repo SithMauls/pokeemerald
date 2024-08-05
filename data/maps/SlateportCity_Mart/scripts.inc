@@ -6,7 +6,14 @@ SlateportCity_Mart_EventScript_Clerk::
 	faceplayer
 	message gText_HowMayIServeYou
 	waitmessage
+	goto_if_set FLAG_BADGE02_GET, SlateportCity_Mart_EventScript_PokemartPostGym
 	pokemart SlateportCity_Mart_Pokemart
+	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
+	release
+	end
+
+SlateportCity_Mart_EventScript_PokemartPostGym::
+	pokemart SlateportCity_Mart_PokemartPostGym
 	msgbox gText_PleaseComeAgain, MSGBOX_DEFAULT
 	release
 	end
@@ -22,6 +29,22 @@ SlateportCity_Mart_Pokemart:
 	.2byte ITEM_ESCAPE_ROPE
 	.2byte ITEM_REPEL
 	.2byte ITEM_HARBOR_MAIL
+	.2byte ITEM_NONE
+	release
+	end
+
+	.align 2
+SlateportCity_Mart_PokemartPostGym:
+	.2byte ITEM_POKE_BALL
+	.2byte ITEM_GREAT_BALL
+	.2byte ITEM_POTION
+	.2byte ITEM_SUPER_POTION
+	.2byte ITEM_ANTIDOTE
+	.2byte ITEM_PARALYZE_HEAL
+	.2byte ITEM_ESCAPE_ROPE
+	.2byte ITEM_REPEL
+	.2byte ITEM_HARBOR_MAIL
+	.2byte ITEM_TM08
 	.2byte ITEM_NONE
 	release
 	end
