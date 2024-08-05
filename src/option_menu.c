@@ -75,6 +75,7 @@ static void Task_OptionMenuProcessInput(u8 taskId);
 static void Task_OptionMenuFadeIn_Pg2(u8 taskId);
 static void Task_OptionMenuProcessInput_Pg2(u8 taskId);
 static void Task_OptionMenuSave(u8 taskId);
+static void OptionMenuSave(u8 taskId);
 static void Task_OptionMenuFadeOut(u8 taskId);
 static void HighlightOptionMenuItem(u8 selection);
 static u8 TextSpeed_ProcessInput(u8 selection);
@@ -374,6 +375,7 @@ static void Task_OptionMenuProcessInput(u8 taskId)
         FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
         ClearStdWindowAndFrame(WIN_OPTIONS, FALSE);
         sCurrPage = Process_ChangePage(sCurrPage);
+        OptionMenuSave(taskId);
         gTasks[taskId].func = Task_ChangePage;
     }
     else if (JOY_NEW(A_BUTTON))
@@ -474,6 +476,7 @@ static void Task_OptionMenuProcessInput_Pg2(u8 taskId)
         FillWindowPixelBuffer(WIN_OPTIONS, PIXEL_FILL(1));
         ClearStdWindowAndFrame(WIN_OPTIONS, FALSE);
         sCurrPage = Process_ChangePage(sCurrPage);
+        OptionMenuSave(taskId);
         gTasks[taskId].func = Task_ChangePage;
     }
     else if (JOY_NEW(A_BUTTON))
@@ -542,6 +545,14 @@ static void Task_OptionMenuProcessInput_Pg2(u8 taskId)
 
 static void Task_OptionMenuSave(u8 taskId)
 {
+    OptionMenuSave(taskId);
+    
+    BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
+    gTasks[taskId].func = Task_OptionMenuFadeOut;
+}
+
+static void OptionMenuSave(u8 taskId)
+{
     gSaveBlock2Ptr->optionsTextSpeed = gTasks[taskId].tTextSpeed;
     gSaveBlock2Ptr->optionsBattleSceneOff = gTasks[taskId].tBattleSceneOff;
     gSaveBlock2Ptr->optionsBattleStyle = gTasks[taskId].tBattleStyle;
@@ -551,9 +562,6 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsFont = gTasks[taskId].tFont;
     gTasks[taskId].tAutoRun ? FlagSet(FLAG_AUTORUN) : FlagClear(FLAG_AUTORUN);
     VarSet(VAR_POKENAVCALLS, gTasks[taskId].tPokeNavCalls);
-    
-    BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
-    gTasks[taskId].func = Task_OptionMenuFadeOut;
 }
 
 static void Task_OptionMenuFadeOut(u8 taskId)
