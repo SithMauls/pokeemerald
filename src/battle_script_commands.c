@@ -3264,10 +3264,11 @@ static void Cmd_jumpiftype(void)
         gBattlescriptCurrInstr += 7;
 }
 
-static u32 GetPkmnExpMultiplier(u8 level)
+static u32 IsUnderLevelCap(struct Pokemon *mon)
 {
     s32 i;
     bool32 flagSet = FALSE;
+    u8 level = GetMonData(mon, MON_DATA_LEVEL);
 
     // multiply the usual exp yield by the soft cap multiplier
     for (i = NUM_CAPS - 1; i >= 0; i--)
@@ -3277,16 +3278,16 @@ static u32 GetPkmnExpMultiplier(u8 level)
             flagSet = TRUE;
 
             if (level < sLevelCaps[i])
-                return 1;
+                return TRUE;
 
-            return 0;
+            return FALSE;
         }
     }
 
     if (!flagSet && level >= 10)
-        return 0;
+        return FALSE;
 
-    return 1;
+    return TRUE;
 }
 
 static void Cmd_getexp(void)
@@ -3387,7 +3388,7 @@ static void Cmd_getexp(void)
                 gBattleScripting.getexpState = 5;
                 gBattleMoveDamage = 0; // used for exp
             }
-            else if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL) == MAX_LEVEL)
+            else if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL) == MAX_LEVEL || !IsUnderLevelCap(&gPlayerParty[gBattleStruct->expGetterMonId]))
             {
                 *(&gBattleStruct->sentInPokes) >>= 1;
                 gBattleScripting.getexpState = 5;
@@ -3406,15 +3407,13 @@ static void Cmd_getexp(void)
 
                 if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_HP))
                 {
-                    double expMultiplier = GetPkmnExpMultiplier(gPlayerParty[gBattleStruct->expGetterMonId].level);
-
                     if (gBattleStruct->sentInPokes & 1)
-                        gBattleMoveDamage = *exp * expMultiplier;
+                        gBattleMoveDamage = *exp;
                     else
                         gBattleMoveDamage = 0;
 
                     if (holdEffect == HOLD_EFFECT_EXP_SHARE)
-                        gBattleMoveDamage += gExpShareExp * expMultiplier;
+                        gBattleMoveDamage += gExpShareExp;
                     if (holdEffect == HOLD_EFFECT_LUCKY_EGG)
                         gBattleMoveDamage = (gBattleMoveDamage * 150) / 100;
                     if (gBattleTypeFlags & BATTLE_TYPE_TRAINER)
@@ -3573,13 +3572,13 @@ static void Cmd_getexp(void)
         }
         break;
     case 7: // add dropped item to bag if space available
-        if (AddBagItem(holdItem, 1) == TRUE)
+        if (AddBagItem(holdItem, 1))
         {
             PREPARE_ITEM_BUFFER(gBattleTextBuff1, holdItem);
             PREPARE_POCKET_BUFFER(gBattleTextBuff2, holdItem);
             PrepareStringBattle(STRINGID_ADDEDTOBAG, gBattleStruct->expGetterBattlerId);
         }
-        else if (AddPCItem(holdItem, 1) == TRUE)
+        else if (AddPCItem(holdItem, 1))
         {
             PREPARE_ITEM_BUFFER(gBattleTextBuff1, holdItem);
             PrepareStringBattle(STRINGID_TRANSFERREDTOPC, gBattleStruct->expGetterBattlerId);
