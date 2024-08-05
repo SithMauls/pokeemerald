@@ -1190,7 +1190,7 @@ static void InitSlotMachine(void)
     SlotMachine_InitFromTask();
     sSlotMachine->state = SLOTTASK_UNFADE;
     sSlotMachine->pikaPowerBolts = 0;
-    sSlotMachine->luckyGame = Random() & 1;
+    sSlotMachine->luckyGame = TRUE;
     sSlotMachine->machineBias = 0;
     sSlotMachine->matches = 0;
     sSlotMachine->reelTimeSpinsLeft = 0;
@@ -1541,9 +1541,6 @@ static bool8 SlotTask_CheckMatches(struct Task *task)
                 // ReelTime ends if it was ongoing
                 sSlotMachine->reelTimeSpinsLeft = 0;
                 sSlotMachine->reelTimeSpinsUsed = 0;
-                sSlotMachine->luckyGame = FALSE;
-                if (sSlotMachine->matches & (1 << MATCH_BLUE_7))
-                    sSlotMachine->luckyGame = TRUE;
             }
         }
         if (sSlotMachine->matches & (1 << MATCH_POWER) && sSlotMachine->pikaPowerBolts < 16)
@@ -1926,18 +1923,19 @@ static void GetReelTimeDraw(void)
 {
     u8 rval;
     s16 spins;
+    u8 cumulativeProbability = 0;
 
-    sSlotMachine->reelTimeDraw = 0;
     rval = Random();
-    if (rval < GetReelTimeSpinProbability(0))
-        return;
-    for (spins = 5; spins > 0; spins--)
+    for (spins = 0; spins <= 5; spins++)
     {
-        rval = Random();
-        if (rval < GetReelTimeSpinProbability(spins))
-            break;
+        cumulativeProbability += GetReelTimeSpinProbability(spins);
+        if (rval < cumulativeProbability)
+        {
+            sSlotMachine->reelTimeDraw = spins;
+            return;
+        }
     }
-    sSlotMachine->reelTimeDraw = spins;
+    sSlotMachine->reelTimeDraw = 5; // Fallback in case of rounding errors
 }
 
 // Returns true if the ReelTime machine should explode. Each time we check,
