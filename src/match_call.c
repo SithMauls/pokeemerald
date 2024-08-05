@@ -1099,7 +1099,9 @@ static bool32 SelectMatchCallTrainer(void)
 {
     u32 matchCallId;
     u32 numRegistered = GetNumRegisteredNPCs();
-    if (numRegistered == 0)
+    u16 pokenavOption = VarGet(VAR_POKENAVCALLS);
+
+    if (numRegistered == 0 || pokenavOption == 2)
         return FALSE;
 
     sMatchCallState.trainerId = GetActiveMatchCallTrainerId(Random() % numRegistered);
@@ -1109,6 +1111,11 @@ static bool32 SelectMatchCallTrainer(void)
 
     matchCallId = GetTrainerMatchCallId(sMatchCallState.trainerId);
     if (GetRematchTrainerLocation(matchCallId) == gMapHeader.regionMapSectionId && !TrainerIsEligibleForRematch(matchCallId))
+        return FALSE;
+
+    if (pokenavOption == 1
+        && (!((GetRematchTrainerLocation(matchCallId) == gMapHeader.regionMapSectionId && TrainerIsEligibleForRematch(matchCallId))
+              || ShouldTrainerRequestBattle(matchCallId))))
         return FALSE;
 
     return TRUE;

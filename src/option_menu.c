@@ -28,6 +28,7 @@
 
 #define tFont data[7]
 #define tAutoRun data[8]
+#define tPokeNavCalls data[9]
 
 enum
 {
@@ -45,6 +46,7 @@ enum
 {
     MENUITEM_FONT,
     MENUITEM_AUTORUN,
+    MENUITEM_POKENAVCALLS,
     MENUITEM_CANCEL2,
     MENUITEM_COUNT2,
 };
@@ -64,6 +66,7 @@ enum
 
 #define YPOS_FONT         (MENUITEM_FONT * 16)
 #define YPOS_AUTORUN      (MENUITEM_AUTORUN * 16)
+#define YPOS_POKENAVCALLS (MENUITEM_POKENAVCALLS * 16)  
 
 #define PAGE_COUNT 2
 
@@ -84,6 +87,8 @@ static u8 Font_ProcessInput(u8 selection);
 static void Font_DrawChoices(u8 selection);
 static u8 AutoRun_ProcessInput(u8 selection);
 static void AutoRun_DrawChoices(u8 selection);
+static u8 PokeNavCalls_ProcessInput(u8 selection);
+static void PokeNavCalls_DrawChoices(u8 selection);
 static u8 Sound_ProcessInput(u8 selection);
 static void Sound_DrawChoices(u8 selection);
 static u8 FrameType_ProcessInput(u8 selection);
@@ -114,9 +119,10 @@ static const u8 *const sOptionMenuItemsNames[MENUITEM_COUNT] =
 
 static const u8 *const sOptionMenuItemsNames_Pg2[MENUITEM_COUNT2] =
 {
-    [MENUITEM_FONT]     = gText_Font,
-    [MENUITEM_AUTORUN]  = gText_AutoRun,
-    [MENUITEM_CANCEL2]  = gText_OptionMenuCancel,
+    [MENUITEM_FONT]         = gText_Font,
+    [MENUITEM_AUTORUN]      = gText_AutoRun,
+    [MENUITEM_POKENAVCALLS] = gText_PokeNavCalls,
+    [MENUITEM_CANCEL2]      = gText_OptionMenuCancel,
 };
 
 static const struct WindowTemplate sOptionMenuWinTemplates[] =
@@ -192,6 +198,7 @@ static void ReadAllCurrentSettings(u8 taskId)
     gTasks[taskId].tWindowFrameType = gSaveBlock2Ptr->optionsWindowFrameType;
     gTasks[taskId].tFont = gSaveBlock2Ptr->optionsFont;
     gTasks[taskId].tAutoRun = FlagGet(FLAG_AUTORUN);
+    gTasks[taskId].tPokeNavCalls = VarGet(VAR_POKENAVCALLS);
 }
 
 static void DrawOptionsPg1(u8 taskId)
@@ -212,6 +219,7 @@ static void DrawOptionsPg2(u8 taskId)
     ReadAllCurrentSettings(taskId);
     Font_DrawChoices(gTasks[taskId].tFont);
     AutoRun_DrawChoices(gTasks[taskId].tAutoRun);
+    PokeNavCalls_DrawChoices(gTasks[taskId].tPokeNavCalls);
     HighlightOptionMenuItem(gTasks[taskId].tMenuSelection);
     CopyWindowToVram(WIN_OPTIONS, COPYWIN_FULL);
 }
@@ -513,6 +521,13 @@ static void Task_OptionMenuProcessInput_Pg2(u8 taskId)
             if (previousOption != gTasks[taskId].tAutoRun)
                 AutoRun_DrawChoices(gTasks[taskId].tAutoRun);
             break;
+        case MENUITEM_POKENAVCALLS:
+            previousOption = gTasks[taskId].tPokeNavCalls;
+            gTasks[taskId].tPokeNavCalls = PokeNavCalls_ProcessInput(gTasks[taskId].tPokeNavCalls);
+
+            if (previousOption != gTasks[taskId].tPokeNavCalls)
+                PokeNavCalls_DrawChoices(gTasks[taskId].tPokeNavCalls);
+            break;
         default:
             return;
         }
@@ -535,7 +550,8 @@ static void Task_OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsWindowFrameType = gTasks[taskId].tWindowFrameType;
     gSaveBlock2Ptr->optionsFont = gTasks[taskId].tFont;
     gTasks[taskId].tAutoRun ? FlagSet(FLAG_AUTORUN) : FlagClear(FLAG_AUTORUN);
-
+    VarSet(VAR_POKENAVCALLS, gTasks[taskId].tPokeNavCalls);
+    
     BeginNormalPaletteFade(PALETTES_ALL, 0, 0, 16, RGB_BLACK);
     gTasks[taskId].func = Task_OptionMenuFadeOut;
 }
@@ -683,6 +699,41 @@ static void AutoRun_DrawChoices(u8 selection)
     styles[selection] = 1;
     DrawOptionMenuChoice(gText_BattleSceneOff, 104, YPOS_AUTORUN, styles[0]);
     DrawOptionMenuChoice(gText_BattleSceneOn, GetStringRightAlignXOffset(FONT_NORMAL, gText_BattleSceneOn, 198), YPOS_AUTORUN, styles[1]);
+}
+
+static u8 PokeNavCalls_ProcessInput(u8 selection)
+{
+    if (JOY_NEW(DPAD_RIGHT))
+    {
+        if (selection <= 1)
+            selection++;
+        else
+            selection = 0;
+
+        sArrowPressed = TRUE;
+    }
+    if (JOY_NEW(DPAD_LEFT))
+    {
+        if (selection != 0)
+            selection--;
+        else
+            selection = 2;
+
+        sArrowPressed = TRUE;
+    }
+    return selection;
+}
+
+static void PokeNavCalls_DrawChoices(u8 selection)
+{
+    const u8 *options[3] = 
+    {
+        gText_PokeNavCallsAll,
+        gText_PokeNavCallsRematch,
+        gText_PokeNavCallsNone,
+    };
+
+    DrawOptionMenuChoice(options[selection], 104, YPOS_POKENAVCALLS, 1);
 }
 
 static u8 BattleStyle_ProcessInput(u8 selection)

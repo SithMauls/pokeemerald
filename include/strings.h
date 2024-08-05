@@ -311,6 +311,9 @@ extern const u8 gText_ButtonTypeLR[];
 extern const u8 gText_ButtonTypeLEqualsA[];
 extern const u8 gText_FontRSE[];
 extern const u8 gText_FontFRLG[];
+extern const u8 gText_PokeNavCallsAll[];
+extern const u8 gText_PokeNavCallsRematch[];
+extern const u8 gText_PokeNavCallsNone[];
 extern const u8 gText_Option[];
 extern const u8 gText_OptionMenu[];
 extern const u8 gText_SmallDot[];
@@ -325,6 +328,7 @@ extern const u8 gText_OptionMenuCancel[];
 extern const u8 gText_ButtonMode[];
 extern const u8 gText_Font[];
 extern const u8 gText_AutoRun[];
+extern const u8 gText_PokeNavCalls[];
 
 extern const u8 gText_MaleSymbol[];
 extern const u8 gText_FemaleSymbol[];
