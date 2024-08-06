@@ -276,6 +276,8 @@ static void ReadKeys(void)
 
     gMain.heldKeysRaw = keyInput;
     gMain.heldKeys = gMain.heldKeysRaw;
+    if (keyInput != 0)
+        gMain.prevHeldKeys = gMain.heldKeys;
 
     // Remap L to A if the L=A option is enabled.
     if (gSaveBlock2Ptr->optionsButtonMode == OPTIONS_BUTTON_MODE_L_EQUALS_A)

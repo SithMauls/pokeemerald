@@ -121,6 +121,7 @@
 #define JOY_HELD(button)  TEST_BUTTON(gMain.heldKeys, button)
 #define JOY_HELD_RAW(button) TEST_BUTTON(gMain.heldKeysRaw, button)
 #define JOY_REPEAT(button) TEST_BUTTON(gMain.newAndRepeatedKeys, button)
+#define JOY_RELEASE(button) (TEST_BUTTON(gMain.prevHeldKeys, button) && !TEST_BUTTON(gMain.heldKeys, button))
 
 #define S16TOPOSFLOAT(val)   \
 ({                           \

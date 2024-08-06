@@ -25,6 +25,7 @@ struct Main
     /*0x028*/ u16 heldKeysRaw;           // held keys without L=A remapping
     /*0x02A*/ u16 newKeysRaw;            // newly pressed keys without L=A remapping
     /*0x02C*/ u16 heldKeys;              // held keys with L=A remapping
+              u16 prevHeldKeys;
     /*0x02E*/ u16 newKeys;               // newly pressed keys with L=A remapping
     /*0x030*/ u16 newAndRepeatedKeys;    // newly pressed keys plus key repeat
     /*0x032*/ u16 keyRepeatCounter;      // counts down to 0, triggering key repeat
