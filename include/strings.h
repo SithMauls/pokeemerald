@@ -458,6 +458,7 @@ extern const u8 gText_CantStoreImportantItems[];
 extern const u8 gText_DepositedVar2Var1s[];
 extern const u8 gText_NoRoomForItems[];
 extern const u8 gText_ThreeDashes[];
+extern const u8 gText_StartSort[];
 extern const u8 *const gPocketNamesStringsTable[];
 
 // party menu text
