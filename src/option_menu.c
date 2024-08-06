@@ -734,14 +734,25 @@ static u8 PokeNavCalls_ProcessInput(u8 selection)
 
 static void PokeNavCalls_DrawChoices(u8 selection)
 {
-    const u8 *options[3] = 
-    {
-        gText_PokeNavCallsAll,
-        gText_PokeNavCallsRematch,
-        gText_PokeNavCallsNone,
-    };
+    s32 widthAll, widthBattle, widthNone, xBattle;
+    u8 styles[3];
 
-    DrawOptionMenuChoice(options[selection], 104, YPOS_POKENAVCALLS, 1);
+    styles[0] = 0;
+    styles[1] = 0;
+    styles[2] = 0;
+    styles[selection] = 1;
+
+    DrawOptionMenuChoice(gText_PokeNavCallsAll, 104, YPOS_POKENAVCALLS, styles[0]);
+
+    widthAll = GetStringWidth(FONT_NORMAL, gText_PokeNavCallsAll, 0);
+    widthBattle = GetStringWidth(FONT_NORMAL, gText_PokeNavCallsBattle, 0);
+    widthNone = GetStringWidth(FONT_NORMAL, gText_PokeNavCallsNone, 0);
+
+    widthBattle -= 94;
+    xBattle = (widthAll - widthBattle - widthNone) / 2 + 104;
+    DrawOptionMenuChoice(gText_PokeNavCallsBattle, xBattle, YPOS_POKENAVCALLS, styles[1]);
+
+    DrawOptionMenuChoice(gText_PokeNavCallsNone, GetStringRightAlignXOffset(FONT_NORMAL, gText_PokeNavCallsNone, 198), YPOS_POKENAVCALLS, styles[2]);
 }
 
 static u8 BattleStyle_ProcessInput(u8 selection)
@@ -901,6 +912,7 @@ static void DrawHeaderText(void)
     u8 pageDots[9] = _("");  // Array size should be at least (2 * PAGE_COUNT) -1
     widthOptions = GetStringWidth(FONT_NORMAL, gText_Option, 0);
 
+    StringAppend(pageDots, gText_LButton);
     for (i = 0; i < PAGE_COUNT; i++)
     {
         if (i == sCurrPage)
@@ -910,11 +922,12 @@ static void DrawHeaderText(void)
         if (i < PAGE_COUNT - 1)
             StringAppend(pageDots, gText_Space);            
     }
+    StringAppend(pageDots, gText_RButton);
+
     xMid = (8 + widthOptions + 5);
     FillWindowPixelBuffer(WIN_HEADER, PIXEL_FILL(1));
     AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, gText_Option, 8, 1, TEXT_SKIP_DRAW, NULL);
-    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, pageDots, xMid, 1, TEXT_SKIP_DRAW, NULL);
-    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, gText_PageNav, GetStringRightAlignXOffset(FONT_NORMAL, gText_PageNav, 198), 1, TEXT_SKIP_DRAW, NULL);
+    AddTextPrinterParameterized(WIN_HEADER, FONT_NORMAL, pageDots, GetStringRightAlignXOffset(FONT_NORMAL, pageDots, 198), 1, TEXT_SKIP_DRAW, NULL);
     CopyWindowToVram(WIN_HEADER, COPYWIN_FULL);
 }
 
