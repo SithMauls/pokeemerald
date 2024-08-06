@@ -440,7 +440,7 @@ const struct OamData sOam_KeyItemBox = {
     .size = SPRITE_SIZE(32x32),
     .priority = 1,
     .objMode = ST_OAM_OBJ_NORMAL,
-    .affineMode = ST_OAM_AFFINE_DOUBLE,
+    .affineMode = ST_OAM_AFFINE_OFF,
 };
 
 const struct OamData sOam_KeyItemBoxWin = {
@@ -451,56 +451,13 @@ const struct OamData sOam_KeyItemBoxWin = {
     .affineMode = ST_OAM_AFFINE_OFF,
 };
 
-static const union AnimCmd sSpriteAnim_KeyItemBox[] =
-{
-    ANIMCMD_FRAME(0, 0),
-    ANIMCMD_END
-};
-
-static const union AnimCmd *const sSpriteAnimTable_KeyItemBox[] =
-{
-    sSpriteAnim_KeyItemBox
-};
-
-static const union AffineAnimCmd sAffineAnim_KeyItemBox[] =
-{
-    AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
-    AFFINEANIMCMD_END,
-};
-
-static const union AffineAnimCmd sAffineAnim_KeyItemBoxGrow[] =
-{
-    AFFINEANIMCMD_FRAME(0xE0, 0xE0, 0, 0),
-    AFFINEANIMCMD_FRAME(0xC0, 0xC0, 0, 0),
-    AFFINEANIMCMD_FRAME(0xE0, 0xE0, 0, 0),
-    AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
-    AFFINEANIMCMD_FRAME(0x110, 0x120, 0, 0),
-    AFFINEANIMCMD_FRAME(0x120, 0x120, 0, 0),
-    AFFINEANIMCMD_FRAME(0x110, 0x110, 0, 0),
-    AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
-    AFFINEANIMCMD_FRAME(0x100, 0x100, 0, 0),
-    AFFINEANIMCMD_END,
-};
-
-static const union AffineAnimCmd *const sAffineAnims_KeyItemBox[] =
-{
-    sAffineAnim_KeyItemBox,
-    sAffineAnim_KeyItemBox,
-    sAffineAnim_KeyItemBox,
-    sAffineAnim_KeyItemBox,
-    sAffineAnim_KeyItemBoxGrow,
-    sAffineAnim_KeyItemBoxGrow,
-    sAffineAnim_KeyItemBoxGrow,
-    sAffineAnim_KeyItemBoxGrow,
-};
-
 static const struct SpriteTemplate sSpriteTemplate_KeyItemBox = {
     .tileTag = PAL_TAG_KEY_ITEM_WHEEL,
     .paletteTag = PAL_TAG_KEY_ITEM_WHEEL,
     .oam = &sOam_KeyItemBox,
-    .anims = sSpriteAnimTable_KeyItemBox,
+    .anims = gDummySpriteAnimTable,
     .images = sPicTable_KeyItemBox,
-    .affineAnims = sAffineAnims_KeyItemBox,
+    .affineAnims = gDummySpriteAffineAnimTable,
     .callback = SpriteCallbackDummy,
 };
 
@@ -508,9 +465,9 @@ static const struct SpriteTemplate sSpriteTemplate_KeyItemBoxWin = {
     .tileTag = PAL_TAG_KEY_ITEM_WHEEL,
     .paletteTag = PAL_TAG_KEY_ITEM_WHEEL,
     .oam = &sOam_KeyItemBoxWin,
-    .anims = sSpriteAnimTable_KeyItemBox,
+    .anims = gDummySpriteAnimTable,
     .images = sPicTable_KeyItemBox,
-    .affineAnims = sAffineAnims_KeyItemBox,
+    .affineAnims = gDummySpriteAffineAnimTable,
     .callback = SpriteCallbackDummy,
 };
 
@@ -2066,7 +2023,7 @@ static u32 DpadInputToRegisteredItemIndex(bool32 check) {
     else if (JOY_NEW(DPAD_LEFT))
         i = 4;
     // If `check`, verify that slot actually has an item registered
-    if (i && check && gSaveBlock1Ptr->registeredItems[i-1] == ITEM_NONE)
+    if (i && check && gSaveBlock1Ptr->registeredItems[i - 1] == ITEM_NONE)
         i = 0;
     return i;
 }
@@ -2361,7 +2318,7 @@ static void HBlankCB_KeyItemWheel(void) {
 #define tBoxSprite (data + 1)
 #define tBoxWinSprite (data + 1 + MAX_REGISTERED_ITEMS)
 // MAX_REGISTERED_ITEMS icon windows
-#define tIconWindow (data + 1 + 2*MAX_REGISTERED_ITEMS)
+#define tIconWindow (data + 1 + 2 * MAX_REGISTERED_ITEMS)
 
 // Free key item wheel gfx using sprites & windows from task data
 static void FreeKeyItemWheelGfx(s16 *data) {
@@ -2369,7 +2326,7 @@ static void FreeKeyItemWheelGfx(s16 *data) {
     struct Sprite *sprite;
     FreeSpriteTilesByTag(PAL_TAG_KEY_ITEM_WHEEL);
     FreeSpritePaletteByTag(PAL_TAG_KEY_ITEM_WHEEL);
-    // free box sprites
+    // Free box sprites
     for (i = 0; i < 2 * MAX_REGISTERED_ITEMS; i++) {
         if (tBoxSprite[i] >= MAX_SPRITES)
             continue;
@@ -2377,7 +2334,7 @@ static void FreeKeyItemWheelGfx(s16 *data) {
         FreeSpriteOamMatrix(sprite);
         DestroySprite(sprite);
     }
-    // free item windows
+    // Free item windows
     for (i = 0; i < MAX_REGISTERED_ITEMS; i++) {
         if (tIconWindow[i] == WINDOW_NONE)
             continue;
@@ -2396,22 +2353,19 @@ static void Task_KeyItemWheel(u8 taskId) {
     struct Sprite *sprite;
     switch (tState)
     {
-    case 0:
+    case 0: // Load gfx
     {
         LoadSpritePalette(&sSpritePalette_KeyItemBox);
         LoadSpriteSheetByTemplate(&sSpriteTemplate_KeyItemBox, 0);
 
         for (i = 0; i < MAX_REGISTERED_ITEMS; i++) {
             // Create box sprite
-            tBoxSprite[i] = j = CreateSprite(&sSpriteTemplate_KeyItemBox, sKeyItemBoxXPos[i], sKeyItemBoxYPos[i], 0);
-            if (j < MAX_SPRITES)
-                StartSpriteAffineAnim(&gSprites[j], i);
-            tBoxWinSprite[i] = MAX_SPRITES;
+            tBoxSprite[i] = CreateSprite(&sSpriteTemplate_KeyItemBox, sKeyItemBoxXPos[i], sKeyItemBoxYPos[i], 0);
             // For each registered item the player has, create a window and blit its icon to it
             tIconWindow[i] = WINDOW_NONE;
             if (!gSaveBlock1Ptr->registeredItems[i] || !CheckBagHasItem(gSaveBlock1Ptr->registeredItems[i], 1))
                 continue;
-            tIconWindow[i] = j = AddWindowParameterized(0, sKeyItemBoxXPos[i] / 8 - 2, sKeyItemBoxYPos[i] / 8 - 2, 4, 4, i == 3 ? 13 : 13 + i, 16*(i+9));
+            tIconWindow[i] = j = AddWindowParameterized(0, sKeyItemBoxXPos[i] / 8 - 2, sKeyItemBoxYPos[i] / 8 - 2, 4, 4, i == 3 ? 13 : 13 + i, 16 * (i + 9));
             if (j == WINDOW_NONE)
                 continue;
             PutWindowTilemap(j);
@@ -2421,50 +2375,56 @@ static void Task_KeyItemWheel(u8 taskId) {
         SetHBlankCallback(HBlankCB_KeyItemWheel);
         EnableInterrupts(INTR_FLAG_HBLANK);
         PlaySE(SE_WIN_OPEN);
-        // in dark caves, we need to spawn OBJWIN sprites to show the boxes
-        tState = 4;
-        break;
-    }
-    case 1: // process input
-    {
-        if (JOY_NEW(B_BUTTON) || JOY_NEW(SELECT_BUTTON)) {
-            PlaySE(SE_SELECT);
-            tState = 3; // destroy and unfreeze
-            break;
-        }
-        i = DpadInputToRegisteredItemIndex(TRUE);
-        if (i == 0 || data[i] == MAX_SPRITES)
-            break;
-        // use item as if it was registered
-        gSpecialVar_ItemId = gSaveBlock1Ptr->registeredItemCompat = gSaveBlock1Ptr->registeredItems[i - 1];
-        PlaySE(SE_SELECT);
-        StartSpriteAffineAnim(&gSprites[data[i]], i + 4 - 1);
-        data[15] = data[i];
-        tState = 2; // wait for anim
-        break;
-    }
-    case 2:
-        if (!gSprites[data[15]].affineAnimEnded)
-            break;
-        FreeKeyItemWheelGfx(data);
-        i = CreateTask(ItemId_GetFieldFunc(gSaveBlock1Ptr->registeredItemCompat), 8);
-        gTasks[i].tUsingRegisteredKeyItem = TRUE;
-        DestroyTask(taskId);
-        break;
-    case 3:
-        FreeKeyItemWheelGfx(data);
-        ScriptUnfreezeObjectEvents();
-        UnlockPlayerFieldControls();
-        DestroyTask(taskId);
-        break;
-    case 4:
+        // In dark caves, we need to spawn OBJWIN sprites to show the boxes
         // Enable sprites to be shown inside WINOBJ
         SetGpuRegBits(REG_OFFSET_DISPCNT, DISPCNT_OBJWIN_ON);
         SetGpuRegBits(REG_OFFSET_WINOUT, WINOUT_WINOBJ_OBJ);
         // Create box sprites, but in OBJWIN mode
         for (i = 0; i < MAX_REGISTERED_ITEMS; i++)
             tBoxWinSprite[i] = CreateSprite(&sSpriteTemplate_KeyItemBoxWin, sKeyItemBoxXPos[i], sKeyItemBoxYPos[i], 0);
-        tState = 1;
+        tState++;
+        break;
+    }
+    case 1: // Process input
+    {
+        if (JOY_NEW(B_BUTTON) || JOY_NEW(SELECT_BUTTON)) {
+            PlaySE(SE_SELECT);
+            tState = 3;
+            break;
+        }
+        i = DpadInputToRegisteredItemIndex(TRUE);
+        if (i == 0 || data[i] == MAX_SPRITES)
+            break;
+        // Use item as if it was registered
+        gSpecialVar_ItemId = gSaveBlock1Ptr->registeredItemCompat = gSaveBlock1Ptr->registeredItems[i - 1];
+        PlaySE(SE_SELECT);
+        tState++;
+        break;
+    }
+    case 2: // Use item
+        FreeKeyItemWheelGfx(data);
+        i = CreateTask(ItemId_GetFieldFunc(gSaveBlock1Ptr->registeredItemCompat), 8);
+        gTasks[i].tUsingRegisteredKeyItem = TRUE;
+        if (gSaveBlock1Ptr->registeredItemCompat == ITEM_MACH_BIKE || gSaveBlock1Ptr->registeredItemCompat == ITEM_ACRO_BIKE)
+        {
+            tState = 4;
+            break;
+        }
+        DestroyTask(taskId);
+        break;
+    case 3: // Destroy and unfreeze
+        FreeKeyItemWheelGfx(data);
+        ScriptUnfreezeObjectEvents();
+        UnlockPlayerFieldControls();
+        DestroyTask(taskId);
+        break;
+    case 4: // Prevent player movement on selection 
+        // Require new input to begin movement
+        if (JOY_RELEASE(DPAD_ANY))
+        {
+            UnlockPlayerFieldControls();
+            DestroyTask(taskId);
+        }
         break;
     }
 }

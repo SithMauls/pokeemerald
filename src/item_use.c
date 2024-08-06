@@ -222,7 +222,8 @@ static void ItemUseOnFieldCB_Bike(u8 taskId)
     else // ACRO_BIKE
         GetOnOffBike(PLAYER_AVATAR_FLAG_ACRO_BIKE);
     ScriptUnfreezeObjectEvents();
-    UnlockPlayerFieldControls();
+    if (!gTasks[taskId].tUsingRegisteredKeyItem)
+        UnlockPlayerFieldControls();
     DestroyTask(taskId);
 }
 
