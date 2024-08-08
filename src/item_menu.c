@@ -109,7 +109,7 @@ enum {
     WIN_TMHM_INFO_ICONS,
     WIN_TMHM_INFO,
     WIN_MESSAGE, // Identical to ITEMWIN_MESSAGE. Unused?
-    WIN_SORT_TEXT,
+    WIN_CONTROLS,
 };
 
 // Item list ID for toSwapPos to indicate an item is not currently being swapped
@@ -561,11 +561,11 @@ static const struct WindowTemplate sDefaultBagWindows[] =
         .paletteNum = 15,
         .baseBlock = 0x1B1,
     },
-    [WIN_SORT_TEXT] = {
+    [WIN_CONTROLS] = {
         .bg = 0,
-        .tilemapLeft = 23,
+        .tilemapLeft = 14,
         .tilemapTop = 0,
-        .width = 6,
+        .width = 15,
         .height = 2,
         .paletteNum = 0,
         .baseBlock = 625,
@@ -870,8 +870,9 @@ static bool8 SetupBagMenu(void)
         PrintPocketNames(gPocketNamesStringsTable[gBagPosition.pocket], 0);
         CopyPocketNameToWindow(0);
         DrawPocketIndicatorSquare(gBagPosition.pocket, TRUE);
-        BagMenu_Print(WIN_SORT_TEXT, FONT_SMALL, gText_StartSort, 1, 3, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
-        CopyWindowToVram(WIN_SORT_TEXT, COPYWIN_GFX);
+        BagMenu_Print(WIN_CONTROLS, FONT_SMALL, gText_SelectMove, 0, 3, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
+        BagMenu_Print(WIN_CONTROLS, FONT_SMALL, gText_StartSort, 73, 3, 0, 0, TEXT_SKIP_DRAW, COLORID_POCKET_NAME);
+        CopyWindowToVram(WIN_CONTROLS, COPYWIN_GFX);
         gMain.state++;
         break;
     case 14:
@@ -2850,7 +2851,7 @@ static void LoadBagMenuTextWindows(void)
         FillWindowPixelBuffer(i, PIXEL_FILL(0));
         PutWindowTilemap(i);
     }
-    PutWindowTilemap(WIN_SORT_TEXT);
+    PutWindowTilemap(WIN_CONTROLS);
     ScheduleBgCopyTilemapToVram(0);
     ScheduleBgCopyTilemapToVram(1);
 }
