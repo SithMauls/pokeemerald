@@ -76,6 +76,7 @@ EWRAM_DATA static void(*sItemUseOnFieldCB)(u8 taskId) = NULL;
 
 // Below is set TRUE by UseRegisteredKeyItemOnField
 #define tUsingRegisteredKeyItem  data[3]
+#define tUsingKeyItemWheel       data[4]
 
 // UB here if an item with type ITEM_USE_MAIL or ITEM_USE_BAG_MENU uses SetUpItemUseCallback
 // Never occurs in vanilla, but can occur with improperly created items
@@ -222,7 +223,7 @@ static void ItemUseOnFieldCB_Bike(u8 taskId)
     else // ACRO_BIKE
         GetOnOffBike(PLAYER_AVATAR_FLAG_ACRO_BIKE);
     ScriptUnfreezeObjectEvents();
-    if (!gTasks[taskId].tUsingRegisteredKeyItem)
+    if (!gTasks[taskId].tUsingKeyItemWheel)
         UnlockPlayerFieldControls();
     DestroyTask(taskId);
 }
@@ -1150,3 +1151,4 @@ void ItemUseOutOfBattle_CannotUse(u8 taskId)
 }
 
 #undef tUsingRegisteredKeyItem
+#undef tUsingKeyItemWheel

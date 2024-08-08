@@ -2275,6 +2275,7 @@ static void Task_ItemContext_GiveToPC(u8 taskId)
 }
 
 #define tUsingRegisteredKeyItem data[3] // See usage in item_use.c
+#define tUsingKeyItemWheel data[4]
 
 bool8 UseRegisteredKeyItemOnField(void)
 {
@@ -2417,6 +2418,7 @@ static void Task_KeyItemWheel(u8 taskId) {
         FreeKeyItemWheelGfx(data);
         i = CreateTask(ItemId_GetFieldFunc(gSaveBlock1Ptr->registeredItemCompat), 8);
         gTasks[i].tUsingRegisteredKeyItem = TRUE;
+        gTasks[i].tUsingKeyItemWheel = TRUE;
         if (gSaveBlock1Ptr->registeredItemCompat == ITEM_MACH_BIKE || gSaveBlock1Ptr->registeredItemCompat == ITEM_ACRO_BIKE)
         {
             tState = 4;
@@ -2445,6 +2447,7 @@ static void Task_KeyItemWheel(u8 taskId) {
 #undef tBoxSprite
 #undef tIconWindow
 #undef tUsingRegisteredKeyItem
+#undef tUsingKeyItemWheel
 
 static void Task_ItemContext_Sell(u8 taskId)
 {
