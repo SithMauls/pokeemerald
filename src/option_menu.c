@@ -199,7 +199,7 @@ static void ReadAllCurrentSettings(u8 taskId)
     gTasks[taskId].tWindowFrameType = gSaveBlock2Ptr->optionsWindowFrameType;
     gTasks[taskId].tFont = gSaveBlock2Ptr->optionsFont;
     gTasks[taskId].tAutoRun = FlagGet(FLAG_AUTORUN);
-    gTasks[taskId].tPokeNavCalls = VarGet(VAR_POKENAVCALLS);
+    gTasks[taskId].tPokeNavCalls = VarGet(VAR_POKENAV_CALLS);
 }
 
 static void DrawOptionsPg1(u8 taskId)
@@ -561,7 +561,7 @@ static void OptionMenuSave(u8 taskId)
     gSaveBlock2Ptr->optionsWindowFrameType = gTasks[taskId].tWindowFrameType;
     gSaveBlock2Ptr->optionsFont = gTasks[taskId].tFont;
     gTasks[taskId].tAutoRun ? FlagSet(FLAG_AUTORUN) : FlagClear(FLAG_AUTORUN);
-    VarSet(VAR_POKENAVCALLS, gTasks[taskId].tPokeNavCalls);
+    VarSet(VAR_POKENAV_CALLS, gTasks[taskId].tPokeNavCalls);
 }
 
 static void Task_OptionMenuFadeOut(u8 taskId)

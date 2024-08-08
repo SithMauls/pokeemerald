@@ -1099,7 +1099,7 @@ static bool32 SelectMatchCallTrainer(void)
 {
     u32 matchCallId;
     u32 numRegistered = GetNumRegisteredNPCs();
-    u16 pokenavOption = VarGet(VAR_POKENAVCALLS);
+    u16 pokenavOption = VarGet(VAR_POKENAV_CALLS);
 
     if (numRegistered == 0 || pokenavOption == 2)
         return FALSE;
@@ -1163,10 +1163,10 @@ bool32 TryStartMatchCall(void)
 {
     if (FlagGet(FLAG_HAS_MATCH_CALL)
         && UpdateMatchCallStepCounter()
-        && UpdateMatchCallMinutesCounter()
         && CheckMatchCallChance()
         && MapAllowsMatchCall()
-        && SelectMatchCallTrainer())
+        && SelectMatchCallTrainer()
+        && UpdateMatchCallMinutesCounter())
     {
         StartMatchCall();
         return TRUE;
