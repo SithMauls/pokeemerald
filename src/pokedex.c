@@ -190,6 +190,7 @@ enum {
     WIN_MOVES_DESC,
     WIN_MOVES_BATTLE_LABELS,
     WIN_MOVES_BATTLE_VALUES,
+    WIN_TOPBAR_NAME,
 };
 
 enum {
@@ -1340,6 +1341,16 @@ static const struct WindowTemplate sInfoScreen_WindowTemplates[] =
         .height = 10,
         .paletteNum = 0,
         .baseBlock = 685,
+    },
+    [WIN_TOPBAR_NAME] =
+    {
+        .bg = 1,
+        .tilemapLeft = 22,
+        .tilemapTop = 0,
+        .width = 8,
+        .height = 2,
+        .paletteNum = 2,
+        .baseBlock = 715,
     },
     DUMMY_WIN_TEMPLATE
 };
@@ -5586,6 +5597,25 @@ static void SpriteCB_DexListStartMenuCursor(struct Sprite *sprite)
     }
 }
 
+static void PrintTopBarSpeciesName()
+{
+    u16 species = NationalPokedexNumToSpecies(sPokedexListItem->dexNum);
+    const u8 *name = gSpeciesNames[species];
+    u8 color[] = {
+        TEXT_COLOR_TRANSPARENT,
+        TEXT_COLOR_WHITE,
+        TEXT_COLOR_LIGHT_RED
+    };
+
+    // Prepare the window content off-screen
+    FillWindowPixelBuffer(WIN_TOPBAR_NAME, PIXEL_FILL(0x7));
+    AddTextPrinterParameterized4(WIN_TOPBAR_NAME, FONT_NORMAL, GetStringCenterAlignXOffset(FONT_NORMAL, name, 62), 1, 0, 0, color, TEXT_SKIP_DRAW, name);
+
+    // Update the window tilemap and copy to VRAM in one go
+    PutWindowTilemap(WIN_TOPBAR_NAME);
+    CopyWindowToVram(WIN_TOPBAR_NAME, COPYWIN_GFX);
+}
+
 static void PrintInfoScreenText(const u8 *str, u8 left, u8 top)
 {
     u8 color[3];
@@ -5943,6 +5973,7 @@ static void Task_LoadAreaScreen(u8 taskId)
     case 1:
         LoadScreenSelectBarSubmenu(0xD);
         HighlightSubmenuScreenSelectBarItem(AREA_SCREEN, 0xD);
+        PrintTopBarSpeciesName();
         LoadPokedexBgPalette(sPokedexView->isSearchResults);
         SetGpuReg(REG_OFFSET_BG1CNT, BGCNT_PRIORITY(0) | BGCNT_CHARBASE(0) | BGCNT_SCREENBASE(13) | BGCNT_16COLOR | BGCNT_TXT256x256);
         gMain.state++;
@@ -6031,6 +6062,7 @@ static void Task_LoadMovesScreen(u8 taskId)
     case 2:
         LoadScreenSelectBarSubmenu(0xD);                                            // Load screen select bar
         HighlightSubmenuScreenSelectBarItem(MOVES_SCREEN, 0xD);                     // Highlight Moves screen
+        PrintTopBarSpeciesName();
         LoadPokedexBgPalette(sPokedexView->isSearchResults);
         gMain.state++;
         break;
@@ -6126,6 +6158,7 @@ static void Task_HandleMovesScreenInput(u8 taskId)
     {
         LoadScreenSelectBarSubmenu(0xD);
         HighlightSubmenuScreenSelectBarItem(5, 0xD);
+        PrintTopBarSpeciesName();
         gTasks[taskId].func = Task_HandleMovesScreenInput2;
         PlaySE(SE_DEX_PAGE);
         return;
@@ -6146,6 +6179,7 @@ static void Task_HandleMovesScreenInput2(u8 taskId)
     if (JOY_NEW(B_BUTTON))
     {
         HighlightSubmenuScreenSelectBarItem(MOVES_SCREEN, 0xD);
+        PrintTopBarSpeciesName();
         gTasks[taskId].func = Task_HandleMovesScreenInput;
         PlaySE(SE_DEX_PAGE);
         return;
@@ -6368,9 +6402,9 @@ static void Task_LoadCryScreen(u8 taskId)
         gMain.state++;
         break;
     case 2:
-        FillBgTilemapBufferRect(1, 0, 0, 0, 32, 32, 0);
         LoadScreenSelectBarSubmenu(0xD);
         HighlightSubmenuScreenSelectBarItem(CRY_SCREEN, 0xD);
+        PrintTopBarSpeciesName();
         LoadPokedexBgPalette(sPokedexView->isSearchResults);
         gMain.state++;
         break;
@@ -6557,6 +6591,7 @@ static void Task_LoadSizeScreen(u8 taskId)
     case 2:
         LoadScreenSelectBarSubmenu(0xD);
         HighlightSubmenuScreenSelectBarItem(SIZE_SCREEN, 0xD);
+        PrintTopBarSpeciesName();
         LoadPokedexBgPalette(sPokedexView->isSearchResults);
         gMain.state++;
         break;
@@ -6807,16 +6842,16 @@ static void HighlightSubmenuScreenSelectBarItem(u8 selectedScreen, u16 b)
     u32 i;
     u32 j;
     u16 *ptr = GetBgTilemapBuffer(1);
-    u32 screenWidths[] = {5, 6, 5, 5, 7};
+    u32 screenWidths[] = {5, 6, 5, 5};
     u32 row = 1;
 
-    for (i = 0; i < SCREEN_COUNT; i++)
+    for (i = 0; i < SCREEN_COUNT - 1; i++)
     {
         u32 newPalette;
 
         do
         {
-            if (i == selectedScreen || i == 4)
+            if (i == selectedScreen)
                 newPalette = 0x2000;
             else
                 newPalette = 0x4000;
