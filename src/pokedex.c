@@ -349,6 +349,8 @@ struct MovesView
     bool8 inMenu;
 };
 
+static const u32 *sPokedexMenuGfx;
+
 #define TAG_MOVE_TYPES 30002
 
 static const struct OamData sOamData_MoveTypes =
@@ -3532,6 +3534,7 @@ void CB2_OpenPokedex(void)
             sPokedexView->ownCount = GetNationalPokedexCount(FLAG_GET_CAUGHT);
         }
         sPokedexView->initialVOffset = 8;
+        sPokedexMenuGfx = gSaveBlock2Ptr->optionsFont ? gPokedexMenuShort_Gfx : gPokedexMenu_Gfx;
         gMain.state++;
         break;
     case 3:
@@ -3967,7 +3970,7 @@ static bool8 LoadPokedexListPage(u8 page)
         SetBgTilemapBuffer(2, AllocZeroed(BG_SCREEN_SIZE));
         SetBgTilemapBuffer(1, AllocZeroed(BG_SCREEN_SIZE));
         SetBgTilemapBuffer(0, AllocZeroed(BG_SCREEN_SIZE));
-        DecompressAndLoadBgGfxUsingHeap(3, gPokedexMenu_Gfx, 0x2000, 0, 0);
+        DecompressAndLoadBgGfxUsingHeap(3, sPokedexMenuGfx, 0x2000, 0, 0);
         CopyToBgTilemapBuffer(1, gPokedexList_Tilemap, 0, 0);
         CopyToBgTilemapBuffer(3, gPokedexListUnderlay_Tilemap, 0, 0);
         if (page == PAGE_MAIN)
@@ -5609,7 +5612,7 @@ static void PrintTopBarSpeciesName()
 
     // Prepare the window content off-screen
     FillWindowPixelBuffer(WIN_TOPBAR_NAME, PIXEL_FILL(0x7));
-    AddTextPrinterParameterized4(WIN_TOPBAR_NAME, FONT_NORMAL, GetStringCenterAlignXOffset(FONT_NORMAL, name, 62), 1, 0, 0, color, TEXT_SKIP_DRAW, name);
+    AddTextPrinterParameterized4(WIN_TOPBAR_NAME, FONT_NORMAL, GetStringCenterAlignXOffset(FONT_NORMAL, name, 62), 1 + gSaveBlock2Ptr->optionsFont, 0, 0, color, TEXT_SKIP_DRAW, name);
 
     // Update the window tilemap and copy to VRAM in one go
     PutWindowTilemap(WIN_TOPBAR_NAME);
@@ -5701,7 +5704,7 @@ static void Task_LoadInfoScreen(u8 taskId)
         }
         break;
     case 1:
-        DecompressAndLoadBgGfxUsingHeap(3, gPokedexMenu_Gfx, 0x2000, 0, 0);
+        DecompressAndLoadBgGfxUsingHeap(3, sPokedexMenuGfx, 0x2000, 0, 0);
         CopyToBgTilemapBuffer(3, gPokedexInfoScreen_Tilemap, 0, 0);
         FillWindowPixelBuffer(WIN_INFO, PIXEL_FILL(0));
         PutWindowTilemap(WIN_INFO);
@@ -6048,7 +6051,7 @@ static void Task_LoadMovesScreen(u8 taskId)
         }
         break;
     case 1:
-        DecompressAndLoadBgGfxUsingHeap(2, gPokedexMenu_Gfx, 0x2000, 0, 0);         // Load Pokedex menu tileset
+        DecompressAndLoadBgGfxUsingHeap(2, sPokedexMenuGfx, 0x2000, 0, 0);         // Load Pokedex menu tileset
         CopyToBgTilemapBuffer(0, gPokedexMovesUnderlay_Tilemap, 0, 0);              // Copy Moves Underlay tilemap to bg0
         CopyToBgTilemapBuffer(2, gPokedexMovesScreen_Tilemap, 0, 0);                // Copy Moves Screen tilemap to bg2
 
@@ -6393,7 +6396,7 @@ static void Task_LoadCryScreen(u8 taskId)
         }
         break;
     case 1:
-        DecompressAndLoadBgGfxUsingHeap(3, &gPokedexMenu_Gfx, 0x2000, 0, 0);
+        DecompressAndLoadBgGfxUsingHeap(3, &sPokedexMenuGfx, 0x2000, 0, 0);
         CopyToBgTilemapBuffer(3, &gPokedexCryScreen_Tilemap, 0, 0);
         FillWindowPixelBuffer(WIN_INFO, PIXEL_FILL(0));
         PutWindowTilemap(WIN_INFO);
@@ -6582,7 +6585,7 @@ static void Task_LoadSizeScreen(u8 taskId)
         }
         break;
     case 1:
-        DecompressAndLoadBgGfxUsingHeap(3, gPokedexMenu_Gfx, 0x2000, 0, 0);
+        DecompressAndLoadBgGfxUsingHeap(3, sPokedexMenuGfx, 0x2000, 0, 0);
         CopyToBgTilemapBuffer(3, gPokedexSizeScreen_Tilemap, 0, 0);
         FillWindowPixelBuffer(WIN_INFO, PIXEL_FILL(0));
         PutWindowTilemap(WIN_INFO);
@@ -6914,7 +6917,7 @@ static void Task_DisplayCaughtMonDexPage(u8 taskId)
         }
         break;
     case 1:
-        DecompressAndLoadBgGfxUsingHeap(3, gPokedexMenu_Gfx, 0x2000, 0, 0);
+        DecompressAndLoadBgGfxUsingHeap(3, sPokedexMenuGfx, 0x2000, 0, 0);
         CopyToBgTilemapBuffer(3, gPokedexInfoScreen_Tilemap, 0, 0);
         FillWindowPixelBuffer(WIN_INFO, PIXEL_FILL(0));
         PutWindowTilemap(WIN_INFO);

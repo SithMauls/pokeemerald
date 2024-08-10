@@ -3286,6 +3286,7 @@ extern const u32 gBattleTerrainPalette_StadiumWallace[];
 extern const u32 gPokedexInterface_Gfx[];
 extern const u16 gPokedexBgHoenn_Pal[];
 extern const u32 gPokedexMenu_Gfx[];
+extern const u32 gPokedexMenuShort_Gfx[];
 extern const u8 gPokedexList_Tilemap[];
 extern const u8 gPokedexListUnderlay_Tilemap[];
 extern const u8 gPokedexMovesUnderlay_Tilemap[];
