@@ -1370,9 +1370,9 @@ const struct Item gItems[] =
         .fieldUseFunc = ItemUseOutOfBattle_CannotUse,
     },
 
-    [ITEM_070] =
+    [ITEM_HEART] =
     {
-        .name = _("????????"),
+        .name = _("HEART"),
         .itemId = ITEM_NONE,
         .price = 0,
         .description = sDummyDesc,

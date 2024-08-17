@@ -125,7 +125,7 @@ const u32 *const gItemIconTable[ITEMS_COUNT + 1][2] =
     [ITEM_NUGGET] = {gItemIcon_Nugget, gItemIconPalette_Nugget},
     [ITEM_HEART_SCALE] = {gItemIcon_HeartScale, gItemIconPalette_HeartScale},
     // ????????
-    [ITEM_070] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
+    [ITEM_HEART] = {gItemIcon_Heart, gItemIconPalette_Heart},
     [ITEM_071] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
     [ITEM_072] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},
     [ITEM_073] = {gItemIcon_QuestionMark, gItemIconPalette_QuestionMark},

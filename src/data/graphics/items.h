@@ -231,6 +231,9 @@ const u32 gItemIconPalette_Nugget[] = INCBIN_U32("graphics/items/icon_palettes/n
 const u32 gItemIcon_HeartScale[] = INCBIN_U32("graphics/items/icons/heart_scale.4bpp.lz");
 const u32 gItemIconPalette_HeartScale[] = INCBIN_U32("graphics/items/icon_palettes/heart_scale.gbapal.lz");
 
+const u32 gItemIcon_Heart[] = INCBIN_U32("graphics/items/icons/heart.4bpp.lz");
+const u32 gItemIconPalette_Heart[] = INCBIN_U32("graphics/items/icon_palettes/heart.gbapal.lz");
+
 // Mail
 
 const u32 gItemIcon_OrangeMail[] = INCBIN_U32("graphics/items/icons/orange_mail.4bpp.lz");

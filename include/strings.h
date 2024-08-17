@@ -501,6 +501,7 @@ extern const u8 gText_SpAtk3[];
 extern const u8 gText_SpDef3[];
 extern const u8 gText_50Percent[];
 extern const u8 gText_5Percent[];
+extern const u8 gText_NoData[];
 extern const u8 gText_PkmnBaseVar2StatIncreased[];
 extern const u8 gText_MovesPPIncreased[];
 extern const u8 gText_StatsIVIncreased[];
@@ -970,6 +971,9 @@ extern const u8 gText_BoxFull[];
 extern const u8 gText_WontHaveEffect[];
 
 extern const u8 gText_LevelSymbol[];
+extern const u8 gText_AtkEqualsDef[];
+extern const u8 gText_AtkLessThanDef[];
+extern const u8 gText_AtkMoreThanDef[];
 extern const u8 gText_PkmnInfo[];
 extern const u8 gText_PkmnSkills[];
 extern const u8 gText_PkmnStats[];

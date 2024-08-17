@@ -3296,7 +3296,7 @@ extern const u16 gPokedexSearchResults_Pal[];
 extern const u16 gPokedexBgNational_Pal[];
 extern const u8 gPokedexInfoScreen_Tilemap[];
 extern const u8 gPokedexCryScreen_Tilemap[];
-extern const u8 gPokedexSizeScreen_Tilemap[];
+extern const u8 gPokedexDataScreen_Tilemap[];
 extern const u8 gPokedexScreenSelectBarMain_Tilemap[];
 extern const u8 gPokedexScreenSelectBarSubmenu_Tilemap[];
 extern const u16 gPokedexCaughtScreen_Pal[];
@@ -3520,6 +3520,8 @@ extern const u32 gItemIcon_Nugget[];
 extern const u32 gItemIconPalette_Nugget[];
 extern const u32 gItemIcon_HeartScale[];
 extern const u32 gItemIconPalette_HeartScale[];
+extern const u32 gItemIcon_Heart[];
+extern const u32 gItemIconPalette_Heart[];
 // Mail
 extern const u32 gItemIcon_OrangeMail[];
 extern const u32 gItemIconPalette_OrangeMail[];

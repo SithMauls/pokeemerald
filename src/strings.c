@@ -260,6 +260,9 @@ const u8 gText_SelectMove[] = _("{SELECT_BUTTON} MOVE");
 const u8 gText_MaleSymbol[] = _("♂");
 const u8 gText_FemaleSymbol[] = _("♀");
 const u8 gText_LevelSymbol[] = _("{LV}");
+const u8 gText_AtkEqualsDef[] = _("A=D");
+const u8 gText_AtkLessThanDef[] = _("A<D");
+const u8 gText_AtkMoreThanDef[] = _("A>D");
 const u8 gText_NumberClear01[] = _("{NO}{CLEAR 0x01}");
 const u8 gText_PlusSymbol[] = _("+"); // Unused
 const u8 gText_RightArrow[] = _("{RIGHT_ARROW}"); // Unused
@@ -434,6 +437,7 @@ const u8 gText_SpAtk3[] = _("SP. ATK");
 const u8 gText_SpDef3[] = _("SP. DEF");
 const u8 gText_50Percent[] = _("50%");
 const u8 gText_5Percent[] = _("5%");
+const u8 gText_NoData[] = _("NO DATA");
 const u8 gText_WontHaveEffect[] = _("It won't have any effect.{PAUSE_UNTIL_PRESS}");
 const u8 gText_CantBeUsedOnPkmn[] = _("This can't be used on\nthat POKéMON.{PAUSE_UNTIL_PRESS}");
 const u8 gText_PkmnCantSwitchOut[] = _("{STR_VAR_1} can't be switched\nout!{PAUSE_UNTIL_PRESS}");
