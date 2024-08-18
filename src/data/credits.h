@@ -1,6 +1,7 @@
 enum
 {
     PAGE_TITLE,
+    PAGE_MODDER,
     PAGE_DIRECTOR,
     PAGE_ART_DIRECTOR,
     PAGE_WORLD_DIRECTOR,
@@ -67,6 +68,7 @@ static const u8 sCreditsText_PkmnEmeraldVersion[]             = _("POKéMON EMER
 static const u8 sCreditsText_Credits[]                        = _("Credits");
 static const u8 sCreditsText_ExecutiveDirector[]              = _("Executive Director");
 static const u8 sCreditsText_Director[]                       = _("Director");
+static const u8 sCreditsText_Modder[]                         = _("Modder");
 static const u8 sCreditsText_ArtDirector[]                    = _("Art Director");
 static const u8 sCreditsText_BattleDirector[]                 = _("Battle Director");
 static const u8 sCreditsText_MainProgrammer[]                 = _("Main Programmer");
@@ -105,6 +107,7 @@ static const u8 sCreditsText_SatoshiTajiri[]                  = _("Satoshi Tajir
 static const u8 sCreditsText_JunichiMasuda[]                  = _("Junichi Masuda");
 static const u8 sCreditsText_KenSugimori[]                    = _("Ken Sugimori");
 static const u8 sCreditsText_ShigekiMorimoto[]                = _("Shigeki Morimoto");
+static const u8 sCreditsText_SaulSmith[]                      = _("Saul Smith");
 static const u8 sCreditsText_TetsuyaWatanabe[]                = _("Tetsuya Watanabe");
 static const u8 sCreditsText_HisashiSogabe[]                  = _("Hisashi Sogabe");
 static const u8 sCreditsText_SosukeTamada[]                   = _("Sosuke Tamada");
@@ -226,6 +229,7 @@ static const struct CreditsEntry sCreditsEntry_PkmnEmeraldVersion               
 static const struct CreditsEntry sCreditsEntry_Credits                          = {11,  TRUE, sCreditsText_Credits};
 static const struct CreditsEntry sCreditsEntry_ExecutiveDirector                = { 8,  TRUE, sCreditsText_ExecutiveDirector};
 static const struct CreditsEntry sCreditsEntry_Director                         = {12,  TRUE, sCreditsText_Director};
+static const struct CreditsEntry sCreditsEntry_Modder                           = {12,  TRUE, sCreditsText_Modder};
 static const struct CreditsEntry sCreditsEntry_ArtDirector                      = {10,  TRUE, sCreditsText_ArtDirector};
 static const struct CreditsEntry sCreditsEntry_BattleDirector                   = {10,  TRUE, sCreditsText_BattleDirector};
 static const struct CreditsEntry sCreditsEntry_MainProgrammer                   = {10,  TRUE, sCreditsText_MainProgrammer};
@@ -264,6 +268,7 @@ static const struct CreditsEntry sCreditsEntry_SatoshiTajiri                    
 static const struct CreditsEntry sCreditsEntry_JunichiMasuda                    = {11, FALSE, sCreditsText_JunichiMasuda};
 static const struct CreditsEntry sCreditsEntry_KenSugimori                      = {11, FALSE, sCreditsText_KenSugimori};
 static const struct CreditsEntry sCreditsEntry_ShigekiMorimoto                  = {11, FALSE, sCreditsText_ShigekiMorimoto};
+static const struct CreditsEntry sCreditsEntry_SaulSmith                        = {11, FALSE, sCreditsText_SaulSmith};
 static const struct CreditsEntry sCreditsEntry_TetsuyaWatanabe                  = {11, FALSE, sCreditsText_TetsuyaWatanabe};
 static const struct CreditsEntry sCreditsEntry_HisashiSogabe                    = {11, FALSE, sCreditsText_HisashiSogabe};
 static const struct CreditsEntry sCreditsEntry_SosukeTamada                     = {11, FALSE, sCreditsText_SosukeTamada};
@@ -388,6 +393,13 @@ static const struct CreditsEntry *const sCreditsEntryPointerTable[PAGE_COUNT][EN
         _,
         &sCreditsEntry_PkmnEmeraldVersion,
         &sCreditsEntry_Credits,
+        _,
+        _
+    },
+    [PAGE_MODDER] = {
+        _,
+        &sCreditsEntry_Modder,
+        &sCreditsEntry_SaulSmith,
         _,
         _
     },
