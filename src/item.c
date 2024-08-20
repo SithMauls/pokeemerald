@@ -397,6 +397,21 @@ bool8 AddBagItem(u16 itemId, u16 count)
     }
 }
 
+void UnregisterItem(u16 itemId) {
+    s32 index = RegisteredItemIndex(itemId);
+    s32 count = CountRegisteredItems();
+
+    // Unregister item if none left in bag
+    if (index >= 0) {
+        gSaveBlock1Ptr->registeredItems[index] = ITEM_NONE;
+        // unregistering last item, index set to first registered item
+        if (--count == 0 || (index = RegisteredItemIndex(ITEM_NONE)) < 0)
+            gSaveBlock1Ptr->registeredItemCompat = ITEM_NONE;
+        else
+            gSaveBlock1Ptr->registeredItemCompat = gSaveBlock1Ptr->registeredItems[index];
+    }
+}
+
 bool8 RemoveBagItem(u16 itemId, u16 count)
 {
     u8 i;
@@ -453,6 +468,7 @@ bool8 RemoveBagItem(u16 itemId, u16 count)
 
             if (GetBagItemQuantity(&itemPocket->itemSlots[var].quantity) == 0)
                 itemPocket->itemSlots[var].itemId = ITEM_NONE;
+                UnregisterItem(itemId);
 
             if (count == 0)
                 return TRUE;
@@ -476,6 +492,7 @@ bool8 RemoveBagItem(u16 itemId, u16 count)
 
                 if (GetBagItemQuantity(&itemPocket->itemSlots[i].quantity) == 0)
                     itemPocket->itemSlots[i].itemId = ITEM_NONE;
+                    UnregisterItem(itemId);
 
                 if (count == 0)
                     return TRUE;

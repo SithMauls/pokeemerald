@@ -855,10 +855,15 @@ void ItemUseOutOfBattle_Repel(u8 taskId)
 {
     if (VarGet(VAR_REPEL_STEP_COUNT) == 0)
         gTasks[taskId].func = Task_StartUseRepel;
-    else if (!InBattlePyramid())
-        DisplayItemMessage(taskId, FONT_NORMAL, gText_RepelEffectsLingered, CloseItemMessage);
-    else
-        DisplayItemMessageInBattlePyramid(taskId, gText_RepelEffectsLingered, Task_CloseBattlePyramidBagMessage);
+    else if (!gTasks[taskId].tUsingRegisteredKeyItem) {
+        if (!InBattlePyramid())
+            DisplayItemMessage(taskId, FONT_NORMAL, gText_RepelEffectsLingered, CloseItemMessage);
+        else
+            DisplayItemMessageInBattlePyramid(taskId, gText_RepelEffectsLingered, Task_CloseBattlePyramidBagMessage);
+    }
+    else {
+        DisplayItemMessageOnField(taskId, gText_RepelEffectsLingered, Task_CloseCantUseKeyItemMessage);
+    }
 }
 
 static void Task_StartUseRepel(u8 taskId)
@@ -879,10 +884,15 @@ static void Task_UseRepel(u8 taskId)
     {
         VarSet(VAR_REPEL_STEP_COUNT, ItemId_GetHoldEffectParam(gSpecialVar_ItemId));
         RemoveUsedItem();
-        if (!InBattlePyramid())
-            DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, CloseItemMessage);
-        else
-            DisplayItemMessageInBattlePyramid(taskId, gStringVar4, Task_CloseBattlePyramidBagMessage);
+        if (!gTasks[taskId].tUsingRegisteredKeyItem) {
+            if (!InBattlePyramid())
+                DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, CloseItemMessage);
+            else
+                DisplayItemMessageInBattlePyramid(taskId, gStringVar4, Task_CloseBattlePyramidBagMessage);
+        }
+        else {
+            DisplayItemMessageOnField(taskId, gStringVar4, Task_CloseCantUseKeyItemMessage);
+        }
     }
 }
 
@@ -891,10 +901,15 @@ static void Task_UsedBlackWhiteFlute(u8 taskId)
     if(++gTasks[taskId].data[8] > 7)
     {
         PlaySE(SE_GLASS_FLUTE);
-        if (!InBattlePyramid())
-            DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, CloseItemMessage);
-        else
-            DisplayItemMessageInBattlePyramid(taskId, gStringVar4, Task_CloseBattlePyramidBagMessage);
+        if (!gTasks[taskId].tUsingRegisteredKeyItem) {
+            if (!InBattlePyramid())
+                DisplayItemMessage(taskId, FONT_NORMAL, gStringVar4, CloseItemMessage);
+            else
+                DisplayItemMessageInBattlePyramid(taskId, gStringVar4, Task_CloseBattlePyramidBagMessage);
+        }
+        else {
+            DisplayItemMessageOnField(taskId, gStringVar4, Task_CloseCantUseKeyItemMessage);
+        }
     }
 }
 

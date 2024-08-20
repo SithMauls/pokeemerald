@@ -1115,6 +1115,10 @@ static void BagMenu_ItemPrintCallback(u8 windowId, u32 itemIndex, u8 y)
             StringExpandPlaceholders(gStringVar4, gText_xVar1);
             offset = GetStringRightAlignXOffset(FONT_NARROW, gStringVar4, 119);
             BagMenu_Print(windowId, FONT_NARROW, gStringVar4, offset, y, 0, 0, TEXT_SKIP_DRAW, COLORID_NORMAL);
+            if ((offset = RegisteredItemIndex(itemId)) >= 0) {
+                // Print registered icon
+                BlitBitmapToWindow(windowId, sRegisteredSelect_Gfx[offset], 72, y - 1, 24, 16);
+            }
         }
         else if (itemId && (offset = RegisteredItemIndex(itemId)) >= 0)
         {
@@ -1768,6 +1772,12 @@ static void OpenContextMenu(u8 taskId)
                 memcpy(&gBagMenu->contextMenuItemsBuffer, &sContextMenuItems_ItemsPocket, sizeof(sContextMenuItems_ItemsPocket));
                 if (ItemIsMail(gSpecialVar_ItemId) == TRUE)
                     gBagMenu->contextMenuItemsBuffer[0] = ACTION_CHECK;
+                if (gSpecialVar_ItemId == ITEM_WHITE_FLUTE || gSpecialVar_ItemId == ITEM_BLACK_FLUTE
+                    || gSpecialVar_ItemId == ITEM_REPEL || gSpecialVar_ItemId == ITEM_SUPER_REPEL || gSpecialVar_ItemId == ITEM_MAX_REPEL
+                    || gSpecialVar_ItemId == ITEM_ESCAPE_ROPE)
+                    gBagMenu->contextMenuItemsBuffer[1] = ACTION_REGISTER;
+                if (RegisteredItemIndex(gSpecialVar_ItemId) >= 0)
+                    gBagMenu->contextMenuItemsBuffer[1] = ACTION_DESELECT;
                 break;
             case KEYITEMS_POCKET:
                 gBagMenu->contextMenuItemsPtr = gBagMenu->contextMenuItemsBuffer;
@@ -2099,7 +2109,7 @@ static void Task_RemoveItemFromBag(u8 taskId)
     }
 }
 
-static u32 CountRegisteredItems(void) {
+u32 CountRegisteredItems(void) {
     u32 i;
     u32 count = 0;
     for (i = 0; i < ARRAY_COUNT(gSaveBlock1Ptr->registeredItems); i++)
