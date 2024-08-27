@@ -1706,6 +1706,8 @@ void CB2_ContinueSavedGame(void)
 {
     u8 trainerHillMapId;
 
+    VarSet(VAR_SHINY_MODIFIER, 2);
+    
     FieldClearVBlankHBlankCallbacks();
     StopMapMusic();
     ResetSafariZoneFlag_();

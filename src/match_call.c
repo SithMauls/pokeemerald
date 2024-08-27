@@ -1025,6 +1025,7 @@ static const struct MatchCallText *const sMatchCallGeneralTopics[] =
 extern const u8 gBirchDexRatingText_AreYouCurious[];
 extern const u8 gBirchDexRatingText_SoYouveSeenAndCaught[];
 extern const u8 gBirchDexRatingText_OnANationwideBasis[];
+extern const u8 gBirchDexRatingText_RequestPresence[];
 
 void InitMatchCallCounters(void)
 {
@@ -2102,6 +2103,9 @@ void BufferPokedexRatingForMatchCall(u8 *destStr)
         ConvertIntToDecimalStringN(gStringVar2, numCaught, STR_CONV_MODE_LEFT_ALIGN, 3);
         StringExpandPlaceholders(str, gBirchDexRatingText_OnANationwideBasis);
     }
+
+    if (SawAllHoennMons() && !FlagGet(FLAG_SHINY_CHARM_GET))
+        StringExpandPlaceholders(str, gBirchDexRatingText_RequestPresence);
 
     Free(buffer);
 }

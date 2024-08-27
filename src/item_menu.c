@@ -3255,7 +3255,8 @@ static const u16 sItemsByType[ITEMS_COUNT] =
     [ITEM_CONTEST_PASS]     = 247,
     [ITEM_DEVON_SCOPE]      = 248,
     [ITEM_GO_GOGGLES]       = 249,
-    [ITEM_WAILMER_PAIL]     = 250,
+    [ITEM_SHINY_CHARM]      = 250,
+    [ITEM_WAILMER_PAIL]     = 251,
 
     // Ferry tickets
     [ITEM_SS_TICKET]        = 255,

@@ -113,3 +113,22 @@ gBirchDexRatingText_OnANationwideBasis::
 	.string "On a nationwide basis…\p"
 	.string "You've seen {STR_VAR_1} POKéMON,\n"
 	.string "and you've caught {STR_VAR_2} POKéMON…$"
+
+gBirchDexRatingText_RequestPresence::
+	.string "I'd like to request your presence\n"
+	.string "here at the lab. I have something\l"
+	.string "to give to you.$"
+
+gBirchDexRatingText_SeenAllHoennMons::
+	.string "Oh!\p"
+	.string "You've met every known POKéMON species\n"
+	.string "in HOENN!\p"
+	.string "I have a gift for this very occasion…$"
+	
+gBirchDexRatingText_ShinyCharm::
+	.string "That SHINY CHARM is said to increase\n"
+	.string "the likelihood of encountering\l"
+	.string "rare POKéMON on your travels.\p"
+	.string "Now you've familiarized yourself with\n"
+	.string "the POKéMON of HOENN, you'll be able to\l"
+	.string "recognize these anomalous creatures.$"

@@ -437,34 +437,48 @@ static u32 GetParentToInheritNature(struct DayCare *daycare)
 
 static void _TriggerPendingDaycareEgg(struct DayCare *daycare)
 {
-    u32 parent;
+    u32 parent, i, personality;
     s32 natureTries = 0;
+    u32 otId = gSaveBlock2Ptr->playerTrainerId[0]
+            | (gSaveBlock2Ptr->playerTrainerId[1] << 8)
+            | (gSaveBlock2Ptr->playerTrainerId[2] << 16)
+            | (gSaveBlock2Ptr->playerTrainerId[3] << 24);
+    u32 shinyModifier = VarGet(VAR_SHINY_MODIFIER) * 2;
 
     SeedRng2(gMain.vblankCounter2);
     parent = GetParentToInheritNature(daycare);
 
+    if (FlagGet(FLAG_SHINY_CHARM_GET))
+        shinyModifier *= 4;
+
     // don't inherit nature
     if (parent > 1)
     {
-        daycare->offspringPersonality = (Random2() << 16) | ((Random() % 0xfffe) + 1);
+        for (i = 0; i < shinyModifier; i++) {
+            personality = (Random2() << 16) | ((Random() % 0xfffe) + 1);
+            if (IsShinyOtIdPersonality(otId, personality))
+                break;
+        }
     }
     // inherit nature
     else
     {
         u8 wantedNature = GetNatureFromPersonality(GetBoxMonData(&daycare->mons[parent].mon, MON_DATA_PERSONALITY, NULL));
-        u32 personality;
 
         do
         {
-            personality = (Random2() << 16) | (Random());
+            for (i = 0; i < shinyModifier; i++) {
+                personality = (Random2() << 16) | ((Random() % 0xfffe) + 1);
+                if (IsShinyOtIdPersonality(otId, personality))
+                    break;
+            }
             if (wantedNature == GetNatureFromPersonality(personality) && personality != 0)
                 break; // found a personality with the same nature
 
             natureTries++;
         } while (natureTries <= 2400);
-
-        daycare->offspringPersonality = personality;
     }
+    daycare->offspringPersonality = personality;
 
     FlagSet(FLAG_PENDING_DAYCARE_EGG);
 }

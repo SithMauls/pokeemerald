@@ -57,6 +57,20 @@ ProfBirch_EventScript_ShowRatingMessage::
 	waitbuttonpress
 	return
 
+ProfBirch_EventScript_GiveShinyCharm::
+	msgbox gBirchDexRatingText_SeenAllHoennMons, MSGBOX_DEFAULT
+	giveitem ITEM_SHINY_CHARM
+	setflag FLAG_SHINY_CHARM_GET
+	msgbox gBirchDexRatingText_ShinyCharm, MSGBOX_DEFAULT
+	release
+	end
+
+ProfBirch_EventScript_SeenAllHoennMons::
+	specialvar VAR_RESULT, SawAllHoennMons
+	goto_if_eq VAR_RESULT, TRUE, ProfBirch_EventScript_GiveShinyCharm
+	release
+	end
+
 ProfBirch_EventScript_RatePokedex::
 	setvar VAR_0x8004, 0
 	specialvar VAR_RESULT, ScriptGetPokedexInfo
@@ -75,4 +89,5 @@ ProfBirch_EventScript_RatePokedex::
 	buffernumberstring STR_VAR_1, VAR_0x8008  @ Num National seen
 	buffernumberstring STR_VAR_2, VAR_0x8009  @ Num National caught
 	msgbox gBirchDexRatingText_OnANationwideBasis, MSGBOX_DEFAULT
+	goto_if_unset FLAG_SHINY_CHARM_GET, ProfBirch_EventScript_SeenAllHoennMons
 	return

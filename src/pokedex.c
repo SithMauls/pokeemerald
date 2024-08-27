@@ -7530,6 +7530,19 @@ bool16 HasAllHoennMons(void)
     return TRUE;
 }
 
+bool16 SawAllHoennMons(void)
+{
+    u32 i;
+
+    // -2 excludes Jirachi and Deoxys
+    for (i = 0; i < HOENN_DEX_COUNT - 2; i++)
+    {
+        if (!GetSetPokedexFlag(HoennToNationalOrder(i + 1), FLAG_GET_SEEN))
+            return FALSE;
+    }
+    return TRUE;
+}
+
 bool8 HasAllKantoMons(void)
 {
     u32 i;
