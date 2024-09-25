@@ -29,6 +29,7 @@ LavaridgeTown_Mart_Pokemart:
 	.2byte ITEM_REVIVE
 	.2byte ITEM_SUPER_REPEL
 	.2byte ITEM_X_SPEED
+	.2byte ITEM_TM47
 	.2byte ITEM_NONE
 	release
 	end
@@ -44,6 +45,7 @@ LavaridgeTown_Mart_PokemartPostGym:
 	.2byte ITEM_REVIVE
 	.2byte ITEM_SUPER_REPEL
 	.2byte ITEM_X_SPEED
+	.2byte ITEM_TM47
 	.2byte ITEM_TM50
 	.2byte ITEM_NONE
 	release

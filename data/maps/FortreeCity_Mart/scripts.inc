@@ -30,6 +30,8 @@ FortreeCity_Mart_Pokemart:
 	.2byte ITEM_REVIVE
 	.2byte ITEM_SUPER_REPEL
 	.2byte ITEM_WOOD_MAIL
+	.2byte ITEM_TM06
+	.2byte ITEM_TM36
 	.2byte ITEM_NONE
 	release
 	end
@@ -46,6 +48,8 @@ FortreeCity_Mart_PokemartPostGym:
 	.2byte ITEM_REVIVE
 	.2byte ITEM_SUPER_REPEL
 	.2byte ITEM_WOOD_MAIL
+	.2byte ITEM_TM06
+	.2byte ITEM_TM36
 	.2byte ITEM_TM40
 	.2byte ITEM_NONE
 	release

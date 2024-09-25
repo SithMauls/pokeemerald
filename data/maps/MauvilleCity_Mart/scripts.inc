@@ -32,6 +32,7 @@ MauvilleCity_Mart_Pokemart:
 	.2byte ITEM_GUARD_SPEC
 	.2byte ITEM_DIRE_HIT
 	.2byte ITEM_X_ACCURACY
+	.2byte ITEM_TM23
 	.2byte ITEM_NONE
 	release
 	end
@@ -50,6 +51,7 @@ MauvilleCity_Mart_PokemartPostGym:
 	.2byte ITEM_GUARD_SPEC
 	.2byte ITEM_DIRE_HIT
 	.2byte ITEM_X_ACCURACY
+	.2byte ITEM_TM23
 	.2byte ITEM_TM34
 	.2byte ITEM_NONE
 	release
