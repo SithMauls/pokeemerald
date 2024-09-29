@@ -62,14 +62,12 @@ ProfBirch_EventScript_GiveShinyCharm::
 	giveitem ITEM_SHINY_CHARM
 	setflag FLAG_SHINY_CHARM_GET
 	msgbox gBirchDexRatingText_ShinyCharm, MSGBOX_DEFAULT
-	release
-	end
+	return
 
 ProfBirch_EventScript_SeenAllHoennMons::
 	specialvar VAR_RESULT, SawAllHoennMons
 	goto_if_eq VAR_RESULT, TRUE, ProfBirch_EventScript_GiveShinyCharm
-	release
-	end
+	return
 
 ProfBirch_EventScript_RatePokedex::
 	setvar VAR_0x8004, 0
