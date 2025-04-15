@@ -3561,7 +3561,7 @@ static void Cmd_getexp(void)
         }
         break;
     case 6: // check if wild Pokémon has a hold item after fainting
-        if (gBattleStruct->wildVictorySong && holdItem != ITEM_NONE)
+        if (!(gBattleTypeFlags & BATTLE_TYPE_TRAINER) && holdItem != ITEM_NONE)
         {
             PrepareStringBattle(STRINGID_PKMNDROPPEDITEM, gBattleStruct->expGetterBattlerId);
             gBattleScripting.getexpState++; // add item to bag
