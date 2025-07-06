@@ -2060,7 +2060,7 @@ static void TryEnterMonForMinigame(u8 taskId, u8 slot)
     else
     {
         PlaySE(SE_FAILURE);
-        DisplayPartyMenuMessage(gText_PkmnCantParticipate, FALSE);
+        DisplayPartyMenuMessage(gText_PkmnCantParticipate, TRUE);
         ScheduleBgCopyTilemapToVram(2);
         gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
     }
@@ -3222,7 +3222,7 @@ static void Task_GiveHoldItem(u8 taskId)
     if (!gPaletteFade.active)
     {
         item = gSpecialVar_ItemId;
-        DisplayGaveHeldItemMessage(&gPlayerParty[gPartyMenu.slotId], item, FALSE, 0);
+        DisplayGaveHeldItemMessage(&gPlayerParty[gPartyMenu.slotId], item, TRUE, 0);
         GiveItemToMon(&gPlayerParty[gPartyMenu.slotId], item);
         RemoveBagItem(item, 1);
         gTasks[taskId].func = Task_UpdateHeldItemSprite;
@@ -3259,7 +3259,7 @@ static void Task_HandleSwitchItemsYesNoInput(u8 taskId)
         {
             AddBagItem(gSpecialVar_ItemId, 1);
             BufferBagFullCantTakeItemMessage(sPartyMenuItemId);
-            DisplayPartyMenuMessage(gStringVar4, FALSE);
+            DisplayPartyMenuMessage(gStringVar4, TRUE);
             gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
         }
         // Giving mail
@@ -3332,9 +3332,9 @@ static void Task_DisplayGaveMailFromPartyMessage(u8 taskId)
     if (!gPaletteFade.active)
     {
         if (sPartyMenuItemId == ITEM_NONE)
-            DisplayGaveHeldItemMessage(&gPlayerParty[gPartyMenu.slotId], gSpecialVar_ItemId, FALSE, 0);
+            DisplayGaveHeldItemMessage(&gPlayerParty[gPartyMenu.slotId], gSpecialVar_ItemId, TRUE, 0);
         else
-            DisplaySwitchedHeldItemMessage(gSpecialVar_ItemId, sPartyMenuItemId, FALSE);
+            DisplaySwitchedHeldItemMessage(gSpecialVar_ItemId, sPartyMenuItemId, TRUE);
         gTasks[taskId].func = Task_UpdateHeldItemSprite;
     }
 }
@@ -3426,7 +3426,7 @@ static void Task_HandleTossHeldItemYesNoInput(u8 taskId)
     case 0:
         CopyItemName(GetMonData(mon, MON_DATA_HELD_ITEM), gStringVar1);
         StringExpandPlaceholders(gStringVar4, gText_ItemThrownAway);
-        DisplayPartyMenuMessage(gStringVar4, FALSE);
+        DisplayPartyMenuMessage(gStringVar4, TRUE);
         gTasks[taskId].func = Task_TossHeldItem;
         break;
     case MENU_B_PRESSED:
@@ -3508,12 +3508,12 @@ static void Task_HandleSendMailToPCYesNoInput(u8 taskId)
     case 0: // Yes, send to PC
         if (TakeMailFromMonAndSave(&gPlayerParty[gPartyMenu.slotId]) != MAIL_NONE)
         {
-            DisplayPartyMenuMessage(gText_MailSentToPC, FALSE);
+            DisplayPartyMenuMessage(gText_MailSentToPC, TRUE);
             gTasks[taskId].func = Task_UpdateHeldItemSprite;
         }
         else
         {
-            DisplayPartyMenuMessage(gText_PCMailboxFull, FALSE);
+            DisplayPartyMenuMessage(gText_PCMailboxFull, TRUE);
             gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
         }
         break;
@@ -3547,13 +3547,13 @@ static void Task_HandleLoseMailMessageYesNoInput(u8 taskId)
         if (AddBagItem(item, 1) == TRUE)
         {
             TakeMailFromMon(&gPlayerParty[gPartyMenu.slotId]);
-            DisplayPartyMenuMessage(gText_MailTakenFromPkmn, FALSE);
+            DisplayPartyMenuMessage(gText_MailTakenFromPkmn, TRUE);
             gTasks[taskId].func = Task_UpdateHeldItemSprite;
         }
         else
         {
             BufferBagFullCantTakeItemMessage(item);
-            DisplayPartyMenuMessage(gStringVar4, FALSE);
+            DisplayPartyMenuMessage(gStringVar4, TRUE);
             gTasks[taskId].func = Task_ReturnToChooseMonAfterText;
         }
         break;
@@ -4604,7 +4604,7 @@ static void Task_DisplayHPRestoredMessage(u8 taskId)
 {
     GetMonNickname(&gPlayerParty[gPartyMenu.slotId], gStringVar1);
     StringExpandPlaceholders(gStringVar4, gText_PkmnHPRestoredByVar2);
-    DisplayPartyMenuMessage(gStringVar4, FALSE);
+    DisplayPartyMenuMessage(gStringVar4, TRUE);
     ScheduleBgCopyTilemapToVram(2);
     HandleBattleLowHpMusicChange();
     gTasks[taskId].func = Task_ClosePartyMenuAfterText;
@@ -5374,7 +5374,7 @@ static void Task_SacredAshDisplayHPRestored(u8 taskId)
 {
     GetMonNickname(&gPlayerParty[gPartyMenu.slotId], gStringVar1);
     StringExpandPlaceholders(gStringVar4, gText_PkmnHPRestoredByVar2);
-    DisplayPartyMenuMessage(gStringVar4, FALSE);
+    DisplayPartyMenuMessage(gStringVar4, TRUE);
     ScheduleBgCopyTilemapToVram(2);
     gTasks[taskId].func = Task_SacredAshLoop;
 }
@@ -5556,7 +5556,7 @@ static void GiveItemToSelectedMon(u8 taskId)
     if (!gPaletteFade.active)
     {
         item = gPartyMenu.bagItem;
-        DisplayGaveHeldItemMessage(&gPlayerParty[gPartyMenu.slotId], item, FALSE, 1);
+        DisplayGaveHeldItemMessage(&gPlayerParty[gPartyMenu.slotId], item, TRUE, 1);
         GiveItemToMon(&gPlayerParty[gPartyMenu.slotId], item);
         RemoveItemToGiveFromBag(item);
         gTasks[taskId].func = Task_UpdateHeldItemSpriteAndClosePartyMenu;
@@ -5613,9 +5613,9 @@ static void Task_DisplayGaveMailFromBagMessage(u8 taskId)
     if (!gPaletteFade.active)
     {
         if (sPartyMenuItemId != ITEM_NONE)
-            DisplaySwitchedHeldItemMessage(gPartyMenu.bagItem, sPartyMenuItemId, FALSE);
+            DisplaySwitchedHeldItemMessage(gPartyMenu.bagItem, sPartyMenuItemId, TRUE);
         else
-            DisplayGaveHeldItemMessage(&gPlayerParty[gPartyMenu.slotId], gPartyMenu.bagItem, FALSE, 1);
+            DisplayGaveHeldItemMessage(&gPlayerParty[gPartyMenu.slotId], gPartyMenu.bagItem, TRUE, 1);
         gTasks[taskId].func = Task_UpdateHeldItemSpriteAndClosePartyMenu;
     }
 }
@@ -5642,7 +5642,7 @@ static void Task_HandleSwitchItemsFromBagYesNoInput(u8 taskId)
         {
             ReturnGiveItemToBagOrPC(item);
             BufferBagFullCantTakeItemMessage(sPartyMenuItemId);
-            DisplayPartyMenuMessage(gStringVar4, FALSE);
+            DisplayPartyMenuMessage(gStringVar4, TRUE);
             gTasks[taskId].func = Task_UpdateHeldItemSpriteAndClosePartyMenu;
         }
         else if (ItemIsMail(item))

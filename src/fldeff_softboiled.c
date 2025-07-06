@@ -75,7 +75,7 @@ static void Task_DisplayHPRestoredMessage(u8 taskId)
 {
     GetMonNickname(&gPlayerParty[gPartyMenu.slotId2], gStringVar1);
     StringExpandPlaceholders(gStringVar4, gText_PkmnHPRestoredByVar2);
-    DisplayPartyMenuMessage(gStringVar4, FALSE);
+    DisplayPartyMenuMessage(gStringVar4, TRUE);
     ScheduleBgCopyTilemapToVram(2);
     gTasks[taskId].func = Task_FinishSoftboiled;
 }
@@ -105,7 +105,7 @@ static void Task_ChooseNewMonForSoftboiled(u8 taskId)
 static void CantUseSoftboiledOnMon(u8 taskId)
 {
     PlaySE(SE_SELECT);
-    DisplayPartyMenuMessage(gText_CantBeUsedOnPkmn, FALSE);
+    DisplayPartyMenuMessage(gText_CantBeUsedOnPkmn, TRUE);
     ScheduleBgCopyTilemapToVram(2);
     gTasks[taskId].func = Task_ChooseNewMonForSoftboiled;
 }
