@@ -4496,7 +4496,7 @@ static void CreateCaughtBallSprite(struct Pokemon *mon)
 
 static void CreateHeldItemSprite(struct Pokemon *mon)
 {
-    u8 item = GetMonData(mon, MON_DATA_HELD_ITEM);
+    u16 item = GetMonData(mon, MON_DATA_HELD_ITEM);
 
     FreeSpriteTilesByTag(TAG_ITEM_ICON);
     FreeSpritePaletteByTag(TAG_ITEM_ICON);
