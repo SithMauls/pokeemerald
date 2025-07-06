@@ -86,7 +86,7 @@ void CopyItemName(u16 itemId, u8 *dst)
 
 void CopyPocketName(u16 itemId, u8 *dst)
 {
-    StringCopy(dst, gPocketNamesStringsTable[ItemId_GetPocket(itemId) - 1]);
+    StringCopy(dst, gPocketNamesStringsTable[GetItemPocket(itemId) - 1]);
 }
 
 void CopyItemNameHandlePlural(u16 itemId, u8 *dst, u32 quantity)
@@ -263,7 +263,7 @@ void MoveMedicineToItemsPocket()
 
     for (i = 0; i < itemsPocket->capacity; i++)
     {
-        if (ItemId_GetPocket(items[i].itemId) == POCKET_MEDICINE)
+        if (GetItemPocket(items[i].itemId) == POCKET_MEDICINE)
         {
             quantity = GetBagItemQuantity(&itemsPocket->itemSlots[i].quantity);
 
@@ -560,7 +560,7 @@ bool8 CheckPCHasSpace(u16 itemId, u16 count)
     u8 i;
     u16 ownedCount = 0;
 
-    if (InBattlePyramid() || FlagGet(FLAG_STORING_ITEMS_IN_PYRAMID_BAG) == TRUE)
+    if (CurrentBattlePyramidLocation() != PYRAMID_LOCATION_NONE || FlagGet(FLAG_STORING_ITEMS_IN_PYRAMID_BAG) == TRUE)
     {
         return FALSE;
     }
