@@ -26,9 +26,7 @@ PetalburgCity_Mart_Pokemart_Basic:
 	.2byte ITEM_X_DEFEND
 	.2byte ITEM_ORANGE_MAIL
 	.2byte ITEM_TM41
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 PetalburgCity_Mart_EventScript_ExpandedItems::
 	goto_if_set FLAG_BADGE05_GET, PetalburgCity_Mart_EventScript_PostGymItems
@@ -59,9 +57,7 @@ PetalburgCity_Mart_Pokemart_Expanded:
 	.2byte ITEM_X_DEFEND
 	.2byte ITEM_ORANGE_MAIL
 	.2byte ITEM_TM41
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 	.align 2
 PetalburgCity_Mart_Pokemart_PostGym:
@@ -80,9 +76,7 @@ PetalburgCity_Mart_Pokemart_PostGym:
 	.2byte ITEM_ORANGE_MAIL
 	.2byte ITEM_TM41
 	.2byte ITEM_TM42
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 PetalburgCity_Mart_EventScript_Woman::
 	msgbox PetalburgCity_Mart_Text_WeakWillGrowStronger, MSGBOX_NPC

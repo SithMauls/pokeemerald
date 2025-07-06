@@ -31,9 +31,7 @@ MossdeepCity_Mart_Pokemart:
 	.2byte ITEM_X_DEFEND
 	.2byte ITEM_TM30
 	.2byte ITEM_TM48
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 	.align 2
 MossdeepCity_Mart_PokemartPostGym:
@@ -49,9 +47,7 @@ MossdeepCity_Mart_PokemartPostGym:
 	.2byte ITEM_TM30
 	.2byte ITEM_TM48
 	.2byte ITEM_TM04
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 MossdeepCity_Mart_EventScript_Woman::
 	msgbox MossdeepCity_Mart_Text_ReviveIsFantastic, MSGBOX_NPC

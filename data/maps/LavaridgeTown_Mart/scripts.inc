@@ -30,9 +30,7 @@ LavaridgeTown_Mart_Pokemart:
 	.2byte ITEM_SUPER_REPEL
 	.2byte ITEM_X_SPEED
 	.2byte ITEM_TM47
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 	.align 2
 LavaridgeTown_Mart_PokemartPostGym:
@@ -47,9 +45,7 @@ LavaridgeTown_Mart_PokemartPostGym:
 	.2byte ITEM_X_SPEED
 	.2byte ITEM_TM47
 	.2byte ITEM_TM50
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 LavaridgeTown_Mart_EventScript_ExpertM::
 	msgbox LavaridgeTown_Mart_Text_XSpeedFirstStrike, MSGBOX_NPC

@@ -27,9 +27,7 @@ FallarborTown_Mart_Pokemart:
 	.2byte ITEM_GUARD_SPEC
 	.2byte ITEM_TM46
 	.2byte ITEM_TM49
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 FallarborTown_Mart_EventScript_Woman::
 	msgbox FallarborTown_Mart_Text_DecidingSkittyEvolve, MSGBOX_NPC

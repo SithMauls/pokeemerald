@@ -32,9 +32,7 @@ FortreeCity_Mart_Pokemart:
 	.2byte ITEM_WOOD_MAIL
 	.2byte ITEM_TM06
 	.2byte ITEM_TM36
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 	.align 2
 FortreeCity_Mart_PokemartPostGym:
@@ -51,9 +49,7 @@ FortreeCity_Mart_PokemartPostGym:
 	.2byte ITEM_TM06
 	.2byte ITEM_TM36
 	.2byte ITEM_TM40
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 FortreeCity_Mart_EventScript_Woman::
 	msgbox FortreeCity_Mart_Text_SuperRepelBetter, MSGBOX_NPC

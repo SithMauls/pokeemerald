@@ -31,9 +31,7 @@ SootopolisCity_Mart_Pokemart:
 	.2byte ITEM_SHADOW_MAIL
 	.2byte ITEM_TM02
 	.2byte ITEM_TM05
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 	.align 2
 SootopolisCity_Mart_PokemartPostGym:
@@ -49,9 +47,7 @@ SootopolisCity_Mart_PokemartPostGym:
 	.2byte ITEM_TM02
 	.2byte ITEM_TM05
 	.2byte ITEM_TM03
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 SootopolisCity_Mart_EventScript_FatMan::
 	lock

@@ -33,9 +33,7 @@ MauvilleCity_Mart_Pokemart:
 	.2byte ITEM_DIRE_HIT
 	.2byte ITEM_X_ACCURACY
 	.2byte ITEM_TM23
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 	.align 2
 MauvilleCity_Mart_PokemartPostGym:
@@ -53,9 +51,7 @@ MauvilleCity_Mart_PokemartPostGym:
 	.2byte ITEM_X_ACCURACY
 	.2byte ITEM_TM23
 	.2byte ITEM_TM34
-	.2byte ITEM_NONE
-	release
-	end
+	pokemartlistend
 
 MauvilleCity_Mart_EventScript_ExpertM::
 	msgbox MauvilleCity_Mart_Text_ItemsToTemporarilyElevateStats, MSGBOX_NPC
