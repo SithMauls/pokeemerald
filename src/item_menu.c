@@ -1772,9 +1772,7 @@ static void OpenContextMenu(u8 taskId)
                 memcpy(&gBagMenu->contextMenuItemsBuffer, &sContextMenuItems_ItemsPocket, sizeof(sContextMenuItems_ItemsPocket));
                 if (ItemIsMail(gSpecialVar_ItemId) == TRUE)
                     gBagMenu->contextMenuItemsBuffer[0] = ACTION_CHECK;
-                if (gSpecialVar_ItemId == ITEM_WHITE_FLUTE || gSpecialVar_ItemId == ITEM_BLACK_FLUTE
-                    || gSpecialVar_ItemId == ITEM_REPEL || gSpecialVar_ItemId == ITEM_SUPER_REPEL || gSpecialVar_ItemId == ITEM_MAX_REPEL
-                    || gSpecialVar_ItemId == ITEM_ESCAPE_ROPE)
+                if (gSpecialVar_ItemId == ITEM_WHITE_FLUTE || gSpecialVar_ItemId == ITEM_BLACK_FLUTE)
                     gBagMenu->contextMenuItemsBuffer[1] = ACTION_REGISTER;
                 if (RegisteredItemIndex(gSpecialVar_ItemId) >= 0)
                     gBagMenu->contextMenuItemsBuffer[1] = ACTION_DESELECT;
