@@ -2304,7 +2304,7 @@ bool8 UseRegisteredKeyItemOnField(void)
     } else if (i > 0) {
         if (CheckBagHasItem(gSaveBlock1Ptr->registeredItemCompat, 1) == TRUE) {
             gSpecialVar_ItemId = gSaveBlock1Ptr->registeredItemCompat;
-            func = ItemId_GetFieldFunc(gSaveBlock1Ptr->registeredItemCompat);
+            func = GetItemFieldFunc(gSaveBlock1Ptr->registeredItemCompat);
         } else {
             gSaveBlock1Ptr->registeredItemCompat = ITEM_NONE;
         }
@@ -2425,7 +2425,7 @@ static void Task_KeyItemWheel(u8 taskId) {
     }
     case 2: // Use item
         FreeKeyItemWheelGfx(data);
-        i = CreateTask(ItemId_GetFieldFunc(gSaveBlock1Ptr->registeredItemCompat), 8);
+        i = CreateTask(GetItemFieldFunc(gSaveBlock1Ptr->registeredItemCompat), 8);
         gTasks[i].tUsingRegisteredKeyItem = TRUE;
         gTasks[i].tUsingKeyItemWheel = TRUE;
         if (gSaveBlock1Ptr->registeredItemCompat == ITEM_MACH_BIKE || gSaveBlock1Ptr->registeredItemCompat == ITEM_ACRO_BIKE)
@@ -3506,12 +3506,12 @@ static s8 CompareItemsByName(struct ItemSlot* itemSlot1, struct ItemSlot* itemSl
     if (item1 >= ITEM_TM01 && item1 <= ITEM_HM08)
         name1 = gMoveNames[ItemIdToBattleMoveId(item1)];
     else
-        name1 = ItemId_GetName(item1);
+        name1 = GetItemName(item1);
 
     if (item2 >= ITEM_TM01 && item2 <= ITEM_HM08)
         name2 = gMoveNames[ItemIdToBattleMoveId(item2)];
     else
-        name2 = ItemId_GetName(item2);
+        name2 = GetItemName(item2);
 
     for (i = 0; ; ++i)
     {
@@ -3573,8 +3573,8 @@ static s8 CompareItemsByType(struct ItemSlot* itemSlot1, struct ItemSlot* itemSl
 static s8 CompareItemsByValue(struct ItemSlot* itemSlot1, struct ItemSlot* itemSlot2)
 {
     // Null items go last
-    s32 value1 = (itemSlot1->itemId == ITEM_NONE) ? 0x7FFFFFFF : -ItemId_GetPrice(itemSlot1->itemId);
-    s32 value2 = (itemSlot2->itemId == ITEM_NONE) ? 0x7FFFFFFF : -ItemId_GetPrice(itemSlot2->itemId);
+    s32 value1 = (itemSlot1->itemId == ITEM_NONE) ? 0x7FFFFFFF : -GetItemPrice(itemSlot1->itemId);
+    s32 value2 = (itemSlot2->itemId == ITEM_NONE) ? 0x7FFFFFFF : -GetItemPrice(itemSlot2->itemId);
 
     if (value1 < value2)
         return -1;

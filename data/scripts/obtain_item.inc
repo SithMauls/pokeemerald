@@ -130,8 +130,8 @@ Std_FindItem::
 EventScript_CheckPCSpace::
 	checkitemtype VAR_0x8004 @ Don't add if it's a key item
 	goto_if_eq VAR_RESULT, POCKET_KEY_ITEMS, EventScript_CheckPCSpaceContinue
-	pyramid_inchallenge
-	copyvar VAR_0x8004, ITEMID  @ pyramid_inchallenge modifies VAR_0x8004
+	pyramid_getlocation
+	copyvar VAR_0x8004, ITEMID  @ pyramid_getlocation modifies VAR_0x8004
 	goto_if_eq VAR_RESULT, TRUE, EventScript_CheckPCSpaceContinue
 	checkpcspace VAR_0x8004, VAR_0x8005
 	goto_if_eq VAR_RESULT, FALSE, EventScript_CheckPCSpaceContinue

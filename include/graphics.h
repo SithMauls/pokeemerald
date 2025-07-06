@@ -3304,7 +3304,7 @@ extern const u32 gPokedexSearchMenu_Gfx[];
 extern const u32 gPokedexSearchMenuHoenn_Tilemap[];
 extern const u32 gPokedexSearchMenuNational_Tilemap[];
 extern const u16 gPokedexSearchMenu_Pal[];
-extern const u8 gPokedexMovesScreen_Tilemap[];
+extern const u32 gPokedexMovesScreen_Tilemap[];
 
 // berry tag screen
 extern const u32 gBerryCheck_Gfx[];
