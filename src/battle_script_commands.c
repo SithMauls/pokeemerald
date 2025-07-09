@@ -3402,7 +3402,9 @@ static void Cmd_getexp(void)
                 gBattleScripting.getexpState = 5;
                 gBattleMoveDamage = 0; // used for exp
             }
-            else if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL) == MAX_LEVEL || !IsUnderLevelCap(&gPlayerParty[gBattleStruct->expGetterMonId]))
+            else if (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_LEVEL) == MAX_LEVEL
+                     || !IsUnderLevelCap(&gPlayerParty[gBattleStruct->expGetterMonId])
+                     || (GetMonData(&gPlayerParty[gBattleStruct->expGetterMonId], MON_DATA_MARKINGS) & (1 << 2)))
             {
                 *(&gBattleStruct->sentInPokes) >>= 1;
                 gBattleScripting.getexpState = 5;
