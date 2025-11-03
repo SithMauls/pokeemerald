@@ -3141,7 +3141,7 @@ const struct Item gItems[] =
 
     [ITEM_MACH_BIKE] =
     {
-        .name = _("2-GEAR BIKE"),
+        .name = _("BICYCLE"),
         .itemId = ITEM_MACH_BIKE,
         .price = 0,
         .description = sMachBikeDesc,
@@ -3305,7 +3305,7 @@ const struct Item gItems[] =
 
     [ITEM_ACRO_BIKE] =
     {
-        .name = _("ACRO BIKE"),
+        .name = _("BICYCLE"),
         .itemId = ITEM_ACRO_BIKE,
         .price = 0,
         .description = sAcroBikeDesc,
