@@ -26,10 +26,22 @@ EverGrandeCity_HallOfFame_EventScript_SetGameClearFlags::
 
 EverGrandeCity_HallOfFame_EventScript_ResetDefeatedEventLegendaries::
 	clearflag FLAG_DEFEATED_MEW
+	clearflag FLAG_CAUGHT_MEW
 	clearflag FLAG_DEFEATED_LATIAS_OR_LATIOS
+	clearflag FLAG_CAUGHT_LATIAS_OR_LATIOS
 	clearflag FLAG_DEFEATED_DEOXYS
 	clearflag FLAG_DEFEATED_LUGIA
+	clearflag FLAG_CAUGHT_LUGIA
 	clearflag FLAG_DEFEATED_HO_OH
+	clearflag FLAG_CAUGHT_HO_OH
+	clearflag FLAG_DEFEATED_REGIROCK
+	clearflag FLAG_DEFEATED_REGICE
+	clearflag FLAG_DEFEATED_REGISTEEL
+	clearflag FLAG_DEFEATED_KYOGRE
+	clearflag FLAG_DEFEATED_GROUDON
+	clearflag FLAG_DEFEATED_RAYQUAZA
+	copyvar VAR_0x8004, VAR_ROAMER_POKEMON
+	special InitRoamer
 	return
 
 EverGrandeCity_HallOfFame_EventScript_SetDesertUnderpassCommentReady::
